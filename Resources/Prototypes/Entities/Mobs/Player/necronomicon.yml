@@ -48,7 +48,6 @@
   - type: RandomMetadata
     nameSegments:
     - NamesKandarianFirst
-    - NamesKandarianTitle
     nameFormat: name-format-kandarian
   - type: NecroDemon
     rendingClawsBonus:

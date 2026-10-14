@@ -1,12 +1,7 @@
-# Namebase for Kandarian Demons. Add entries in Resources/Locale/en-US/datasets/names/kandarian.ftl and bump count.
+# Namebase for Kandarian Demons: short names like Illigos and Bhal.
+# Add entries in Resources/Locale/en-US/necronomicon/necronomicon.ftl and bump count.
 - type: localizedDataset
   id: NamesKandarianFirst
   values:
     prefix: names-kandarian-first-dataset-
-    count: 12
-
-- type: localizedDataset
-  id: NamesKandarianTitle
-  values:
-    prefix: names-kandarian-title-dataset-
-    count: 10
+    count: 30

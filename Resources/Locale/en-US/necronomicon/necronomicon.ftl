@@ -25,7 +25,7 @@ ghost-role-information-demonspawn-rules = You are a [color={role-type-team-antag
 
 chat-radio-sumerian = Ancient Sumerian
 
-name-format-kandarian = {$part0}, {$part1}
+name-format-kandarian = {$part0}
 
 # Store
 necro-store-title = Necronomicon
@@ -174,29 +174,37 @@ accent-deadite-6 = Your soul is ours!
 accent-deadite-7 = You'll be one of us!
 accent-deadite-8 = Get over here, meat!
 
-# Demon names
-names-kandarian-first-dataset-1 = Kharnak
-names-kandarian-first-dataset-2 = Ashurath
-names-kandarian-first-dataset-3 = Nergul
-names-kandarian-first-dataset-4 = Kandar
-names-kandarian-first-dataset-5 = Ezreth
-names-kandarian-first-dataset-6 = Ulgoth
-names-kandarian-first-dataset-7 = Sumuqan
-names-kandarian-first-dataset-8 = Ninkharsa
-names-kandarian-first-dataset-9 = Belzhaal
-names-kandarian-first-dataset-10 = Ereshkul
-names-kandarian-first-dataset-11 = Gallu
-names-kandarian-first-dataset-12 = Mortuun
-names-kandarian-title-dataset-1 = Swallower of Souls
-names-kandarian-title-dataset-2 = Who Waits in the Woods
-names-kandarian-title-dataset-3 = Voice of the Book
-names-kandarian-title-dataset-4 = Dead by Dawn
-names-kandarian-title-dataset-5 = the Unburied
-names-kandarian-title-dataset-6 = Keeper of the Cellar
-names-kandarian-title-dataset-7 = the Whispering Rot
-names-kandarian-title-dataset-8 = Child of the Naturom
-names-kandarian-title-dataset-9 = the Shape in the Fog
-names-kandarian-title-dataset-10 = Who Wears the Dead
+# Demon names (short and guttural). Add more and bump count in Datasets/Names/kandarian.yml.
+names-kandarian-first-dataset-1 = Illigos
+names-kandarian-first-dataset-2 = Bhal
+names-kandarian-first-dataset-3 = Kesh
+names-kandarian-first-dataset-4 = Vorr
+names-kandarian-first-dataset-5 = Ghul
+names-kandarian-first-dataset-6 = Azzur
+names-kandarian-first-dataset-7 = Thrak
+names-kandarian-first-dataset-8 = Moloth
+names-kandarian-first-dataset-9 = Zerat
+names-kandarian-first-dataset-10 = Ulm
+names-kandarian-first-dataset-11 = Nezz
+names-kandarian-first-dataset-12 = Khar
+names-kandarian-first-dataset-13 = Ozul
+names-kandarian-first-dataset-14 = Varn
+names-kandarian-first-dataset-15 = Drael
+names-kandarian-first-dataset-16 = Sabbu
+names-kandarian-first-dataset-17 = Gorr
+names-kandarian-first-dataset-18 = Ishk
+names-kandarian-first-dataset-19 = Belos
+names-kandarian-first-dataset-20 = Xul
+names-kandarian-first-dataset-21 = Morgh
+names-kandarian-first-dataset-22 = Tazz
+names-kandarian-first-dataset-23 = Uzrah
+names-kandarian-first-dataset-24 = Nergal
+names-kandarian-first-dataset-25 = Kaz
+names-kandarian-first-dataset-26 = Orrus
+names-kandarian-first-dataset-27 = Vesh
+names-kandarian-first-dataset-28 = Ghath
+names-kandarian-first-dataset-29 = Lurm
+names-kandarian-first-dataset-30 = Zoth
 
 # Demonic possession (harmless puppeting)
 necro-catalog-puppet-name = Demonic Possession
