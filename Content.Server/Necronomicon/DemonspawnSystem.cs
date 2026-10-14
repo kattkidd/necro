@@ -208,12 +208,12 @@ public sealed class DemonspawnSystem : EntitySystem
         // Grey skin, eyes black as pitch.
         _deadite.ApplyDeaditeLook(adult, juvenile.Comp.AdultSkinColor, juvenile.Comp.AdultEyeColor);
 
-        TransferBelongings(juvenile, adult);
+        TransferBelongings(juvenile.Owner, adult);
 
         // The player goes with it. Take the juvenile's ghost role down first so it can't be re-offered in between.
-        RemComp<GhostTakeoverAvailableComponent>(juvenile);
-        RemComp<GhostRoleComponent>(juvenile);
-        if (_mind.TryGetMind(juvenile, out var mindId, out var mind))
+        RemComp<GhostTakeoverAvailableComponent>(juvenile.Owner);
+        RemComp<GhostRoleComponent>(juvenile.Owner);
+        if (_mind.TryGetMind(juvenile.Owner, out var mindId, out var mind))
             _mind.TransferTo(mindId, adult, mind: mind);
 
         if (CompOrNull<KandarianEntityComponent>(adult)?.Demon is { } demonUid
@@ -340,7 +340,7 @@ public sealed class DemonspawnSystem : EntitySystem
         var coords = Transform(ent).Coordinates;
 
         // Anything it carried survives the holy fire.
-        TransferBelongingsToFloor(ent);
+        TransferBelongingsToFloor(ent.Owner);
 
         Spawn(ent.Comp.DustPrototype, coords);
         Spawn(HolyLight, coords);
