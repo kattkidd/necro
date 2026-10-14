@@ -1,0 +1,233 @@
+# Necronomicon antagonist actions. Icons are placeholders reused from existing assets.
+
+- type: entity
+  parent: ActionIntrinsicStore
+  id: ActionNecroShop
+  name: Skill Store
+  description: Spend Soul Power on possessions, powers, a physical form and Demonspawn.
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroManifestBook
+  name: Manifest Necronomicon
+  description: Bring the book into the physical world where you stand. Takes a few seconds. Costs 2 SP.
+  components:
+  - type: Action
+    useDelay: 10
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    priority: 10
+  - type: Sprite
+    layers:
+    - sprite: Objects/Misc/books.rsi
+      state: cover_base
+      color: "#5a3b2e"
+  - type: InstantAction
+    event: !type:NecroManifestBookActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroDemanifestBook
+  name: Demanifest Necronomicon
+  description: Pull the book back into the ether. Fails while a living, unpossessed person carries it. Costs 2 SP.
+  components:
+  - type: Action
+    useDelay: 10
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    priority: 9
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/defile.png
+  - type: InstantAction
+    event: !type:NecroDemanifestBookActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroJoinUs
+  name: JOIN US
+  description: The manifested book whispers to someone near it, preparing them for possession.
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+    priority: 8
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Ghosts/revenant.rsi
+      state: harvesting
+  - type: TargetAction
+    checkCanAccess: false
+    range: 12
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:NecroJoinUsActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroPossess
+  name: Possess
+  description: Possess a prepared victim near the manifested book. Consumes one possession charge.
+  components:
+  - type: Action
+    useDelay: 15
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+    priority: 7
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Ghosts/revenant.rsi
+      state: active
+  - type: TargetAction
+    checkCanAccess: false
+    range: 12
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:NecroPossessActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroWhisper
+  name: Whisper
+  description: Whisper terrors into someone's mind. Generates Fear. Costs 2 SP.
+  components:
+  - type: Action
+    useDelay: 20
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Ghosts/revenant.rsi
+      state: icon
+  - type: TargetAction
+    checkCanAccess: false
+    range: 8
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:NecroWhisperActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroDarkPresence
+  name: Dark Presence
+  description: Lights flicker and machines misbehave around you. Generates Fear. Costs 4 SP.
+  components:
+  - type: Action
+    useDelay: 45
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/overloadlight.png
+  - type: InstantAction
+    event: !type:NecroDarkPresenceActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroManifestForm
+  name: Take Physical Form
+  description: Become a corporeal, combat-capable demon in your chosen form. Costs 5 SP. Your body can be destroyed; the book cannot be harmed through it.
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Demons/abomination.rsi
+      state: abomination
+  - type: InstantAction
+    event: !type:NecroManifestFormActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroReturnToEther
+  name: Return to the Ether
+  description: Abandon this body and become incorporeal again.
+  components:
+  - type: Action
+    useDelay: 5
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Ghosts/revenant.rsi
+      state: idle
+  - type: InstantAction
+    event: !type:NecroReturnToEtherActionEvent
+
+# --- Deadites ---
+
+- type: entity
+  parent: BaseAction
+  id: ActionDeaditeReveal
+  name: Reveal True Form
+  description: Drop the disguise. Your skin goes pale, your eyes go white, and everyone nearby will know. Generates a burst of Soul Power.
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Ghosts/revenant.rsi
+      state: active
+  - type: InstantAction
+    event: !type:DeaditeRevealActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionDeaditeBite
+  name: Deadite Bite
+  description: Bite a crew member, leaving them open to possession. Mindshields repel the curse.
+  components:
+  - type: Action
+    useDelay: 20
+    itemIconStyle: BigAction
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/zombie-turn.png
+  - type: TargetAction
+    range: 1.5
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:DeaditeBiteActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionDeaditeReadPassage
+  name: Read the Passage
+  description: While revealed, with the manifested book beside you, read the passage that melts away a victim's mindshield.
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+  - type: Sprite
+    layers:
+    - sprite: Objects/Misc/books.rsi
+      state: icon_text
+  - type: TargetAction
+    range: 2
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:DeaditeReadPassageActionEvent

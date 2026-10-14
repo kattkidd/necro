@@ -1,0 +1,46 @@
+- type: antag
+  id: Necronomicon
+  name: roles-antag-necronomicon-name
+  antagonist: true
+  setPreference: true
+  objective: roles-antag-necronomicon-objective
+  tags:
+  - OnStation
+  - Roundstart
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 5h
+
+- type: antag
+  id: Deadite
+  name: roles-antag-deadite-name
+  antagonist: true
+  setPreference: false
+  objective: roles-antag-deadite-objective
+  tags:
+  - OnStation
+  - Converted
+  - Unkillable
+
+- type: antag
+  id: Demonspawn
+  name: roles-antag-demonspawn-name
+  antagonist: true
+  setPreference: false
+  objective: roles-antag-demonspawn-objective
+  tags:
+  - OnStation
+  - Midround
+
+# The demon is spawned fresh (not a crew member), so the entity is non-humanoid.
+- type: antagSpecifier
+  parent: BaseAntagSpecifier
+  id: Necronomicon
+  prefRoles: [ Necronomicon ]
+  allowNonHumans: true
+  briefing:
+    text: necro-briefing
+    color: DarkRed
+    sound: "/Audio/Effects/desecration-01.ogg"
+  mindRoles:
+  - MindRoleNecroDemon

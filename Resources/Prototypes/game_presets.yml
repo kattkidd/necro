@@ -265,3 +265,19 @@
   - KesslerSyndromeScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
+
+- type: gamePreset
+  id: Necronomicon
+  alias:
+  - necronomicon
+  - necro
+  - evildead
+  - deadites
+  name: necronomicon-title
+  description: necronomicon-description
+  showInVote: false
+  rules:
+  - Necronomicon
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler

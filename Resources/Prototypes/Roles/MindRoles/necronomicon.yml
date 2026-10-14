@@ -1,0 +1,35 @@
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleNecroDemon
+  name: Kandarian Demon Role
+  components:
+  - type: MindRole
+    antagPrototype: Necronomicon
+    roleType: TeamAntagonist
+    subtype: role-subtype-kandarian-demon
+    exclusiveAntag: true
+  - type: NecroDemonRole
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleDeadite
+  name: Deadite Role
+  components:
+  - type: MindRole
+    antagPrototype: Deadite
+    roleType: TeamAntagonist
+    subtype: role-subtype-deadite
+    exclusiveAntag: true
+  - type: DeaditeRole
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleDemonspawn
+  name: Demonspawn Role
+  components:
+  - type: MindRole
+    antagPrototype: Demonspawn
+    roleType: TeamAntagonist
+    subtype: role-subtype-demonspawn
+    exclusiveAntag: true
+  - type: DemonspawnRole

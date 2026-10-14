@@ -113,3 +113,13 @@
   color: "#ff2222"
   # long range since I don't wanna make a special xenoborg telecomm server
   longRange: true
+
+# Ancient Sumerian: private, unlimited-range speech between Kandarian entities (demon, Deadites, Demonspawn).
+# Only entities given the channel intrinsically can speak or hear it; no headset or key exists for it.
+- type: radioChannel
+  id: Sumerian
+  name: chat-radio-sumerian
+  keycode: 'k'
+  frequency: 666.6
+  color: "#a01818"
+  longRange: true

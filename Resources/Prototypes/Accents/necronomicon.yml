@@ -1,0 +1,14 @@
+# Revealed Deadites: loud (all-caps, applied separately) and crude taunting.
+- type: accent
+  id: deadite
+  replacementChance: 0.5
+  fullReplacements:
+  - accent-deadite-1
+  - accent-deadite-2
+  - accent-deadite-3
+  - accent-deadite-4
+  - accent-deadite-5
+  - accent-deadite-6
+  - accent-deadite-7
+  - accent-deadite-8
+  defaultPunctuation: '!'

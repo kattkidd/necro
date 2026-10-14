@@ -1,0 +1,17 @@
+# Round-start Necronomicon antagonist (Evil Dead).
+- type: entity
+  parent: [ BaseGameRule, BaseRoundstartAntagRule ]
+  id: Necronomicon
+  components:
+  - type: GameRule
+    minPlayers: 15
+  - type: NecronomiconRule
+    autoAwakenDelay: 1200 # seconds until the demon wakes on its own if nobody plays the recording
+  - type: AntagSpawner
+    prototype: MobKandarianDemon
+  - type: AntagSelection
+    antags:
+    - !type:FixedAntagCount
+      proto: Necronomicon
+  - type: DynamicRuleCost
+    cost: 200

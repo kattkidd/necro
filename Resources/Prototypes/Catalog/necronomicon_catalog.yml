@@ -1,0 +1,266 @@
+# Necronomicon Skill Store. All costs are in Soul Power (SP) and can be tuned here.
+# Purchases are validated server-side by StoreSystem (balance, stock, prerequisites) before any effect is applied.
+
+- type: currency
+  id: SoulPower
+  displayName: store-currency-display-soul-power
+  canWithdraw: false
+
+- type: storeCategory
+  id: NecroAppearance
+  name: store-category-necro-appearance
+  priority: 0
+
+- type: storeCategory
+  id: NecroPossession
+  name: store-category-necro-possession
+  priority: 1
+
+- type: storeCategory
+  id: NecroFear
+  name: store-category-necro-fear
+  priority: 2
+
+- type: storeCategory
+  id: NecroPowers
+  name: store-category-necro-powers
+  priority: 3
+
+- type: storeCategory
+  id: NecroManifestation
+  name: store-category-necro-manifestation
+  priority: 4
+
+- type: storeCategory
+  id: NecroDemonspawn
+  name: store-category-necro-demonspawn
+  priority: 5
+
+- type: storeCategory
+  id: NecroInfiltration
+  name: store-category-necro-infiltration
+  priority: 6
+
+# --- Appearance (free, cosmetic, changeable) ---
+
+- type: listing
+  id: NecroFormAbomination
+  name: necro-catalog-form-abomination-name
+  description: necro-catalog-form-desc
+  icon: { sprite: /Textures/Mobs/Demons/abomination.rsi, state: abomination }
+  cost:
+    SoulPower: 0
+  categories:
+  - NecroAppearance
+  productEvent: !type:NecroSelectFormEvent
+    form: MobKandarianFormAbomination
+    rsi: /Textures/Mobs/Demons/abomination.rsi
+    state: abomination
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroFormHellspawn
+  name: necro-catalog-form-hellspawn-name
+  description: necro-catalog-form-desc
+  icon: { sprite: /Textures/Mobs/Demons/hellspawn.rsi, state: alive }
+  cost:
+    SoulPower: 0
+  categories:
+  - NecroAppearance
+  productEvent: !type:NecroSelectFormEvent
+    form: MobKandarianFormHellspawn
+    rsi: /Textures/Mobs/Demons/hellspawn.rsi
+    state: alive
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroFormFlesh
+  name: necro-catalog-form-flesh-name
+  description: necro-catalog-form-desc
+  icon: { sprite: /Textures/Mobs/Aliens/flesh.rsi, state: golem }
+  cost:
+    SoulPower: 0
+  categories:
+  - NecroAppearance
+  productEvent: !type:NecroSelectFormEvent
+    form: MobKandarianFormFlesh
+    rsi: /Textures/Mobs/Aliens/flesh.rsi
+    state: golem
+  raiseProductEventOnUser: true
+
+# --- Possession ---
+
+- type: listing
+  id: NecroPossessionCharge
+  name: necro-catalog-charge-name
+  description: necro-catalog-charge-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/revenant.rsi, state: active }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroPossession
+  productEvent: !type:NecroBuyPossessionChargeEvent
+  raiseProductEventOnUser: true
+
+# --- Fear ---
+
+- type: listing
+  id: NecroFearAmplify
+  name: necro-catalog-fear-amplify-name
+  description: necro-catalog-fear-amplify-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/revenant.rsi, state: harvesting }
+  cost:
+    SoulPower: 10
+  categories:
+  - NecroFear
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 2
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: FearMultiplier
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDreadAura
+  name: necro-catalog-dread-aura-name
+  description: necro-catalog-dread-aura-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/revenant.rsi, state: idle }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroFear
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: DreadAura
+  raiseProductEventOnUser: true
+
+# --- Supernatural powers ---
+
+- type: listing
+  id: NecroWhisper
+  name: necro-catalog-whisper-name
+  description: necro-catalog-whisper-desc
+  productAction: ActionNecroWhisper
+  cost:
+    SoulPower: 3
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroDarkPresence
+  name: necro-catalog-dark-presence-name
+  description: necro-catalog-dark-presence-desc
+  productAction: ActionNecroDarkPresence
+  cost:
+    SoulPower: 6
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+# --- Physical manifestation ---
+
+- type: listing
+  id: NecroPhysicalForm
+  name: necro-catalog-physical-form-name
+  description: necro-catalog-physical-form-desc
+  productAction: ActionNecroManifestForm
+  cost:
+    SoulPower: 25
+  categories:
+  - NecroManifestation
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroHardenedFlesh
+  name: necro-catalog-hardened-flesh-name
+  description: necro-catalog-hardened-flesh-desc
+  icon: { sprite: /Textures/Mobs/Demons/abomination.rsi, state: abomination }
+  cost:
+    SoulPower: 12
+  categories:
+  - NecroManifestation
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 2
+  - !type:BuyBeforeCondition
+    whitelist:
+    - NecroPhysicalForm
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: HardenedFlesh
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroRendingClaws
+  name: necro-catalog-rending-claws-name
+  description: necro-catalog-rending-claws-desc
+  icon: { sprite: /Textures/Mobs/Demons/hellspawn.rsi, state: alive }
+  cost:
+    SoulPower: 12
+  categories:
+  - NecroManifestation
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 2
+  - !type:BuyBeforeCondition
+    whitelist:
+    - NecroPhysicalForm
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: RendingClaws
+  raiseProductEventOnUser: true
+
+# --- Demonspawn ---
+
+- type: listing
+  id: NecroSummonDemonspawn
+  name: necro-catalog-demonspawn-name
+  description: necro-catalog-demonspawn-desc
+  icon: { sprite: /Textures/Mobs/Animals/monkey.rsi, state: monkey }
+  cost:
+    SoulPower: 10
+  categories:
+  - NecroDemonspawn
+  productEvent: !type:NecroSummonDemonspawnEvent
+  raiseProductEventOnUser: true
+
+# --- Infiltration ---
+
+- type: listing
+  id: NecroSwiftPossession
+  name: necro-catalog-swift-possession-name
+  description: necro-catalog-swift-possession-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/revenant.rsi, state: active }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroInfiltration
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: SwiftPossession
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroFarWhisper
+  name: necro-catalog-far-whisper-name
+  description: necro-catalog-far-whisper-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/revenant.rsi, state: harvesting }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroInfiltration
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: FarWhisper
+  raiseProductEventOnUser: true

@@ -1,0 +1,272 @@
+using Content.Server.Chat.Systems;
+using Content.Server.Ghost;
+using Content.Server.Mind;
+using Content.Server.Necronomicon.Components;
+using Content.Server.RoundEnd;
+using Content.Shared.Antag;
+using Content.Shared.GameTicking.Components;
+using Content.Shared.GameTicking;
+using Content.Shared.GameTicking.Rules;
+using Content.Shared.Humanoid;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Station.Systems;
+using Robust.Shared.Audio;
+using Robust.Shared.Player;
+
+namespace Content.Server.Necronomicon;
+
+/// <summary>
+/// Round-start rule for the Necronomicon antagonist.
+/// One player becomes a dormant Kandarian Demon. The Necronomicon and an old recording are hidden on the station;
+/// playing the recording (or the fallback timer) awakens the demon. Crew win by burning the book,
+/// the Necronomicon wins when no eligible soul is left aboard the station.
+/// </summary>
+public sealed partial class NecronomiconRuleSystem : GameRuleSystem<NecronomiconRuleComponent>
+{
+    [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private DeaditeSystem _deadite = default!;
+    [Dependency] private GhostSystem _ghost = default!;
+    [Dependency] private MindSystem _mind = default!;
+    [Dependency] private NecronomiconSystem _necro = default!;
+    [Dependency] private ISharedPlayerManager _player = default!;
+    [Dependency] private RoundEndSystem _roundEnd = default!;
+    [Dependency] private StationSystem _station = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+
+    private static readonly SoundSpecifier VictorySound = new SoundPathSpecifier("/Audio/Effects/demon_consume.ogg");
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<NecronomiconRuleComponent, AntagSelectLocationEvent>(OnSelectLocation);
+        SubscribeLocalEvent<NecronomiconRuleComponent, AfterAntagEntitySelectedEvent>(OnAntagSelected);
+
+        SubscribeLocalEvent<NecroRecordingPlayedEvent>(OnRecordingPlayed);
+        SubscribeLocalEvent<NecronomiconBurnedEvent>(OnBookBurned);
+        SubscribeLocalEvent<NecroSoulConsumedEvent>(OnSoulConsumed);
+    }
+
+    private void OnSelectLocation(Entity<NecronomiconRuleComponent> ent, ref AntagSelectLocationEvent args)
+    {
+        // Chosen lazily so the station exists. Cached because selection may raise this more than once.
+        if (ent.Comp.SpawnCoords == null && _station.TryFindRandomTile(out _, out _, out _, out var coords))
+            ent.Comp.SpawnCoords = coords;
+
+        if (ent.Comp.SpawnCoords is { } spawn)
+            args.Coordinates.Add(_transform.ToMapCoordinates(spawn));
+    }
+
+    private void OnAntagSelected(Entity<NecronomiconRuleComponent> ent, ref AfterAntagEntitySelectedEvent args)
+    {
+        var demonUid = args.EntityUid;
+        if (!TryComp<NecroDemonComponent>(demonUid, out var demon))
+        {
+            Log.Error($"Necronomicon antag {ToPrettyString(demonUid)} has no {nameof(NecroDemonComponent)}");
+            return;
+        }
+
+        ent.Comp.Demon = demonUid;
+        ent.Comp.DemonName = Name(demonUid);
+        EnsureComp<KandarianEntityComponent>(demonUid).Demon = demonUid;
+        _deadite.GrantSumerian(demonUid);
+
+        // The book starts in the ether. It appears where the recording is played.
+        _necro.EnsureBook((demonUid, demon));
+
+        // Hide the recording somewhere aboard.
+        if (_station.TryFindRandomTile(out _, out _, out _, out var recordingCoords))
+            ent.Comp.Recording = Spawn(ent.Comp.RecordingPrototype, recordingCoords);
+        else
+            ent.Comp.Recording = Spawn(ent.Comp.RecordingPrototype, Transform(demonUid).Coordinates);
+
+        if (ent.Comp.AutoAwakenDelay is { } delay)
+            ent.Comp.AutoAwakenAt = Timing.CurTime + delay;
+    }
+
+    private void OnRecordingPlayed(ref NecroRecordingPlayedEvent args)
+    {
+        var query = EntityQueryEnumerator<NecronomiconRuleComponent, ActiveGameRuleComponent>();
+        while (query.MoveNext(out _, out var rule, out _))
+        {
+            if (rule.Outcome != NecroOutcome.Ongoing || !_necro.TryGetDemon(rule.Demon, out var demon))
+                continue;
+
+            if (demon.Value.Comp.Awakened)
+                continue;
+
+            rule.AutoAwakenAt = null;
+            _necro.Awaken(demon.Value, Transform(args.Recording).Coordinates);
+        }
+    }
+
+    protected override void ActiveTick(EntityUid uid, NecronomiconRuleComponent component, GameRuleComponent gameRule, float frameTime)
+    {
+        base.ActiveTick(uid, component, gameRule, frameTime);
+
+        if (component.Outcome != NecroOutcome.Ongoing)
+            return;
+
+        var now = Timing.CurTime;
+
+        // Fallback so the antagonist is never stuck if nobody finds the recording.
+        if (component.AutoAwakenAt is { } at && now >= at)
+        {
+            component.AutoAwakenAt = null;
+            if (_necro.TryGetDemon(component.Demon, out var demon) && !demon.Value.Comp.Awakened)
+            {
+                var coords = component.Recording is { } rec && !TerminatingOrDeleted(rec)
+                    ? Transform(rec).Coordinates
+                    : Transform(demon.Value).Coordinates;
+                _necro.Awaken(demon.Value, coords);
+            }
+        }
+
+        if (now < component.NextCheck)
+            return;
+
+        component.NextCheck = now + component.CheckInterval;
+        CheckNecronomiconVictory((uid, component));
+    }
+
+    #region Victory
+
+    private void OnSoulConsumed(ref NecroSoulConsumedEvent args)
+    {
+        // Check promptly after each conversion instead of waiting for the next interval.
+        var query = EntityQueryEnumerator<NecronomiconRuleComponent, ActiveGameRuleComponent>();
+        while (query.MoveNext(out var uid, out var rule, out _))
+        {
+            if (rule.Demon == args.Demon)
+                rule.NextCheck = TimeSpan.Zero;
+        }
+    }
+
+    /// <summary>
+    /// Counts the eligible souls left aboard the station. Disconnected players still count (their bodies can be possessed),
+    /// ghosted/abandoned and dead bodies don't, and minds are followed through transfers because we look at whoever
+    /// currently owns each body.
+    /// </summary>
+    public int CountRemainingSouls()
+    {
+        var count = 0;
+        var query = EntityQueryEnumerator<HumanoidProfileComponent, MobStateComponent>();
+        while (query.MoveNext(out var uid, out _, out _))
+        {
+            if (!_necro.IsEligibleSoul(uid))
+                continue;
+
+            if (_station.GetOwningStation(uid) == null)
+                continue;
+
+            count++;
+        }
+
+        return count;
+    }
+
+    private void CheckNecronomiconVictory(Entity<NecronomiconRuleComponent> rule)
+    {
+        if (!_necro.TryGetDemon(rule.Comp.Demon, out var demon))
+            return;
+
+        // Victory requires the demon to have actually consumed souls, the book to still exist, and nobody left.
+        if (!demon.Value.Comp.Awakened || demon.Value.Comp.Banished || demon.Value.Comp.Conversions == 0)
+            return;
+
+        if (CountRemainingSouls() > 0)
+            return;
+
+        SetOutcome(rule, NecroOutcome.NecronomiconVictory);
+    }
+
+    private void OnBookBurned(ref NecronomiconBurnedEvent args)
+    {
+        var query = EntityQueryEnumerator<NecronomiconRuleComponent, ActiveGameRuleComponent>();
+        while (query.MoveNext(out var uid, out var rule, out _))
+        {
+            if (rule.Demon != args.Demon)
+                continue;
+
+            SetOutcome((uid, rule), NecroOutcome.CrewVictory);
+        }
+    }
+
+    /// <summary>The first outcome wins; later (simultaneous) ones are ignored.</summary>
+    private void SetOutcome(Entity<NecronomiconRuleComponent> rule, NecroOutcome outcome)
+    {
+        if (rule.Comp.Outcome != NecroOutcome.Ongoing)
+            return;
+
+        rule.Comp.Outcome = outcome;
+        rule.Comp.AutoAwakenAt = null;
+
+        if (_necro.TryGetDemon(rule.Comp.Demon, out var demon))
+            rule.Comp.FinalConversions = demon.Value.Comp.Conversions;
+
+        if (outcome == NecroOutcome.CrewVictory)
+        {
+            _chat.DispatchGlobalAnnouncement(Loc.GetString("necro-crew-victory-announcement"),
+                Loc.GetString("necro-announcement-sender"), colorOverride: Color.Gold);
+
+            // The demon is cast out: its player becomes a ghost.
+            if (demon != null)
+                CastOut(demon.Value);
+
+            if (!_roundEnd.IsRoundEndRequested())
+                _roundEnd.DoRoundEndBehavior(rule.Comp.CrewVictoryBehavior, rule.Comp.EvacShuttleTime);
+        }
+        else
+        {
+            _chat.DispatchGlobalAnnouncement(Loc.GetString("necro-victory-announcement"),
+                Loc.GetString("necro-announcement-sender"), announcementSound: VictorySound, colorOverride: Color.DarkRed);
+
+            _roundEnd.DoRoundEndBehavior(rule.Comp.NecroVictoryBehavior, rule.Comp.EvacShuttleTime);
+        }
+    }
+
+    private void CastOut(Entity<NecroDemonComponent> demon)
+    {
+        var body = demon.Comp.Manifestation ?? demon.Owner;
+        if (_mind.TryGetMind(body, out var mindId, out var mind))
+            _ghost.SpawnGhost((mindId, mind), body);
+
+        if (demon.Comp.Manifestation is { } form)
+            QueueDel(form);
+
+        QueueDel(demon);
+    }
+
+    #endregion
+
+    protected override void AppendRoundEndText(Entity<NecronomiconRuleComponent> rule, ref RoundEndTextAppendEvent args)
+    {
+        base.AppendRoundEndText(rule, ref args);
+
+        var demonName = rule.Comp.DemonName;
+        var username = string.Empty;
+        if (rule.Comp.Demon is { } demonUid && !TerminatingOrDeleted(demonUid)
+            && _mind.TryGetMind(demonUid, out _, out var mind)
+            && mind.UserId is { } userId
+            && _player.TryGetSessionById(userId, out var session))
+        {
+            username = session.Name;
+        }
+
+        args.AddLine(Loc.GetString("necro-round-end-demon", ("name", demonName), ("username", username)));
+
+        var conversions = rule.Comp.FinalConversions;
+        if (_necro.TryGetDemon(rule.Comp.Demon, out var demon))
+            conversions = demon.Value.Comp.Conversions;
+
+        args.AddLine(Loc.GetString("necro-round-end-conversions", ("count", conversions)));
+
+        var key = rule.Comp.Outcome switch
+        {
+            NecroOutcome.CrewVictory => "necro-round-end-crew-victory",
+            NecroOutcome.NecronomiconVictory => "necro-round-end-necro-victory",
+            _ => "necro-round-end-ongoing",
+        };
+        args.AddLine(Loc.GetString(key));
+    }
+}

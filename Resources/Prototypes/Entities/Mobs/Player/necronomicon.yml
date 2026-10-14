@@ -1,0 +1,361 @@
+# Necronomicon antagonist (Evil Dead). All art and audio are placeholders reused from existing assets.
+
+# --- The incorporeal Kandarian Demon -------------------------------------------------------------
+# No Damageable, no Hands, no MeleeWeapon, ghost-layer visibility and ghost collision only:
+# it cannot be harmed, cannot attack and cannot physically interact until it buys a physical form.
+- type: entity
+  parent:
+  - Incorporeal
+  - BaseMob
+  id: MobKandarianDemon
+  name: kandarian demon
+  description: Something unseen, moving fast and low through the station.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    drawdepth: Ghosts
+    sprite: Mobs/Ghosts/revenant.rsi
+    color: "#b02020aa"
+    layers:
+    - state: idle
+  - type: Appearance
+  - type: NecroDemonVisuals
+  - type: Input
+    context: "ghost"
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 6
+    baseSprintSpeed: 6
+  - type: NoSlip
+  - type: Eye
+    drawFov: false
+    visMask:
+    - Normal
+    - Ghost
+  - type: ContentEye
+    maxZoom: 1.2, 1.2
+  - type: Visibility
+    layer: 2 # ghost layer: invisible to the living
+  - type: MindContainer
+  - type: Examiner
+  - type: Speech
+    speechVerb: Ghost
+  - type: Grammar
+    attributes:
+      proper: true
+  - type: RandomMetadata
+    nameSegments:
+    - NamesKandarianFirst
+    - NamesKandarianTitle
+    nameFormat: name-format-kandarian
+  - type: NecroDemon
+    rendingClawsBonus:
+      types:
+        Slash: 6
+  - type: KandarianEntity
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: Store
+    name: necro-store-title
+    categories:
+    - NecroAppearance
+    - NecroPossession
+    - NecroFear
+    - NecroPowers
+    - NecroManifestation
+    - NecroDemonspawn
+    - NecroInfiltration
+    currencyWhitelist:
+    - SoulPower
+  - type: ActionGrant
+    actions:
+    - ActionNecroShop
+    - ActionNecroManifestBook
+    - ActionNecroDemanifestBook
+    - ActionNecroJoinUs
+    - ActionNecroPossess
+  - type: Tag
+    tags:
+    - SlowImmune
+    - KnockdownImmune
+    - AllowPortalTraversal
+
+# --- Physical forms ------------------------------------------------------------------------------
+# Stats are set here deliberately; they do not inherit from the creature the sprite comes from.
+- type: entity
+  abstract: true
+  parent:
+  - BaseSimpleMob
+  - MobCombat
+  id: BaseMobKandarianForm
+  name: kandarian demon
+  description: A thing that should not be. It reeks of old blood and burnt pages.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: NecroManifestation
+  - type: KandarianEntity
+  - type: Input
+    context: "human"
+  - type: Eye
+  - type: ContentEye
+  - type: Examiner
+  - type: Speech
+    speechVerb: Ghost
+  - type: MindContainer
+  - type: Grammar
+    attributes:
+      proper: true
+  - type: Damageable
+    damageModifierSet: HellSpawn
+  - type: Injurable
+    damageContainer: BiologicalMetaphysical
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      150: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 4.5
+  - type: MeleeWeapon
+    attackRate: 1
+    angle: 0
+    animation: WeaponArcClaw
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    damage:
+      types:
+        Slash: 14
+  - type: Prying
+    pryPowered: true
+    force: true
+    speedModifier: 1.5
+  - type: Puller
+    needsHands: false
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        density: 120
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Sumerian
+  - type: IntrinsicRadioReceiver
+  - type: ActiveRadio
+    channels:
+    - Sumerian
+  - type: PointLight
+    radius: 1.5
+    energy: 1.5
+    color: "#a01818"
+    castShadows: false
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - CannotSuicide
+
+- type: entity
+  parent: BaseMobKandarianForm
+  id: MobKandarianFormAbomination
+  suffix: Abomination form
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: Mobs/Demons/abomination.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: abomination
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: abomination
+      Dead:
+        Base: dead
+
+- type: entity
+  parent: BaseMobKandarianForm
+  id: MobKandarianFormHellspawn
+  suffix: Hellspawn form
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: Mobs/Demons/hellspawn.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: alive
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: alive
+      Dead:
+        Base: dead
+  - type: RotationVisuals
+    defaultRotation: 90
+    horizontalRotation: 90
+
+- type: entity
+  parent: BaseMobKandarianForm
+  id: MobKandarianFormFlesh
+  suffix: Flesh form
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: Mobs/Aliens/flesh.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: golem
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: golem
+      Dead:
+        Base: dead
+
+# --- Demonspawn ---------------------------------------------------------------------------------
+- type: entity
+  parent: MobBaseAncestor
+  id: MobDemonspawn
+  name: demonspawn
+  description: A small, grey, childlike thing with long claws and a wide, wet grin.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: monkey
+      sprite: Mobs/Animals/monkey.rsi
+      color: "#8a8a8a"
+    - map: [ "jumpsuit" ]
+    - map: [ "enum.HumanoidVisualLayers.Handcuffs" ]
+      color: "#ffffff"
+      sprite: Objects/Misc/handcuffs.rsi
+      state: body-overlay-2
+      visible: false
+    - map: [ "ears" ]
+    - map: [ "id" ]
+    - map: [ "outerClothing" ]
+    - map: [ "mask" ]
+    - map: [ "head" ]
+  - type: Speech
+    speechSounds: Monkey
+    speechVerb: Monkey
+  - type: MonkeyAccent
+  - type: Demonspawn
+  - type: KandarianEntity
+  - type: KandarianRegen
+    reviveDelay: 45
+    passiveHeal: 0.15
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Critical
+    - Dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      60: Critical
+      100000: Dead # cannot die from ordinary damage; regenerates from critical
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 5
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcClaw
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    damage:
+      types:
+        Slash: 7
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Sumerian
+  - type: IntrinsicRadioReceiver
+  - type: ActiveRadio
+    channels:
+    - Sumerian
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: GhostRole
+    makeSentient: true
+    allowMovement: true
+    name: ghost-role-information-demonspawn-name
+    description: ghost-role-information-demonspawn-description
+    rules: ghost-role-information-demonspawn-rules
+    mindRoles:
+    - MindRoleDemonspawn
+    raffle:
+      settings: short
+  - type: GhostTakeoverAvailable
+
+# --- The Necronomicon ---------------------------------------------------------------------------
+- type: entity
+  parent: BookBase
+  id: NecronomiconBook
+  name: Naturom Demonto
+  description: A book bound in human skin and inked in blood. The face on its cover seems to watch you.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#5a3b2e"
+      map: [ "cover" ]
+    - state: decor_wingette
+      color: "#2b1a14"
+      map: [ "decor" ]
+    - state: icon_text
+      map: [ "icon" ]
+    - state: overlay_null
+      map: [ "overlay" ]
+  - type: Appearance
+  - type: Necronomicon
+  - type: Flammable
+    fireSpread: false
+    canResistFire: false
+    alwaysCombustible: true
+    canExtinguish: true
+    damage:
+      types:
+        Heat: 0
+  - type: FireVisuals
+    sprite: Effects/fire.rsi
+    normalState: fire
+  - type: Reactive
+    groups:
+      Flammable: [ Touch ]
+      Extinguish: [ Touch ]
+  - type: ExtinguishableSetCollisionWake
+  - type: Tag
+    tags:
+    - Book
+
+# --- The old recording --------------------------------------------------------------------------
+- type: entity
+  parent: BaseItem
+  id: NecroOldRecording
+  name: old tape recorder
+  description: A battered reel-to-reel recorder. The tape is labelled in a professor's careful hand.
+  components:
+  - type: Sprite
+    sprite: Objects/Fun/clownrecorder.rsi
+    state: icon
+    color: "#7a6a52"
+  - type: Item
+    sprite: Objects/Fun/clownrecorder.rsi
+    size: Small
+  - type: NecroRecording
