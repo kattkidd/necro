@@ -55,14 +55,14 @@ public sealed partial class NecroDemonComponent : Component
     public int PossessionCharges = 2;
 
     [DataField]
-    public float JoinUsRange = 3f;
+    public float JoinUsRange = 8f;
 
     [DataField]
-    public float FarWhisperJoinUsRange = 6f;
+    public float FarWhisperJoinUsRange = 12f;
 
     /// <summary>How close a victim must be to the manifested book to be possessed.</summary>
     [DataField]
-    public float PossessRange = 3f;
+    public float PossessRange = 8f;
 
     [DataField]
     public TimeSpan PossessDuration = TimeSpan.FromSeconds(6);

@@ -63,7 +63,7 @@ necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at
 necro-catalog-swift-possession-name = Swift Possession
 necro-catalog-swift-possession-desc = Possession takes 3 seconds instead of 6.
 necro-catalog-far-whisper-name = Far Whisper
-necro-catalog-far-whisper-desc = JOIN US reaches 6 tiles from the book instead of 3.
+necro-catalog-far-whisper-desc = JOIN US reaches 12 tiles from the book instead of 8.
 
 # Demon / book
 necro-not-enough-sp = You need {$cost} Soul Power (you have {$current}).
