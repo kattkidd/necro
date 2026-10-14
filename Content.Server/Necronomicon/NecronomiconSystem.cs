@@ -618,6 +618,18 @@ public sealed partial class NecronomiconSystem : EntitySystem
         args.PushMarkup(Loc.GetString(ent.Comp.Played ? "necro-recording-examine-spent" : "necro-recording-examine"));
     }
 
+    /// <summary>
+    /// The recording starts the round already playing: it finishes the reading on its own and is spent afterwards.
+    /// </summary>
+    public void PlayRecordingAtRoundStart(EntityUid recording)
+    {
+        if (!TryComp<NecroRecordingComponent>(recording, out var comp) || comp.Played)
+            return;
+
+        comp.Played = true;
+        _audio.PlayPvs(comp.SummonSound, recording);
+    }
+
     /// <summary>Wakes the demon. The book appears where the summoning happened.</summary>
     public void Awaken(Entity<NecroDemonComponent> demon, EntityCoordinates? bookCoords)
     {

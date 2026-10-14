@@ -6,7 +6,6 @@
   - type: GameRule
     minPlayers: 15
   - type: NecronomiconRule
-    autoAwakenDelay: 1200 # seconds until the demon wakes on its own if nobody plays the recording
   - type: AntagSpawner
     prototype: MobKandarianDemon
   - type: AntagSelection

@@ -17,8 +17,8 @@ namespace Content.Server.Necronomicon;
 
 /// <summary>
 /// Round-start rule for the Necronomicon antagonist.
-/// One player becomes a dormant Kandarian Demon. The Necronomicon and an old recording are hidden on the station;
-/// playing the recording (or the fallback timer) awakens the demon. Crew win by burning the book,
+/// One player becomes a Kandarian Demon. An old recording of the Necronomicon reading is already playing somewhere
+/// aboard when the round starts; the demon wakes immediately and the book appears beside the recorder. Crew win by burning the book,
 /// the Necronomicon wins when no eligible soul is left aboard the station.
 /// </summary>
 public sealed partial class NecronomiconRuleSystem : GameRuleSystem<NecronomiconRuleComponent>
@@ -71,17 +71,19 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         EnsureComp<KandarianEntityComponent>(demonUid).Demon = demonUid;
         _deadite.GrantSumerian(demonUid);
 
-        // The book starts in the ether. It appears where the recording is played.
         _necro.EnsureBook((demonUid, demon));
 
-        // Hide the recording somewhere aboard.
-        if (_station.TryFindRandomTile(out _, out _, out _, out var recordingCoords))
-            ent.Comp.Recording = Spawn(ent.Comp.RecordingPrototype, recordingCoords);
-        else
-            ent.Comp.Recording = Spawn(ent.Comp.RecordingPrototype, Transform(demonUid).Coordinates);
+        // Lore: the old recording is already playing somewhere aboard when the round starts.
+        // The reading finishes, the demon wakes, and the book falls out of the air beside the recorder.
+        var recordingCoords = _station.TryFindRandomTile(out _, out _, out _, out var coords)
+            ? coords
+            : Transform(demonUid).Coordinates;
 
-        if (ent.Comp.AutoAwakenDelay is { } delay)
-            ent.Comp.AutoAwakenAt = Timing.CurTime + delay;
+        var recording = Spawn(ent.Comp.RecordingPrototype, recordingCoords);
+        ent.Comp.Recording = recording;
+
+        _necro.PlayRecordingAtRoundStart(recording);
+        _necro.Awaken((demonUid, demon), Transform(recording).Coordinates);
     }
 
     private void OnRecordingPlayed(ref NecroRecordingPlayedEvent args)
@@ -95,7 +97,6 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             if (demon.Value.Comp.Awakened)
                 continue;
 
-            rule.AutoAwakenAt = null;
             _necro.Awaken(demon.Value, Transform(args.Recording).Coordinates);
         }
     }
@@ -108,19 +109,6 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             return;
 
         var now = Timing.CurTime;
-
-        // Fallback so the antagonist is never stuck if nobody finds the recording.
-        if (component.AutoAwakenAt is { } at && now >= at)
-        {
-            component.AutoAwakenAt = null;
-            if (_necro.TryGetDemon(component.Demon, out var demon) && !demon.Value.Comp.Awakened)
-            {
-                var coords = component.Recording is { } rec && !TerminatingOrDeleted(rec)
-                    ? Transform(rec).Coordinates
-                    : Transform(demon.Value).Coordinates;
-                _necro.Awaken(demon.Value, coords);
-            }
-        }
 
         if (now < component.NextCheck)
             return;
@@ -199,7 +187,6 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             return;
 
         rule.Comp.Outcome = outcome;
-        rule.Comp.AutoAwakenAt = null;
 
         if (_necro.TryGetDemon(rule.Comp.Demon, out var demon))
             rule.Comp.FinalConversions = demon.Value.Comp.Conversions;

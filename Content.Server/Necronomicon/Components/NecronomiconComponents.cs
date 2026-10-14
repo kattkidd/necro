@@ -448,13 +448,6 @@ public sealed partial class NecronomiconRuleComponent : Component
     [DataField]
     public EntProtoId RecordingPrototype = "NecroOldRecording";
 
-    /// <summary>If nobody plays the recording, the demon wakes on its own after this long. Null disables.</summary>
-    [DataField]
-    public TimeSpan? AutoAwakenDelay = TimeSpan.FromMinutes(20);
-
-    [ViewVariables]
-    public TimeSpan? AutoAwakenAt;
-
     [DataField]
     public TimeSpan CheckInterval = TimeSpan.FromSeconds(10);
 
