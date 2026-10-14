@@ -3,6 +3,7 @@ using Content.Server.Necronomicon;
 using Content.Server.Necronomicon.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Mobs.Systems;
+using Robust.Shared.GameObjects;
 
 namespace Content.IntegrationTests.Tests.Necronomicon;
 
