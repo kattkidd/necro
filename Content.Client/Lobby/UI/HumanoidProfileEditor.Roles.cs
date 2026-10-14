@@ -347,13 +347,40 @@ public sealed partial class HumanoidProfileEditor
 
             antagContainer.AddChild(selector);
 
-            antagContainer.AddChild(new Button()
+            var antagLoadoutBtn = new Button()
             {
                 Disabled = true,
                 Text = Loc.GetString("loadout-window"),
                 HorizontalAlignment = HAlignment.Right,
                 Margin = new Thickness(3f, 0f, 0f, 0f),
-            });
+            };
+
+            // Antags with a role loadout named "Antag<ID>" (e.g. a custom name) get a working Loadout button.
+            var antagLoadoutId = "Antag" + antag.ID;
+            if (_prototypeManager.TryIndex<RoleLoadoutPrototype>(antagLoadoutId, out var antagLoadoutProto))
+            {
+                antagLoadoutBtn.Disabled = false;
+                var antagName = Loc.GetString(antag.Name);
+                antagLoadoutBtn.OnPressed += _ =>
+                {
+                    RoleLoadout? loadout = null;
+                    Profile?.Loadouts.TryGetValue(antagLoadoutId, out loadout);
+                    loadout = loadout?.Clone();
+
+                    if (loadout == null)
+                    {
+                        loadout = new RoleLoadout(antagLoadoutProto.ID);
+                        loadout.SetDefault(Profile, _playerManager.LocalSession, _prototypeManager);
+                    }
+
+                    OpenLoadout(null, loadout, antagLoadoutProto);
+
+                    if (_loadoutWindow != null)
+                        _loadoutWindow.Title = Loc.GetString("loadout-window-title-loadout", ("job", antagName));
+                };
+            }
+
+            antagContainer.AddChild(antagLoadoutBtn);
 
             AntagList.AddChild(antagContainer);
         }

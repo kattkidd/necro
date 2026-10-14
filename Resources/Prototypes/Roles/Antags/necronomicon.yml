@@ -44,3 +44,10 @@
     sound: "/Audio/Effects/desecration-01.ogg"
   mindRoles:
   - MindRoleNecroDemon
+
+# Antag loadout: lets players pick their demon's name in Character Setup → Antags → Loadout.
+# Left empty, a random name is drawn from the same namebase.
+- type: roleLoadout
+  id: AntagNecronomicon
+  nameDataset: NamesKandarianFirst
+  canCustomizeName: true

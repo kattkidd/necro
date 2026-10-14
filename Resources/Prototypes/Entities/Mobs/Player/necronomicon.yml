@@ -39,6 +39,9 @@
   - type: Examiner
   - type: Speech
     speechVerb: Ghost
+    speechSounds: KandarianWhisper
+  - type: TypingIndicator
+    proto: necro
   - type: Grammar
     attributes:
       proper: true
@@ -102,6 +105,9 @@
   - type: Examiner
   - type: Speech
     speechVerb: Ghost
+    speechSounds: KandarianWhisper
+  - type: TypingIndicator
+    proto: necro
   - type: MindContainer
   - type: Grammar
     attributes:
@@ -232,9 +238,8 @@
     drawdepth: Mobs
     layers:
     - map: ["enum.DamageStateVisualLayers.Base"]
-      state: monkey
-      sprite: Mobs/Animals/monkey.rsi
-      color: "#8a8a8a"
+      state: demonspawn
+      sprite: Mobs/Demons/demonspawn.rsi
     - map: [ "jumpsuit" ]
     - map: [ "enum.HumanoidVisualLayers.Handcuffs" ]
       color: "#ffffff"
@@ -246,9 +251,22 @@
     - map: [ "outerClothing" ]
     - map: [ "mask" ]
     - map: [ "head" ]
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: demonspawn
+      Critical:
+        Base: demonspawn
+      Dead:
+        Base: demonspawn
+  - type: RotationVisuals
+    defaultRotation: 90
+    horizontalRotation: 90
   - type: Speech
-    speechSounds: Monkey
+    speechSounds: Demonspawn
     speechVerb: Monkey
+  - type: TypingIndicator
+    proto: necro
   - type: MonkeyAccent
   - type: Demonspawn
   - type: KandarianEntity
@@ -309,18 +327,21 @@
   description: A book bound in human skin and inked in blood. The face on its cover seems to watch you.
   components:
   - type: Sprite
-    sprite: Objects/Misc/books.rsi
+    sprite: Objects/Misc/necronomicon.rsi
     layers:
-    - state: paper
-    - state: cover_base
-      color: "#5a3b2e"
+    - state: icon
+    # Empty layers kept so the paper/book visuals find the layers they expect.
+    - sprite: Objects/Misc/books.rsi
+      state: overlay_null
       map: [ "cover" ]
-    - state: decor_wingette
-      color: "#2b1a14"
+    - sprite: Objects/Misc/books.rsi
+      state: overlay_null
       map: [ "decor" ]
-    - state: icon_text
+    - sprite: Objects/Misc/books.rsi
+      state: overlay_null
       map: [ "icon" ]
-    - state: overlay_null
+    - sprite: Objects/Misc/books.rsi
+      state: overlay_null
       map: [ "overlay" ]
   - type: Appearance
   - type: Necronomicon

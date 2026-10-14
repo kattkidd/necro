@@ -1,0 +1,45 @@
+- type: soundCollection
+  id: NecroWhispers
+  files:
+  - /Audio/Necronomicon/whisper1.ogg
+  - /Audio/Necronomicon/whisper2.ogg
+  - /Audio/Necronomicon/whisper3.ogg
+
+- type: soundCollection
+  id: DemonspawnCries
+  files:
+  - /Audio/Necronomicon/demonspawn_cry1.ogg
+  - /Audio/Necronomicon/demonspawn_cry2.ogg
+  - /Audio/Necronomicon/demonspawn_cry3.ogg
+
+- type: soundCollection
+  id: DemonspawnVoice
+  files:
+  - /Audio/Necronomicon/demonspawn_voice1.ogg
+  - /Audio/Necronomicon/demonspawn_voice2.ogg
+  - /Audio/Necronomicon/demonspawn_voice3.ogg
+
+# The demon's voice: whispers whenever it speaks.
+- type: speechSounds
+  id: KandarianWhisper
+  saySound:
+    collection: NecroWhispers
+  askSound:
+    collection: NecroWhispers
+  exclaimSound:
+    collection: NecroWhispers
+
+- type: speechSounds
+  id: Demonspawn
+  saySound:
+    collection: DemonspawnVoice
+  askSound:
+    collection: DemonspawnVoice
+  exclaimSound:
+    collection: DemonspawnVoice
+
+- type: typingIndicator
+  id: necro
+  spritePath: /Textures/Effects/necro_speech.rsi
+  typingState: necro0
+  idleState: necro3

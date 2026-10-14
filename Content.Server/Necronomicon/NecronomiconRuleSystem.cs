@@ -2,6 +2,7 @@ using Content.Server.Chat.Systems;
 using Content.Server.Ghost;
 using Content.Server.Mind;
 using Content.Server.Necronomicon.Components;
+using Content.Server.Preferences.Managers;
 using Content.Server.RoundEnd;
 using Content.Shared.Antag;
 using Content.Shared.GameTicking.Components;
@@ -28,10 +29,15 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     [Dependency] private GhostSystem _ghost = default!;
     [Dependency] private MindSystem _mind = default!;
     [Dependency] private NecronomiconSystem _necro = default!;
+    [Dependency] private IServerPreferencesManager _prefs = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
     [Dependency] private ISharedPlayerManager _player = default!;
     [Dependency] private RoundEndSystem _roundEnd = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+
+    /// <summary>Role loadout holding the player's chosen demon name (Character Setup → Antags → Loadout).</summary>
+    public const string DemonLoadoutId = "AntagNecronomicon";
 
     private static readonly SoundSpecifier VictorySound = new SoundPathSpecifier("/Audio/Effects/demon_consume.ogg");
 
@@ -67,6 +73,16 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         }
 
         ent.Comp.Demon = demonUid;
+
+        // A name chosen in the antag loadout replaces the random one.
+        if (args.Session != null
+            && _prefs.GetPreferencesOrNull(args.Session.UserId)?.SelectedCharacter is { } profile
+            && profile.Loadouts.TryGetValue(DemonLoadoutId, out var loadout)
+            && !string.IsNullOrWhiteSpace(loadout.EntityName))
+        {
+            _metaData.SetEntityName(demonUid, loadout.EntityName.Trim());
+        }
+
         ent.Comp.DemonName = Name(demonUid);
         EnsureComp<KandarianEntityComponent>(demonUid).Demon = demonUid;
         _deadite.GrantSumerian(demonUid);

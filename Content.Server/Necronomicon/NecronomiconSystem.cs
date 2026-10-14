@@ -76,6 +76,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         InitializeFear();
         InitializeStore();
         InitializePuppet();
+        InitializeCommands();
     }
 
     public override void Update(float frameTime)
@@ -175,6 +176,18 @@ public sealed partial class NecronomiconSystem : EntitySystem
             return false;
 
         return _mind.TryGetMind(uid, out _, out var mind) && mind.UserId != null;
+    }
+
+    /// <summary>
+    /// Any living non-Kandarian humanoid body, with or without a player (SSD and catatonic bodies included).
+    /// Used for possession, JOIN US and bites. Fear and victory still only count <see cref="IsEligibleSoul"/>.
+    /// </summary>
+    public bool IsPossessableBody(EntityUid uid)
+    {
+        if (!HasComp<HumanoidProfileComponent>(uid) || IsKandarian(uid))
+            return false;
+
+        return TryComp<MobStateComponent>(uid, out var mob) && !_mobState.IsDead(uid, mob);
     }
 
     /// <summary>Returns the demon this entity serves, if any.</summary>

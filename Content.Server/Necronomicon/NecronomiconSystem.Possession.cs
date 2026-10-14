@@ -24,7 +24,7 @@ public sealed partial class NecronomiconSystem
     {
         string? reason = null;
 
-        if (!IsEligibleSoul(target))
+        if (!IsPossessableBody(target))
             reason = "necro-target-invalid";
         else if (HasComp<DeaditeComponent>(target) || HasComp<NecroBeingPossessedComponent>(target))
             reason = "necro-target-already";
@@ -81,7 +81,8 @@ public sealed partial class NecronomiconSystem
         Prepare(ent, target);
         args.Handled = true;
 
-        // The whisper and the shudder.
+        // The whisper (only the victim hears it) and the shudder.
+        _audio.PlayGlobal(ent.Comp.WhisperSound, target);
         _popup.PopupEntity(Loc.GetString("necro-join-us-victim"), target, target, PopupType.LargeCaution);
         _popup.PopupEntity(Loc.GetString("necro-join-us-shudder", ("target", Identity.Entity(target, EntityManager))),
             target, Robust.Shared.Player.Filter.PvsExcept(target), true, PopupType.Medium);

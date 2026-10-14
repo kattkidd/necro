@@ -111,6 +111,7 @@ public sealed partial class NecronomiconSystem
         ent.Comp.DemonspawnSummoned++;
 
         _popup.PopupEntity(Loc.GetString("necro-demonspawn-summoned"), spawn, PopupType.LargeCaution);
+        _audio.PlayPvs(ent.Comp.DemonspawnSummonSound, spawn);
         AddFearAround(ent, spawn, ent.Comp.WitnessRange, NecroFearSource.Supernatural);
     }
 
@@ -164,6 +165,7 @@ public sealed partial class NecronomiconSystem
         // Mindshields dull the whisper: shorter effect, but they still hear something.
         var shielded = IsMindshielded(target);
         var line = Loc.GetString($"necro-whisper-line-{_random.Next(1, 7)}");
+        _audio.PlayGlobal(ent.Comp.WhisperSound, target);
         _popup.PopupEntity(line, target, target, shielded ? PopupType.Medium : PopupType.LargeCaution);
         _jitter.DoJitter(target, TimeSpan.FromSeconds(shielded ? 1 : 4), true, 6f, 5f);
         _popup.PopupEntity(Loc.GetString("necro-whisper-sent", ("target", Identity.Entity(target, EntityManager))),

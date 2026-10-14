@@ -99,6 +99,13 @@ public sealed partial class NecroDemonComponent : Component
     #endregion
 
     #region Powers
+    /// <summary>Played only to the victim of JOIN US and Whisper.</summary>
+    [DataField]
+    public SoundSpecifier WhisperSound = new SoundCollectionSpecifier("NecroWhispers");
+
+    [DataField]
+    public SoundSpecifier DemonspawnSummonSound = new SoundCollectionSpecifier("DemonspawnCries");
+
     [DataField]
     public FixedPoint2 WhisperCost = 2;
 

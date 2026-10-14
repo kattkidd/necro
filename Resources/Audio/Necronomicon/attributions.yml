@@ -1,0 +1,25 @@
+# Pixabay sound effects (Pixabay Content License). Converted to mono OGG for the Necronomicon antagonist.
+- files: ["whisper1.ogg"]
+  license: Custom
+  copyright: '"Halloween Ghost Whisper" by Dragon Studio (Pixabay), converted to mono'
+  source: https://pixabay.com/sound-effects/halloween-ghost-whisper-410557/
+
+- files: ["whisper2.ogg"]
+  license: Custom
+  copyright: '"Creepy Ghost Whisper" by Dragon Studio (Pixabay), converted to mono'
+  source: https://pixabay.com/sound-effects/creepy-ghost-whisper-410564/
+
+- files: ["whisper3.ogg"]
+  license: Custom
+  copyright: '"Scary Ghost Whisper" by Dragon Studio (Pixabay), converted to mono'
+  source: https://pixabay.com/sound-effects/scary-ghost-whisper-410565/
+
+- files: ["whispers_long.ogg"]
+  license: Custom
+  copyright: '"Ghost Whispers" by freesound_community (Pixabay), converted to mono'
+  source: https://pixabay.com/sound-effects/ghost-whispers-6030/
+
+- files: ["demonspawn_cry1.ogg", "demonspawn_cry2.ogg", "demonspawn_cry3.ogg", "demonspawn_voice1.ogg", "demonspawn_voice2.ogg", "demonspawn_voice3.ogg"]
+  license: Custom
+  copyright: '"Haunted Ghost Baby Crying" 1, 2 and 4 by floraphonic (Pixabay), converted to mono; voice clips trimmed'
+  source: https://pixabay.com/sound-effects/haunted-ghost-baby-crying-1-184015/
