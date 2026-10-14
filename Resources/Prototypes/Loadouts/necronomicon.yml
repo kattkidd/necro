@@ -1,0 +1,94 @@
+# Kandarian Demon appearance, chosen before the round in
+# Character Setup → Antags → Kandarian Demon → Loadout (next to the alias).
+# Each option's preview entity carries NecroAppearanceOption, which says what it means.
+
+- type: loadoutGroup
+  id: NecroDemonAppearance
+  name: loadout-group-necro-appearance
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - NecroAppearanceAbomination
+  - NecroAppearanceHellspawn
+  - NecroAppearanceFlesh
+  - NecroAppearanceCharacter
+
+- type: loadout
+  id: NecroAppearanceAbomination
+  dummyEntity: NecroAppearanceDummyAbomination
+
+- type: loadout
+  id: NecroAppearanceHellspawn
+  dummyEntity: NecroAppearanceDummyHellspawn
+
+- type: loadout
+  id: NecroAppearanceFlesh
+  dummyEntity: NecroAppearanceDummyFlesh
+
+- type: loadout
+  id: NecroAppearanceCharacter
+  dummyEntity: NecroAppearanceDummyCharacter
+
+- type: entity
+  abstract: true
+  id: NecroAppearanceDummyBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAppearanceDummyAbomination
+  name: Abomination
+  description: Your ghost and your physical form take the shape of an abomination.
+  components:
+  - type: Sprite
+    sprite: Mobs/Demons/abomination.rsi
+    state: abomination
+  - type: NecroAppearanceOption
+    form: MobKandarianFormAbomination
+    rsi: /Textures/Mobs/Demons/abomination.rsi
+    state: abomination
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAppearanceDummyHellspawn
+  name: Hellspawn
+  description: Your ghost and your physical form take the shape of a hellspawn.
+  components:
+  - type: Sprite
+    sprite: Mobs/Demons/hellspawn.rsi
+    state: alive
+  - type: NecroAppearanceOption
+    form: MobKandarianFormHellspawn
+    rsi: /Textures/Mobs/Demons/hellspawn.rsi
+    state: alive
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAppearanceDummyFlesh
+  name: Flesh Golem
+  description: Your ghost and your physical form take the shape of a flesh golem.
+  components:
+  - type: Sprite
+    sprite: Mobs/Aliens/flesh.rsi
+    state: golem
+  - type: NecroAppearanceOption
+    form: MobKandarianFormFlesh
+    rsi: /Textures/Mobs/Aliens/flesh.rsi
+    state: golem
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAppearanceDummyCharacter
+  name: My Character
+  description: You are the demon wearing your selected character. You are named "Character Name (Alias)", and your physical form is that character, deathly pale with white eyes.
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/ghost_human.rsi
+    state: animated
+    color: "#ff9090cc"
+  - type: NecroAppearanceOption
+    useCharacter: true
+    rsi: /Textures/Mobs/Ghosts/ghost_human.rsi
+    state: animated

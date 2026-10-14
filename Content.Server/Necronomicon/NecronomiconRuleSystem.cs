@@ -10,6 +10,8 @@ using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Rules;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Necronomicon;
+using Robust.Shared.Player;
 using Content.Shared.Station.Systems;
 using Robust.Shared.Audio;
 
@@ -30,12 +32,15 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     [Dependency] private NecronomiconSystem _necro = default!;
     [Dependency] private IServerPreferencesManager _prefs = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private IComponentFactory _factory = default!;
     [Dependency] private RoundEndSystem _roundEnd = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
     /// <summary>Role loadout holding the player's chosen demon name (Character Setup → Antags → Loadout).</summary>
     public const string DemonLoadoutId = "AntagNecronomicon";
+    public const string AppearanceGroupId = "NecroDemonAppearance";
 
     private static readonly SoundSpecifier VictorySound = new SoundPathSpecifier("/Audio/Effects/demon_consume.ogg");
 
@@ -72,14 +77,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
 
         ent.Comp.Demon = demonUid;
 
-        // A name chosen in the antag loadout replaces the random one.
-        if (args.Session != null
-            && _prefs.GetPreferencesOrNull(args.Session.UserId)?.SelectedCharacter is { } profile
-            && profile.Loadouts.TryGetValue(DemonLoadoutId, out var loadout)
-            && !string.IsNullOrWhiteSpace(loadout.EntityName))
-        {
-            _metaData.SetEntityName(demonUid, loadout.EntityName.Trim());
-        }
+        ApplyLoadout(args.Session, (demonUid, demon));
 
         ent.Comp.DemonName = Name(demonUid);
         ent.Comp.DemonUsername = args.Session?.Name ?? string.Empty;
@@ -96,6 +94,47 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
 
         _necro.PlayRecordingAtRoundStart(recording);
         _necro.Awaken((demonUid, demon));
+    }
+
+    /// <summary>
+    /// Reads the player's Kandarian Demon loadout: the alias (name) and the appearance.
+    /// "My Character" makes the demon "Character Name (Alias)" and uses that character as the physical form.
+    /// </summary>
+    private void ApplyLoadout(ICommonSession? session, Entity<NecroDemonComponent> demon)
+    {
+        if (session == null || _prefs.GetPreferencesOrNull(session.UserId)?.SelectedCharacter is not { } profile)
+            return;
+
+        if (!profile.Loadouts.TryGetValue(DemonLoadoutId, out var loadout))
+            return;
+
+        // Alias: the chosen name, or the random one already rolled.
+        if (!string.IsNullOrWhiteSpace(loadout.EntityName))
+            _metaData.SetEntityName(demon, loadout.EntityName.Trim());
+
+        var alias = Name(demon);
+
+        if (!loadout.SelectedLoadouts.TryGetValue(AppearanceGroupId, out var picks) || picks.Count == 0)
+            return;
+
+        if (!ProtoMan.TryIndex(picks[0].Prototype, out var pickProto)
+            || pickProto.DummyEntity is not { } dummyId
+            || !ProtoMan.TryIndex(dummyId, out var dummy)
+            || !dummy.TryComp<NecroAppearanceOptionComponent>(out var option, _factory))
+            return;
+
+        _appearance.SetData(demon, NecroDemonVisuals.Form, $"{option.Rsi}|{option.State}");
+
+        if (option.UseCharacter)
+        {
+            demon.Comp.UseCharacterForm = true;
+            demon.Comp.CharacterProfile = profile;
+            _metaData.SetEntityName(demon, Loc.GetString("necro-character-name", ("character", profile.Name), ("alias", alias)));
+        }
+        else if (option.Form is { } form)
+        {
+            demon.Comp.SelectedForm = form;
+        }
     }
 
     private void OnRecordingPlayed(ref NecroRecordingPlayedEvent args)

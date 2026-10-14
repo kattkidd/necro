@@ -1,4 +1,5 @@
 using Content.Server.Necronomicon.Components;
+using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
 using Content.Shared.IdentityManagement;
@@ -21,6 +22,8 @@ public sealed partial class NecronomiconSystem
 {
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private MobThresholdSystem _thresholds = default!;
+    [Dependency] private Content.Shared.Station.Systems.StationSpawningSystem _stationSpawning = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
 
     private void InitializeStore()
     {
@@ -80,6 +83,7 @@ public sealed partial class NecronomiconSystem
             return;
 
         ent.Comp.SelectedForm = args.Form;
+        ent.Comp.UseCharacterForm = false;
         _appearance.SetData(ent, NecroDemonVisuals.Form, $"{args.Rsi}|{args.State}");
         _popup.PopupEntity(Loc.GetString("necro-form-selected"), ent, ent, PopupType.Medium);
     }
@@ -222,8 +226,7 @@ public sealed partial class NecronomiconSystem
 
         args.Handled = true;
 
-        var form = Spawn(ent.Comp.SelectedForm, Transform(ent).Coordinates);
-        _transform.AttachToGridOrMap(form);
+        var form = SpawnPhysicalForm(ent);
 
         var manifestation = EnsureComp<NecroManifestationComponent>(form);
         manifestation.Demon = ent;
@@ -251,6 +254,39 @@ public sealed partial class NecronomiconSystem
         AddFearAround(ent, form, ent.Comp.WitnessRange, NecroFearSource.Reveal);
     }
 
+    /// <summary>
+    /// Spawns the demon's body: either the chosen creature form (stats from its prototype) or, if the player picked
+    /// "My Character", their own character with a Deadite's pale skin and white eyes and demon-strength claws.
+    /// </summary>
+    private EntityUid SpawnPhysicalForm(Entity<NecroDemonComponent> ent)
+    {
+        var coords = Transform(ent).Coordinates;
+
+        if (!ent.Comp.UseCharacterForm || ent.Comp.CharacterProfile == null)
+        {
+            var creature = Spawn(ent.Comp.SelectedForm, coords);
+            _transform.AttachToGridOrMap(creature);
+            return creature;
+        }
+
+        var body = _stationSpawning.SpawnPlayerMob(coords, null, ent.Comp.CharacterProfile, null);
+        _transform.AttachToGridOrMap(body);
+        _metaData.SetEntityName(body, Name(ent));
+        _deadite.ApplyDeaditeLook(body);
+        _deadite.GrantSumerian(body);
+
+        if (TryComp<MeleeWeaponComponent>(body, out var melee))
+        {
+            melee.Damage = new DamageSpecifier(ent.Comp.CharacterFormDamage);
+            Dirty(body, melee);
+        }
+
+        // NecroManifestationComponent's MapInit already ran on spawn for creature forms; do it by hand here.
+        var manifestation = EnsureComp<NecroManifestationComponent>(body);
+        _actions.AddAction(body, ref manifestation.ReturnActionEntity, manifestation.ReturnAction);
+        return body;
+    }
+
     private void OnManifestationMapInit(Entity<NecroManifestationComponent> ent, ref MapInitEvent args)
     {
         _actions.AddAction(ent, ref ent.Comp.ReturnActionEntity, ent.Comp.ReturnAction);
@@ -267,7 +303,8 @@ public sealed partial class NecronomiconSystem
 
     private void OnManifestationMobState(EntityUid uid, NecroManifestationComponent comp, MobStateChangedEvent args)
     {
-        if (args.NewMobState != MobState.Dead)
+        // Critical or dead: the body is spent. (Character bodies go critical long before they die.)
+        if (args.NewMobState != MobState.Dead && args.NewMobState != MobState.Critical)
             return;
 
         ReturnToEther(uid, true);

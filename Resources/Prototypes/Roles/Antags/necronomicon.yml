@@ -53,3 +53,5 @@
   id: AntagNecronomicon
   nameDataset: NamesKandarianFirst
   canCustomizeName: true
+  groups:
+  - NecroDemonAppearance

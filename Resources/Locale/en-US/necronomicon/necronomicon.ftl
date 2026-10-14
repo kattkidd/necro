@@ -251,3 +251,7 @@ necro-round-end-survivors = { $count ->
 
 # Guidebook
 guide-entry-necronomicon = Necronomicon
+
+# Appearance loadout
+loadout-group-necro-appearance = Appearance
+necro-character-name = {$character} ({$alias})

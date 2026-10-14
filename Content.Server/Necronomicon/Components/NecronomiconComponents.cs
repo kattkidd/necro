@@ -1,6 +1,7 @@
 using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 using Content.Shared.Necronomicon;
+using Content.Shared.Preferences;
 using Content.Shared.RoundEnd;
 using Content.Shared.Store;
 using Robust.Shared.Audio;
@@ -80,10 +81,10 @@ public sealed partial class NecroDemonComponent : Component
 
     #region Book transitions
     [DataField]
-    public FixedPoint2 ManifestBookCost = 2;
+    public FixedPoint2 ManifestBookCost = 0;
 
     [DataField]
-    public FixedPoint2 DemanifestBookCost = 2;
+    public FixedPoint2 DemanifestBookCost = 0;
 
     [DataField]
     public TimeSpan BookTransitionTime = TimeSpan.FromSeconds(4);
@@ -133,6 +134,21 @@ public sealed partial class NecroDemonComponent : Component
     /// <summary>Physical form prototype, chosen in the store. Cosmetic until physical manifestation is bought.</summary>
     [DataField]
     public EntProtoId SelectedForm = "MobKandarianFormAbomination";
+
+    /// <summary>The physical form is the player's own character (chosen in the antag loadout).</summary>
+    [ViewVariables]
+    public bool UseCharacterForm;
+
+    /// <summary>Character used for the physical form when <see cref="UseCharacterForm"/> is set.</summary>
+    [ViewVariables]
+    public HumanoidCharacterProfile? CharacterProfile;
+
+    /// <summary>Unarmed damage of a character-form body (a normal person punches much weaker).</summary>
+    [DataField]
+    public DamageSpecifier CharacterFormDamage = new()
+    {
+        DamageDict = new() { { "Slash", 14 } },
+    };
 
     [DataField]
     public FixedPoint2 HardenedFleshBonus = 75;
@@ -296,6 +312,29 @@ public sealed class NecroVictimFear
     public readonly Dictionary<NecroFearSource, TimeSpan> NextAllowed = new();
     public float Fatigue;
     public TimeSpan LastUpdate;
+}
+
+/// <summary>
+/// Put on the preview entity of an appearance loadout (Character Setup → Antags → Kandarian Demon → Loadout).
+/// Says which form that option means.
+/// </summary>
+[RegisterComponent]
+public sealed partial class NecroAppearanceOptionComponent : Component
+{
+    /// <summary>Physical form prototype. Ignored when <see cref="UseCharacter"/> is set.</summary>
+    [DataField]
+    public EntProtoId? Form;
+
+    /// <summary>RSI and state shown on the incorporeal ghost.</summary>
+    [DataField(required: true)]
+    public string Rsi = string.Empty;
+
+    [DataField(required: true)]
+    public string State = string.Empty;
+
+    /// <summary>Use the player's own character as the physical form, and their name with the alias.</summary>
+    [DataField]
+    public bool UseCharacter;
 }
 
 /// <summary>The physical Necronomicon. Can only be destroyed by burning.</summary>

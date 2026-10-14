@@ -10,7 +10,7 @@
   parent: BaseAction
   id: ActionNecroManifestBook
   name: Manifest Necronomicon
-  description: Bring the book into the physical world where you stand. Takes a few seconds. Costs 2 SP.
+  description: Bring the book into the physical world where you stand. Takes a few seconds. Free.
   components:
   - type: Action
     useDelay: 10
@@ -29,7 +29,7 @@
   parent: BaseAction
   id: ActionNecroDemanifestBook
   name: Demanifest Necronomicon
-  description: Pull the book back into the ether. Fails while a living, unpossessed person carries it. Costs 2 SP.
+  description: Pull the book back into the ether. Fails while a living, unpossessed person carries it. Free.
   components:
   - type: Action
     useDelay: 10

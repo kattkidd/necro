@@ -72,7 +72,6 @@ public sealed partial class DeaditeSystem : EntitySystem
     private static readonly SoundSpecifier SnarlSound = new SoundCollectionSpecifier("DeaditeSnarls");
     private static readonly SoundSpecifier ScreamSound = new SoundCollectionSpecifier("DeaditeScreams");
     private static readonly SoundSpecifier TalkSound = new SoundCollectionSpecifier("DeaditeTalk");
-    private static readonly SoundSpecifier LaughSound = new SoundCollectionSpecifier("DeaditeLaughs");
     private static readonly SoundSpecifier PossessedSound = new SoundPathSpecifier("/Audio/Necronomicon/deadite_deaditepossessed.ogg");
     private static readonly SoundSpecifier ShieldMeltSound = new SoundPathSpecifier("/Audio/Effects/desecration-03.ogg");
     private static readonly SoundSpecifier BiteSound = new SoundPathSpecifier("/Audio/Effects/bite.ogg");
@@ -135,15 +134,15 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         var now = _timing.CurTime;
 
-        // Revealed Deadites cackle now and then.
+        // Revealed Deadites snarl every 10-20 seconds.
         var laughers = EntityQueryEnumerator<DeaditeComponent>();
         while (laughers.MoveNext(out var laugher, out var deadite))
         {
             if (!deadite.Revealed || deadite.Severed || now < deadite.NextLaugh || !_mobState.IsAlive(laugher))
                 continue;
 
-            deadite.NextLaugh = now + TimeSpan.FromSeconds(_random.Next(40, 90));
-            _audio.PlayPvs(LaughSound, laugher);
+            deadite.NextLaugh = now + TimeSpan.FromSeconds(_random.Next(10, 21));
+            _audio.PlayPvs(SnarlSound, laugher);
         }
 
         var query = EntityQueryEnumerator<KandarianRegenComponent, MobStateComponent>();
@@ -251,18 +250,10 @@ public sealed partial class DeaditeSystem : EntitySystem
             return;
 
         ent.Comp.Revealed = true;
-        ent.Comp.NextLaugh = _timing.CurTime + TimeSpan.FromSeconds(45);
+        ent.Comp.NextLaugh = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(10, 21));
 
         // Pale skin, completely white eyes.
-        if (_visualBody.TryGatherMarkingsData(ent.Owner, null, out var profiles, out _, out _))
-        {
-            var pale = new Dictionary<ProtoId<OrganCategoryPrototype>, OrganProfileData>();
-            foreach (var (category, profile) in profiles)
-            {
-                pale[category] = profile with { SkinColor = ent.Comp.SkinColor, EyeColor = ent.Comp.EyeColor };
-            }
-            _visualBody.ApplyProfiles(ent, pale);
-        }
+        ApplyDeaditeLook(ent.Owner, ent.Comp.SkinColor, ent.Comp.EyeColor);
 
         // Loud and vulgar.
         EnsureComp<AllCapsAccentComponent>(ent);
@@ -285,6 +276,25 @@ public sealed partial class DeaditeSystem : EntitySystem
             _necro.AddSoulPower(demon.Value, ent.Comp.RevealReward);
             _necro.AddFearAround(demon.Value, ent, demon.Value.Comp.WitnessRange, NecroFearSource.Reveal);
         }
+    }
+
+    /// <summary>Corpse-pale skin and milky white eyes on any humanoid body.</summary>
+    public void ApplyDeaditeLook(EntityUid uid, Color? skin = null, Color? eyes = null)
+    {
+        if (!_visualBody.TryGatherMarkingsData(uid, null, out var profiles, out _, out _))
+            return;
+
+        var pale = new Dictionary<ProtoId<OrganCategoryPrototype>, OrganProfileData>();
+        foreach (var (category, profile) in profiles)
+        {
+            pale[category] = profile with
+            {
+                SkinColor = skin ?? Color.FromHex("#d8d8cf"),
+                EyeColor = eyes ?? Color.White,
+            };
+        }
+
+        _visualBody.ApplyProfiles(uid, pale);
     }
 
     private void OnDeaditeSpoke(Entity<DeaditeComponent> ent, ref EntitySpokeEvent args)
