@@ -650,15 +650,18 @@ public sealed partial class NecronomiconSystem : EntitySystem
         _audio.PlayPvs(comp.SummonSound, recording);
     }
 
-    /// <summary>Wakes the demon. The book appears where the summoning happened.</summary>
-    public void Awaken(Entity<NecroDemonComponent> demon, EntityCoordinates? bookCoords)
+    /// <summary>Wakes the demon.</summary>
+    /// <remarks>
+    /// The book starts in the ether (incorporeal). The demon brings it into the world when and where it chooses,
+    /// using Manifest Necronomicon.
+    /// </remarks>
+    public void Awaken(Entity<NecroDemonComponent> demon)
     {
         if (demon.Comp.Awakened || demon.Comp.Banished)
             return;
 
         demon.Comp.Awakened = true;
         EnsureBook(demon);
-        ManifestBook(demon, bookCoords ?? Transform(demon).Coordinates);
 
         _popup.PopupEntity(Loc.GetString("necro-awakened"), demon, demon, PopupType.LargeCaution);
     }

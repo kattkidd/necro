@@ -22,7 +22,10 @@ public sealed class NecronomiconTests : InteractionTest
         var uid = SEntMan.SpawnEntity("MobKandarianDemon", coords);
         var demon = SEntMan.GetComponent<NecroDemonComponent>(uid);
         SEntMan.EnsureComponent<KandarianEntityComponent>(uid).Demon = uid;
-        SEntMan.System<NecronomiconSystem>().Awaken((uid, demon), coords);
+        var necro = SEntMan.System<NecronomiconSystem>();
+        necro.Awaken((uid, demon));
+        Assert.That(necro.IsBookManifested((uid, demon), out _), Is.False, "The book starts in the ether");
+        necro.ManifestBook((uid, demon), coords);
         return (uid, demon);
     }
 
@@ -51,7 +54,7 @@ public sealed class NecronomiconTests : InteractionTest
             var hands = SEntMan.System<SharedHandsSystem>();
             var demon = SpawnAwakeDemon();
 
-            Assert.That(necro.IsBookManifested(demon, out var book), Is.True, "Awakening manifests the book");
+            Assert.That(necro.IsBookManifested(demon, out var book), Is.True, "Manifesting puts the book in the world");
             Assert.That(hands.TryPickupAnyHand(SPlayer, book!.Value), Is.True);
 
             Assert.That(necro.IsPinnedByCrew(book.Value, out var carrier), Is.True);

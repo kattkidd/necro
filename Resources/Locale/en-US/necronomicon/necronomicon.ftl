@@ -14,7 +14,7 @@ role-subtype-kandarian-demon = Kandarian Demon
 role-subtype-deadite = Deadite
 role-subtype-demonspawn = Demonspawn
 
-necro-briefing = You are a Kandarian Demon bound to the Necronomicon. An old recording of the reading played as the shift began, and you are awake. The book fell out of the air beside the recorder. Hide it, whisper JOIN US, possess the crew and consume every soul. If they burn the book, you are banished.
+necro-briefing = You are a Kandarian Demon bound to the Necronomicon. An old recording of the reading played as the shift began, and you are awake. The book waits in the ether: manifest it where you choose, whisper JOIN US, possess the crew and consume every soul. A living person holding the book stops it leaving the world, and if they burn it, you are banished.
 necro-briefing-character = You serve the Necronomicon. Spend Soul Power (earned from Fear) in your Skill Store. The book cannot leave the physical world while a living, unpossessed person carries it, and fire destroys it.
 deadite-briefing = You are a Deadite, possessed by a Kandarian Demon. Stay disguised as long as you like, then reveal your true form. Bite the living to prepare them for possession. Speak Ancient Sumerian with :k.
 demonspawn-briefing = You are Demonspawn, summoned by the Necronomicon. Claw, bite and terrify. Speak Ancient Sumerian with :k.
@@ -102,7 +102,7 @@ necro-recording-finished = The recording ends. Something outside the walls answe
 necro-recording-spent = The tape only hisses now.
 necro-recording-examine = The label reads: "Translations of the Book of the Dead".
 necro-recording-examine-spent = The reel has run out. Someone, or something, already played it.
-necro-awakened = The recording has finished the reading. You are AWAKE. The book has taken shape beside the recorder.
+necro-awakened = The recording has finished the reading. You are AWAKE. The Necronomicon waits in the ether: use Manifest Necronomicon to bring it into the world wherever you stand.
 
 # Possession
 necro-target-invalid = That is not a soul you can take.

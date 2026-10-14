@@ -89,17 +89,14 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
 
         _necro.EnsureBook((demonUid, demon));
 
-        // Lore: the old recording is already playing somewhere aboard when the round starts.
-        // The reading finishes, the demon wakes, and the book falls out of the air beside the recorder.
-        var recordingCoords = _station.TryFindRandomTile(out _, out _, out _, out var coords)
-            ? coords
-            : Transform(demonUid).Coordinates;
-
-        var recording = Spawn(ent.Comp.RecordingPrototype, recordingCoords);
+        // Lore: the old recording is already playing when the round starts, right where the demon is summoned.
+        // The book stays in the ether until the demon chooses to manifest it.
+        var recording = Spawn(ent.Comp.RecordingPrototype, Transform(demonUid).Coordinates);
+        _transform.AttachToGridOrMap(recording);
         ent.Comp.Recording = recording;
 
         _necro.PlayRecordingAtRoundStart(recording);
-        _necro.Awaken((demonUid, demon), Transform(recording).Coordinates);
+        _necro.Awaken((demonUid, demon));
     }
 
     private void OnRecordingPlayed(ref NecroRecordingPlayedEvent args)
@@ -113,7 +110,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             if (demon.Value.Comp.Awakened)
                 continue;
 
-            _necro.Awaken(demon.Value, Transform(args.Recording).Coordinates);
+            _necro.Awaken(demon.Value);
         }
     }
 
