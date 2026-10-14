@@ -122,10 +122,14 @@ public sealed partial class NecronomiconSystem : EntitySystem
         return store.Balance.GetValueOrDefault(demon.Comp.Currency);
     }
 
-    public void AddSoulPower(Entity<NecroDemonComponent> demon, FixedPoint2 amount)
+    /// <param name="earned">False for admin grants, so they don't inflate the round-end statistics.</param>
+    public void AddSoulPower(Entity<NecroDemonComponent> demon, FixedPoint2 amount, bool earned = true)
     {
         if (amount == FixedPoint2.Zero || demon.Comp.Banished)
             return;
+
+        if (earned && amount > FixedPoint2.Zero)
+            demon.Comp.TotalSoulPowerEarned += amount;
 
         if (!TryComp<StoreComponent>(demon, out var store))
             return;
@@ -562,6 +566,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
             return;
 
         demon.Comp.Banished = true;
+        demon.Comp.BanishedAt = _timing.CurTime;
         demon.Comp.PendingTransition = NecroBookTransition.None;
         demon.Comp.PossessionCharges = 0;
 
@@ -668,6 +673,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
             return;
 
         demon.Comp.Awakened = true;
+        demon.Comp.AwakenedAt = _timing.CurTime;
         EnsureBook(demon);
 
         _popup.PopupEntity(Loc.GetString("necro-awakened"), demon, demon, PopupType.LargeCaution);

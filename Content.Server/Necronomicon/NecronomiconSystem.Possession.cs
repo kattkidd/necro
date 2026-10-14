@@ -74,9 +74,20 @@ public sealed partial class NecronomiconSystem
         if (!CanBecomeDeadite(target, args.Performer))
             return;
 
-        var range = HasUpgrade(ent, NecroUpgrade.FarWhisper) ? ent.Comp.FarWhisperJoinUsRange : ent.Comp.JoinUsRange;
-        if (!BookNear(ent, target, range, args.Performer))
+        // The book lends the demon its voice: it must be in the world, but the whisper comes from the demon,
+        // which can follow people around instead of waiting for them to wander past the book.
+        if (!IsBookManifested(ent, out _))
+        {
+            _popup.PopupEntity(Loc.GetString("necro-book-must-be-manifested"), args.Performer, args.Performer, PopupType.SmallCaution);
             return;
+        }
+
+        var range = HasUpgrade(ent, NecroUpgrade.FarWhisper) ? ent.Comp.FarWhisperJoinUsRange : ent.Comp.JoinUsRange;
+        if (!_transform.InRange(Transform(args.Performer).Coordinates, Transform(target).Coordinates, range))
+        {
+            _popup.PopupEntity(Loc.GetString("necro-too-far"), args.Performer, args.Performer, PopupType.SmallCaution);
+            return;
+        }
 
         Prepare(ent, target);
         args.Handled = true;
@@ -115,6 +126,12 @@ public sealed partial class NecronomiconSystem
             return;
         }
 
+        if (!_transform.InRange(Transform(args.Performer).Coordinates, Transform(target).Coordinates, ent.Comp.PossessCasterRange))
+        {
+            _popup.PopupEntity(Loc.GetString("necro-too-far"), args.Performer, args.Performer, PopupType.SmallCaution);
+            return;
+        }
+
         if (!BookNear(ent, target, ent.Comp.PossessRange, args.Performer))
             return;
 
@@ -123,7 +140,8 @@ public sealed partial class NecronomiconSystem
         {
             RequireCanInteract = false,
             BreakOnMove = false,
-            DistanceThreshold = 6f,
+            // Victims run. Distance is checked against the book (with grace) when the possession completes instead.
+            DistanceThreshold = null,
             BlockDuplicate = true,
             CancelDuplicate = false,
         };
@@ -157,7 +175,7 @@ public sealed partial class NecronomiconSystem
         if (!CanBecomeDeadite(target, args.User) || !HasComp<NecroPreparedComponent>(target))
             return;
 
-        if (!BookNear(ent, target, ent.Comp.PossessRange, args.User))
+        if (!BookNear(ent, target, ent.Comp.PossessRange + ent.Comp.PossessCompletionGrace, args.User))
             return;
 
         ConvertToDeadite(ent, target);

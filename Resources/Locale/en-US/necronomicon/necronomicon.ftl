@@ -49,7 +49,7 @@ necro-catalog-fear-amplify-desc = All Fear yields 50% more Soul Power. Stacks tw
 necro-catalog-dread-aura-name = Dread Aura
 necro-catalog-dread-aura-desc = Revealed Deadites, Demonspawn and your physical form generate double Fear just by being near the living.
 necro-catalog-whisper-name = Whisper
-necro-catalog-whisper-desc = Unlocks Whisper: a private terror for one crew member within 8 tiles. 2 SP per use. Mindshields dull it.
+necro-catalog-whisper-desc = Unlocks Whisper: a private terror for one crew member within 12 tiles. 2 SP per use. Mindshields dull it.
 necro-catalog-dark-presence-name = Dark Presence
 necro-catalog-dark-presence-desc = Unlocks Dark Presence: lights flicker and machines misbehave around you. 4 SP per use.
 necro-catalog-physical-form-name = Physical Form
@@ -63,7 +63,7 @@ necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at
 necro-catalog-swift-possession-name = Swift Possession
 necro-catalog-swift-possession-desc = Possession takes 3 seconds instead of 6.
 necro-catalog-far-whisper-name = Far Whisper
-necro-catalog-far-whisper-desc = JOIN US reaches 12 tiles from the book instead of 8.
+necro-catalog-far-whisper-desc = JOIN US reaches 18 tiles from you instead of 12.
 
 # Demon / book
 necro-not-enough-sp = You need {$cost} Soul Power (you have {$current}).
@@ -156,10 +156,6 @@ necro-announcement-sender = Central Command
 necro-crew-victory-announcement = The Necronomicon has been destroyed. Deadite activity has ceased. Recover the bodies and report for evacuation.
 necro-victory-announcement = ...no living soul answers. Join us.
 necro-round-end-demon = The Kandarian Demon was [color=red]{$name}[/color] ([color=gray]{$username}[/color]).
-necro-round-end-conversions = The book claimed [color=red]{$count}[/color] { $count ->
-    [one] soul
-   *[other] souls
-}.
 necro-round-end-crew-victory = [color=green]The crew burned the Necronomicon![/color]
 necro-round-end-necro-victory = [color=red]Every soul aboard was swallowed by the Necronomicon.[/color]
 necro-round-end-ongoing = The Necronomicon was never destroyed.
@@ -241,8 +237,6 @@ necro-book-examine-hint = [color=orange]Something about this book wants to be pu
 # Round end
 necro-round-end-header = [color=darkred][bold]The Necronomicon[/bold][/color]
 necro-round-end-deadite = - [color=red]{$name}[/color] became a Deadite
-necro-round-end-demonspawn = {$count} Demonspawn crawled out of the book.
-necro-round-end-fear = The crew's fear fed the book [color=red]{$amount}[/color] Soul Power.
 necro-round-end-survivors = { $count ->
     [0] No living soul remained aboard.
     [one] 1 living soul remained aboard.
@@ -255,3 +249,12 @@ guide-entry-necronomicon = Necronomicon
 # Appearance loadout
 loadout-group-necro-appearance = Appearance
 necro-character-name = {$character} ({$alias})
+
+# Round-end statistics
+necro-round-end-time-survived = The demon walked the station for [color=red]{$minutes}m {$seconds}s[/color] and was never banished.
+necro-round-end-time-banished = The demon lasted [color=red]{$minutes}m {$seconds}s[/color] before the book burned.
+necro-round-end-stat-souls = Souls consumed: [color=red]{$count}[/color]
+necro-round-end-stat-possessions = Successful possessions: [color=red]{$count}[/color] ({$deadite} into Deadites, {$puppet} demonic possessions)
+necro-round-end-stat-demonspawn = Demonspawn summoned: [color=red]{$count}[/color] ({$matured} matured)
+necro-round-end-stat-fear = Fear harvested: [color=red]{$fear}[/color] SP. Total Soul Power earned: [color=red]{$sp}[/color]
+necro-round-end-stat-rituals = Mindshields melted: [color=red]{$rituals}[/color]. Exorcisms: [color=green]{$exorcisms}[/color] of {$attempts} attempted

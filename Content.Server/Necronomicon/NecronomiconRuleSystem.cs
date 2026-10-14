@@ -270,6 +270,19 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         rule.Comp.FinalConsumedNames = new List<string>(demon.Comp.ConsumedNames);
         rule.Comp.FinalDemonspawn = demon.Comp.DemonspawnSummoned;
         rule.Comp.FinalFear = demon.Comp.TotalFearEarned;
+        rule.Comp.FinalPuppetPossessions = demon.Comp.PuppetPossessions;
+        rule.Comp.FinalDemonspawnMatured = demon.Comp.DemonspawnMatured;
+        rule.Comp.FinalRituals = demon.Comp.RitualsPerformed;
+        rule.Comp.FinalExorcisms = demon.Comp.Exorcisms;
+        rule.Comp.FinalExorcismAttempts = demon.Comp.ExorcismAttempts;
+        rule.Comp.FinalSoulPower = demon.Comp.TotalSoulPowerEarned;
+        rule.Comp.FinalBanished = demon.Comp.Banished;
+
+        if (demon.Comp.AwakenedAt is { } awake)
+        {
+            var end = demon.Comp.BanishedAt ?? Timing.CurTime;
+            rule.Comp.FinalTimeSurvived = end > awake ? end - awake : TimeSpan.Zero;
+        }
     }
 
     private void CastOut(Entity<NecroDemonComponent> demon)
@@ -294,7 +307,8 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         if (_necro.TryGetDemon(rule.Comp.Demon, out var demon))
             SnapshotStats(rule, demon.Value);
 
-        var outcome = rule.Comp.Outcome switch
+        var c = rule.Comp;
+        var outcome = c.Outcome switch
         {
             NecroOutcome.CrewVictory => "necro-round-end-crew-victory",
             NecroOutcome.NecronomiconVictory => "necro-round-end-necro-victory",
@@ -303,20 +317,33 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
 
         args.AddLine(Loc.GetString("necro-round-end-header"));
         args.AddLine(Loc.GetString(outcome));
-        args.AddLine(Loc.GetString("necro-round-end-demon",
-            ("name", rule.Comp.DemonName),
-            ("username", rule.Comp.DemonUsername)));
+        args.AddLine(Loc.GetString("necro-round-end-demon", ("name", c.DemonName), ("username", c.DemonUsername)));
 
-        args.AddLine(Loc.GetString("necro-round-end-conversions", ("count", rule.Comp.FinalConversions)));
-        foreach (var name in rule.Comp.FinalConsumedNames)
+        var survived = c.FinalTimeSurvived;
+        args.AddLine(Loc.GetString(c.FinalBanished ? "necro-round-end-time-banished" : "necro-round-end-time-survived",
+            ("minutes", (int) survived.TotalMinutes),
+            ("seconds", survived.Seconds)));
+
+        args.AddLine(Loc.GetString("necro-round-end-stat-souls", ("count", c.FinalConversions)));
+        args.AddLine(Loc.GetString("necro-round-end-stat-possessions",
+            ("count", c.FinalConversions + c.FinalPuppetPossessions),
+            ("deadite", c.FinalConversions),
+            ("puppet", c.FinalPuppetPossessions)));
+        foreach (var name in c.FinalConsumedNames)
         {
             args.AddLine(Loc.GetString("necro-round-end-deadite", ("name", name)));
         }
 
-        if (rule.Comp.FinalDemonspawn > 0)
-            args.AddLine(Loc.GetString("necro-round-end-demonspawn", ("count", rule.Comp.FinalDemonspawn)));
-
-        args.AddLine(Loc.GetString("necro-round-end-fear", ("amount", rule.Comp.FinalFear.Int())));
+        args.AddLine(Loc.GetString("necro-round-end-stat-demonspawn",
+            ("count", c.FinalDemonspawn),
+            ("matured", c.FinalDemonspawnMatured)));
+        args.AddLine(Loc.GetString("necro-round-end-stat-fear",
+            ("fear", c.FinalFear.Int()),
+            ("sp", c.FinalSoulPower.Int())));
+        args.AddLine(Loc.GetString("necro-round-end-stat-rituals",
+            ("rituals", c.FinalRituals),
+            ("exorcisms", c.FinalExorcisms),
+            ("attempts", c.FinalExorcismAttempts)));
         args.AddLine(Loc.GetString("necro-round-end-survivors", ("count", CountRemainingSouls())));
         args.AddLine("");
     }

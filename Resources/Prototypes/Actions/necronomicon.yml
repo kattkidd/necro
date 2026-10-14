@@ -46,7 +46,7 @@
   parent: BaseAction
   id: ActionNecroJoinUs
   name: JOIN US
-  description: The manifested book whispers to someone near it, preparing them for possession.
+  description: With the book in the world, whisper to someone within 12 tiles of you, preparing them for possession.
   components:
   - type: Action
     useDelay: 30
@@ -60,7 +60,7 @@
       state: harvesting
   - type: TargetAction
     checkCanAccess: false
-    range: 12
+    range: 20
   - type: EntityTargetAction
     canTargetSelf: false
     whitelist:
@@ -72,7 +72,7 @@
   parent: BaseAction
   id: ActionNecroPossess
   name: Possess
-  description: Possess a prepared victim near the manifested book. Consumes one possession charge.
+  description: Possess a prepared victim within 12 tiles of you and 20 tiles of the manifested book. They can run during the channel. Consumes one possession charge.
   components:
   - type: Action
     useDelay: 15
@@ -86,7 +86,7 @@
       state: active
   - type: TargetAction
     checkCanAccess: false
-    range: 12
+    range: 14
   - type: EntityTargetAction
     canTargetSelf: false
     whitelist:
@@ -111,7 +111,7 @@
       state: icon
   - type: TargetAction
     checkCanAccess: false
-    range: 8
+    range: 12
   - type: EntityTargetAction
     canTargetSelf: false
     whitelist:

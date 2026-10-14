@@ -107,6 +107,7 @@ public sealed partial class NecronomiconSystem
         var hostComp = EnsureComp<NecroPuppetHostComponent>(host);
         hostComp.Demon = demon;
         demon.Comp.PuppetHost = host;
+        demon.Comp.PuppetPossessions++;
         demon.Comp.PuppetEndAt = _timing.CurTime + demon.Comp.PuppetDuration;
         demon.Comp.NextPuppet = _timing.CurTime + demon.Comp.PuppetCooldown;
         demon.Comp.PuppetAnnounceNext = false;

@@ -452,6 +452,9 @@ public sealed partial class DeaditeSystem : EntitySystem
             return;
 
         MeltMindshield(target);
+
+        if (_necro.TryGetDemon(ent.Comp.Demon, out var demon))
+            demon.Value.Comp.RitualsPerformed++;
     }
 
     /// <summary>Removes every mindshield implant from the victim.</summary>

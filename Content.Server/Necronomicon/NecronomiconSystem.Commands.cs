@@ -46,7 +46,7 @@ public sealed partial class NecronomiconSystem
             return;
         }
 
-        AddSoulPower((demonUid, demon), amount);
+        AddSoulPower((demonUid, demon), amount, earned: false);
         shell.WriteLine($"Soul Power is now {GetSoulPower((demonUid, demon))}.");
     }
 }

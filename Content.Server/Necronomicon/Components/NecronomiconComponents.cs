@@ -55,15 +55,24 @@ public sealed partial class NecroDemonComponent : Component
     [DataField]
     public int PossessionCharges = 2;
 
+    /// <summary>JOIN US reach, measured from the demon (the book only has to be manifested somewhere).</summary>
     [DataField]
-    public float JoinUsRange = 8f;
+    public float JoinUsRange = 12f;
 
     [DataField]
-    public float FarWhisperJoinUsRange = 12f;
+    public float FarWhisperJoinUsRange = 18f;
 
-    /// <summary>How close a victim must be to the manifested book to be possessed.</summary>
+    /// <summary>How close a victim must be to the manifested book when possession starts.</summary>
     [DataField]
-    public float PossessRange = 8f;
+    public float PossessRange = 20f;
+
+    /// <summary>Extra distance allowed when the possession completes, because victims run.</summary>
+    [DataField]
+    public float PossessCompletionGrace = 10f;
+
+    /// <summary>How close the demon must be to its victim to start a possession.</summary>
+    [DataField]
+    public float PossessCasterRange = 12f;
 
     [DataField]
     public TimeSpan PossessDuration = TimeSpan.FromSeconds(6);
@@ -111,7 +120,7 @@ public sealed partial class NecroDemonComponent : Component
     public FixedPoint2 WhisperCost = 2;
 
     [DataField]
-    public float WhisperRange = 8f;
+    public float WhisperRange = 12f;
 
     [DataField]
     public FixedPoint2 DarkPresenceCost = 4;
@@ -260,12 +269,42 @@ public sealed partial class NecroDemonComponent : Component
     public FixedPoint2 TotalFearEarned;
     #endregion
 
-    #region Stats
+    #region Stats (round-end summary)
+    /// <summary>Souls consumed: crew turned into Deadites by possession.</summary>
     [ViewVariables]
     public int Conversions;
 
+    /// <summary>Harmless demonic possessions (puppeting) that took hold.</summary>
+    [ViewVariables]
+    public int PuppetPossessions;
+
     [ViewVariables]
     public int DemonspawnSummoned;
+
+    [ViewVariables]
+    public int DemonspawnMatured;
+
+    /// <summary>Mindshield-melting rituals completed by Deadites.</summary>
+    [ViewVariables]
+    public int RitualsPerformed;
+
+    /// <summary>Deadites successfully exorcised by the chaplain.</summary>
+    [ViewVariables]
+    public int Exorcisms;
+
+    /// <summary>Exorcisms started against this demon's Deadites (successful or not).</summary>
+    [ViewVariables]
+    public int ExorcismAttempts;
+
+    /// <summary>All Soul Power earned in play (fear, conversions, reveals). Excludes admin grants.</summary>
+    [ViewVariables]
+    public FixedPoint2 TotalSoulPowerEarned;
+
+    [ViewVariables]
+    public TimeSpan? AwakenedAt;
+
+    [ViewVariables]
+    public TimeSpan? BanishedAt;
     #endregion
 
     [ViewVariables]
@@ -608,4 +647,29 @@ public sealed partial class NecronomiconRuleComponent : Component
 
     [ViewVariables]
     public string DemonUsername = string.Empty;
+
+    [ViewVariables]
+    public int FinalPuppetPossessions;
+
+    [ViewVariables]
+    public int FinalDemonspawnMatured;
+
+    [ViewVariables]
+    public int FinalRituals;
+
+    [ViewVariables]
+    public int FinalExorcisms;
+
+    [ViewVariables]
+    public int FinalExorcismAttempts;
+
+    [ViewVariables]
+    public FixedPoint2 FinalSoulPower;
+
+    /// <summary>How long the demon lasted, from awakening to banishment (or round end).</summary>
+    [ViewVariables]
+    public TimeSpan FinalTimeSurvived;
+
+    [ViewVariables]
+    public bool FinalBanished;
 }
