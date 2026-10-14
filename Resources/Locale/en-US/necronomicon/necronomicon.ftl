@@ -222,3 +222,32 @@ necro-puppet-announce-armed = Your next sentence will be broadcast to the whole 
 necro-puppet-announce-disarmed = Announcement cancelled.
 necro-puppet-announce-cooldown = The station is still listening for you... wait {$seconds} seconds.
 necro-puppet-cooldown = You need to gather yourself... wait {$seconds} seconds.
+
+# HUD
+alerts-necro-sp-name = Soul Power
+alerts-necro-sp-desc = Earned from the crew's fear. Spend it in the Skill Store and on your powers.
+alerts-necro-charges-name = Possession Charges
+alerts-necro-charges-desc = Each possession uses one. Buy more in the Skill Store.
+alerts-necro-book-name = The Necronomicon
+alerts-necro-book-desc = Where your book is: in the ether, in the world, held by the living (it cannot leave), or burning.
+necro-status-book-held = Living hands hold your book: {CAPITALIZE(THE($holder))}! It cannot leave the world.
+necro-status-book-released = The living let go of your book.
+necro-status-book-burning = YOUR BOOK IS ON FIRE!
+necro-status-book-extinguished = The flames on your book die out.
+
+# Examine
+necro-book-examine-hint = [color=orange]Something about this book wants to be put down. Hold onto it: it can't vanish from your hands. Fire might end it for good.[/color]
+
+# Round end
+necro-round-end-header = [color=darkred][bold]The Necronomicon[/bold][/color]
+necro-round-end-deadite = - [color=red]{$name}[/color] became a Deadite
+necro-round-end-demonspawn = {$count} Demonspawn crawled out of the book.
+necro-round-end-fear = The crew's fear fed the book [color=red]{$amount}[/color] Soul Power.
+necro-round-end-survivors = { $count ->
+    [0] No living soul remained aboard.
+    [one] 1 living soul remained aboard.
+   *[other] {$count} living souls remained aboard.
+}
+
+# Guidebook
+guide-entry-necronomicon = Necronomicon

@@ -250,6 +250,18 @@ public sealed partial class NecroDemonComponent : Component
 
     [ViewVariables]
     public EntityUid? ManifestBookActionEntity;
+
+    #region HUD
+    [ViewVariables]
+    public NecroBookState LastBookState = NecroBookState.Ether;
+
+    [ViewVariables]
+    public TimeSpan NextStatusUpdate;
+
+    /// <summary>Names of everyone the book has claimed, for the round-end summary.</summary>
+    [ViewVariables]
+    public List<string> ConsumedNames = new();
+    #endregion
 }
 
 public enum NecroBookTransition : byte
@@ -526,4 +538,17 @@ public sealed partial class NecronomiconRuleComponent : Component
 
     [ViewVariables]
     public int FinalConversions;
+
+    // Snapshot for the round-end summary (the demon entity is deleted when it is cast out).
+    [ViewVariables]
+    public List<string> FinalConsumedNames = new();
+
+    [ViewVariables]
+    public int FinalDemonspawn;
+
+    [ViewVariables]
+    public FixedPoint2 FinalFear;
+
+    [ViewVariables]
+    public string DemonUsername = string.Empty;
 }

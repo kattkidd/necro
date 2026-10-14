@@ -12,7 +12,6 @@ using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Station.Systems;
 using Robust.Shared.Audio;
-using Robust.Shared.Player;
 
 namespace Content.Server.Necronomicon;
 
@@ -31,7 +30,6 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     [Dependency] private NecronomiconSystem _necro = default!;
     [Dependency] private IServerPreferencesManager _prefs = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
-    [Dependency] private ISharedPlayerManager _player = default!;
     [Dependency] private RoundEndSystem _roundEnd = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -84,6 +82,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         }
 
         ent.Comp.DemonName = Name(demonUid);
+        ent.Comp.DemonUsername = args.Session?.Name ?? string.Empty;
         EnsureComp<KandarianEntityComponent>(demonUid).Demon = demonUid;
         _deadite.GrantSumerian(demonUid);
 
@@ -202,7 +201,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         rule.Comp.Outcome = outcome;
 
         if (_necro.TryGetDemon(rule.Comp.Demon, out var demon))
-            rule.Comp.FinalConversions = demon.Value.Comp.Conversions;
+            SnapshotStats(rule, demon.Value);
 
         if (outcome == NecroOutcome.CrewVictory)
         {
@@ -225,6 +224,14 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         }
     }
 
+    private void SnapshotStats(Entity<NecronomiconRuleComponent> rule, Entity<NecroDemonComponent> demon)
+    {
+        rule.Comp.FinalConversions = demon.Comp.Conversions;
+        rule.Comp.FinalConsumedNames = new List<string>(demon.Comp.ConsumedNames);
+        rule.Comp.FinalDemonspawn = demon.Comp.DemonspawnSummoned;
+        rule.Comp.FinalFear = demon.Comp.TotalFearEarned;
+    }
+
     private void CastOut(Entity<NecroDemonComponent> demon)
     {
         var body = demon.Comp.Manifestation ?? demon.Owner;
@@ -243,30 +250,34 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     {
         base.AppendRoundEndText(rule, ref args);
 
-        var demonName = rule.Comp.DemonName;
-        var username = string.Empty;
-        if (rule.Comp.Demon is { } demonUid && !TerminatingOrDeleted(demonUid)
-            && _mind.TryGetMind(demonUid, out _, out var mind)
-            && mind.UserId is { } userId
-            && _player.TryGetSessionById(userId, out var session))
-        {
-            username = session.Name;
-        }
-
-        args.AddLine(Loc.GetString("necro-round-end-demon", ("name", demonName), ("username", username)));
-
-        var conversions = rule.Comp.FinalConversions;
+        // Use live numbers if the demon is still around, otherwise the snapshot taken when the round was decided.
         if (_necro.TryGetDemon(rule.Comp.Demon, out var demon))
-            conversions = demon.Value.Comp.Conversions;
+            SnapshotStats(rule, demon.Value);
 
-        args.AddLine(Loc.GetString("necro-round-end-conversions", ("count", conversions)));
-
-        var key = rule.Comp.Outcome switch
+        var outcome = rule.Comp.Outcome switch
         {
             NecroOutcome.CrewVictory => "necro-round-end-crew-victory",
             NecroOutcome.NecronomiconVictory => "necro-round-end-necro-victory",
             _ => "necro-round-end-ongoing",
         };
-        args.AddLine(Loc.GetString(key));
+
+        args.AddLine(Loc.GetString("necro-round-end-header"));
+        args.AddLine(Loc.GetString(outcome));
+        args.AddLine(Loc.GetString("necro-round-end-demon",
+            ("name", rule.Comp.DemonName),
+            ("username", rule.Comp.DemonUsername)));
+
+        args.AddLine(Loc.GetString("necro-round-end-conversions", ("count", rule.Comp.FinalConversions)));
+        foreach (var name in rule.Comp.FinalConsumedNames)
+        {
+            args.AddLine(Loc.GetString("necro-round-end-deadite", ("name", name)));
+        }
+
+        if (rule.Comp.FinalDemonspawn > 0)
+            args.AddLine(Loc.GetString("necro-round-end-demonspawn", ("count", rule.Comp.FinalDemonspawn)));
+
+        args.AddLine(Loc.GetString("necro-round-end-fear", ("amount", rule.Comp.FinalFear.Int())));
+        args.AddLine(Loc.GetString("necro-round-end-survivors", ("count", CountRemainingSouls())));
+        args.AddLine("");
     }
 }

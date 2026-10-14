@@ -171,6 +171,7 @@ public sealed partial class NecronomiconSystem
 
         demon.Comp.PossessionCharges--;
         demon.Comp.Conversions++;
+        demon.Comp.ConsumedNames.Add(Name(target));
         RemComp<NecroPreparedComponent>(target);
 
         _deadite.MakeDeadite(target, demon);

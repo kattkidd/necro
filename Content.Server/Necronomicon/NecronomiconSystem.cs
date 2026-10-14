@@ -102,6 +102,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
             UpdateBookTransition((uid, demon), now);
             UpdateManifestationFollow((uid, demon));
             UpdateProximityFear((uid, demon), now);
+            UpdateStatus((uid, demon), now);
         }
 
         UpdateBurning(frameTime);
@@ -463,6 +464,10 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
     private void OnBookExamined(Entity<NecronomiconComponent> ent, ref ExaminedEvent args)
     {
+        // Counterplay hint for the crew; Kandarian entities already know.
+        if (!IsKandarian(args.Examiner))
+            args.PushMarkup(Loc.GetString("necro-book-examine-hint"));
+
         if (ent.Comp.BurnProgress > 0)
             args.PushMarkup(Loc.GetString("necro-book-examine-burning",
                 ("percent", (int) (ent.Comp.BurnProgress / ent.Comp.BurnTime * 100))));

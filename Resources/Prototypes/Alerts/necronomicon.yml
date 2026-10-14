@@ -1,0 +1,69 @@
+# Kandarian Demon HUD. Counters are fed by NecroStatusAlertSystem (client) from NecroDemonStatusComponent.
+
+- type: alert
+  id: NecroSoulPower
+  icons:
+  - sprite: /Textures/Interface/Alerts/essence_counter.rsi
+    state: essence0
+  alertViewEntity: AlertNecroSoulPowerView
+  name: alerts-necro-sp-name
+  description: alerts-necro-sp-desc
+
+- type: entity
+  id: AlertNecroSoulPowerView
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GenericCounterAlert
+    centerGlyph: false
+    hideLeadingZeroes: false
+  - type: Sprite
+    sprite: /Textures/Interface/Alerts/essence_counter.rsi
+    color: "#ff6060"
+    layers:
+    - map: [ "enum.AlertVisualLayers.Base" ]
+    - map: [ "1" ]
+      offset: 0.25, 0
+    - map: [ "10" ]
+      offset: 0.125, 0
+    - map: [ "100" ]
+
+- type: alert
+  id: NecroCharges
+  icons:
+  - sprite: /Textures/Mobs/Ghosts/revenant.rsi
+    state: icon
+  alertViewEntity: AlertNecroChargesView
+  name: alerts-necro-charges-name
+  description: alerts-necro-charges-desc
+
+- type: entity
+  id: AlertNecroChargesView
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GenericCounterAlert
+    centerGlyph: false
+    hideLeadingZeroes: true
+  - type: Sprite
+    sprite: /Textures/Interface/Alerts/essence_counter.rsi
+    layers:
+    - map: [ "enum.AlertVisualLayers.Base" ]
+    - map: [ "1" ]
+      offset: 0.25, 0
+    - map: [ "10" ]
+      offset: 0.125, 0
+    - map: [ "100" ]
+
+# Severity 1-4: in the ether, in the world, held by the living, burning.
+- type: alert
+  id: NecroBook
+  icons:
+  - sprite: /Textures/Mobs/Ghosts/revenant.rsi
+    state: idle
+  - sprite: /Textures/Objects/Misc/necronomicon.rsi
+    state: icon
+  - /Textures/Interface/Alerts/Pull/pulled.png
+  - /Textures/Interface/Alerts/Fire/fire.png
+  minSeverity: 1
+  maxSeverity: 4
+  name: alerts-necro-book-name
+  description: alerts-necro-book-desc

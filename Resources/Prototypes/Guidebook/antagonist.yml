@@ -4,6 +4,7 @@
   text: "/ServerInfo/Guidebook/Antagonist/Antagonists.xml"
   children:
   - Changelings
+  - Necronomicon
   - NuclearOperatives
   - Revolutionaries
   - SpaceNinja
@@ -63,3 +64,8 @@
   id: Xenoborgs
   name: guide-entry-xenoborgs
   text: "/ServerInfo/Guidebook/Antagonist/Xenoborgs.xml"
+
+- type: guideEntry
+  id: Necronomicon
+  name: guide-entry-necronomicon
+  text: "/ServerInfo/Guidebook/Antagonist/Necronomicon.xml"
