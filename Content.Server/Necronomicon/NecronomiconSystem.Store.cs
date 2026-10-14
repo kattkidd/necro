@@ -50,6 +50,14 @@ public sealed partial class NecronomiconSystem
             NecroUpgrade.SwiftPossession => HasPurchased(demon, "NecroSwiftPossession"),
             NecroUpgrade.FarWhisper => HasPurchased(demon, "NecroFarWhisper"),
             NecroUpgrade.DreadAura => HasPurchased(demon, "NecroDreadAura"),
+            NecroUpgrade.InfiltratorI => HasPurchased(demon, "NecroDeaditeInfiltrator1"),
+            NecroUpgrade.InfiltratorII => HasPurchased(demon, "NecroDeaditeInfiltrator2"),
+            NecroUpgrade.BruteI => HasPurchased(demon, "NecroDeaditeBrute1"),
+            NecroUpgrade.BruteII => HasPurchased(demon, "NecroDeaditeBrute2"),
+            NecroUpgrade.StalkerI => HasPurchased(demon, "NecroDeaditeStalker1"),
+            NecroUpgrade.StalkerII => HasPurchased(demon, "NecroDeaditeStalker2"),
+            NecroUpgrade.ScreamerI => HasPurchased(demon, "NecroDeaditeScreamer1"),
+            NecroUpgrade.ScreamerII => HasPurchased(demon, "NecroDeaditeScreamer2"),
             _ => false,
         };
     }
@@ -144,6 +152,17 @@ public sealed partial class NecronomiconSystem
                 break;
             case NecroUpgrade.RendingClaws:
                 ent.Comp.RendingClawsStacks++;
+                break;
+            case NecroUpgrade.InfiltratorI:
+            case NecroUpgrade.InfiltratorII:
+            case NecroUpgrade.BruteI:
+            case NecroUpgrade.BruteII:
+            case NecroUpgrade.StalkerI:
+            case NecroUpgrade.StalkerII:
+            case NecroUpgrade.ScreamerI:
+            case NecroUpgrade.ScreamerII:
+                // The effects are read from the purchase count; existing Deadites just need new actions and a nudge.
+                _deadite.OnTreeUpgrade(ent, args.Upgrade);
                 break;
             // SwiftPossession / FarWhisper are read from the purchase count.
         }

@@ -171,4 +171,83 @@ public sealed class NecronomiconTests : InteractionTest
             Assert.That(blocker.CanMove(SPlayer), Is.True);
         });
     }
+
+    [Test]
+    public async Task ExorcismFreesDeaditeAndBlessesThem()
+    {
+        await Server.WaitAssertion(() =>
+        {
+            var necro = SEntMan.System<NecronomiconSystem>();
+            var deadite = SEntMan.System<DeaditeSystem>();
+            var mobState = SEntMan.System<MobStateSystem>();
+            var demon = SpawnAwakeDemon();
+            var originalName = SEntMan.GetComponent<MetaDataComponent>(SPlayer).EntityName;
+
+            necro.Prepare(demon, SPlayer);
+            Assert.That(necro.ConvertToDeadite(demon, SPlayer), Is.True);
+            var comp = SEntMan.GetComponent<DeaditeComponent>(SPlayer);
+            deadite.Reveal((SPlayer, comp));
+
+            deadite.Exorcise((SPlayer, comp), null, TimeSpan.FromMinutes(10));
+
+            Assert.That(SEntMan.HasComponent<DeaditeComponent>(SPlayer), Is.False, "The curse is cast out");
+            Assert.That(necro.IsKandarian(SPlayer), Is.False);
+            Assert.That(mobState.IsAlive(SPlayer), Is.True, "Exorcism restores the victim, it doesn't kill them");
+            Assert.That(SEntMan.GetComponent<MetaDataComponent>(SPlayer).EntityName, Is.EqualTo(originalName));
+            Assert.That(SEntMan.HasComponent<NecroBlessedComponent>(SPlayer), Is.True);
+            Assert.That(necro.CanBecomeDeadite(SPlayer, null), Is.False, "Blessed crew can't be claimed again right away");
+
+            Assert.That(demon.Comp.Exorcisms, Is.EqualTo(1));
+            Assert.That(demon.Comp.ExorcisedNames, Has.Count.EqualTo(1));
+            Assert.That(demon.Comp.Conversions, Is.EqualTo(1), "The conversion still counts in the statistics");
+        });
+    }
+
+    [Test]
+    public async Task DemonspawnMaturesExactlyOnce()
+    {
+        await Server.WaitAssertion(() =>
+        {
+            var spawnSys = SEntMan.System<DemonspawnSystem>();
+            var demon = SpawnAwakeDemon();
+
+            var juvenile = SEntMan.SpawnEntity("MobDemonspawn", SEntMan.GetCoordinates(PlayerCoords));
+            SEntMan.EnsureComponent<KandarianEntityComponent>(juvenile).Demon = demon;
+            var comp = SEntMan.GetComponent<DemonspawnComponent>(juvenile);
+            Assert.That(comp.Adult, Is.False);
+            Assert.That(comp.MatureAt, Is.Not.Null, "Juveniles start their growth timer when summoned");
+
+            var adult = spawnSys.Mature((juvenile, comp));
+            Assert.That(adult, Is.Not.Null);
+            Assert.That(spawnSys.Mature((juvenile, comp)), Is.Null, "Maturation only ever happens once");
+
+            var adultComp = SEntMan.GetComponent<DemonspawnComponent>(adult!.Value);
+            Assert.That(adultComp.Adult, Is.True);
+            Assert.That(SEntMan.GetComponent<KandarianEntityComponent>(adult.Value).Demon, Is.EqualTo(demon.Owner),
+                "The adult keeps its allegiance");
+            Assert.That(demon.Comp.DemonspawnMatured, Is.EqualTo(1));
+        });
+    }
+
+    [Test]
+    public async Task HolyWaterMeltsDemonspawnButNotDeadites()
+    {
+        await Server.WaitAssertion(() =>
+        {
+            var necro = SEntMan.System<NecronomiconSystem>();
+            var reactive = SEntMan.System<Content.Shared.Chemistry.ReactiveSystem>();
+            var demon = SpawnAwakeDemon();
+
+            var spawn = SEntMan.SpawnEntity("MobDemonspawn", SEntMan.GetCoordinates(PlayerCoords));
+            var holyWater = new Content.Shared.Chemistry.Reagent.ReagentQuantity("Holywater", 5);
+            reactive.ReactionEntity(spawn, Content.Shared.Chemistry.ReactionMethod.Touch, holyWater);
+            Assert.That(SEntMan.GetComponent<DemonspawnComponent>(spawn).MeltAt, Is.Not.Null, "Holy water melts Demonspawn");
+
+            necro.Prepare(demon, SPlayer);
+            necro.ConvertToDeadite(demon, SPlayer);
+            reactive.ReactionEntity(SPlayer, Content.Shared.Chemistry.ReactionMethod.Touch, holyWater);
+            Assert.That(SEntMan.HasComponent<DeaditeComponent>(SPlayer), Is.True, "Deadites are not affected");
+            Assert.That(SEntMan.Deleted(SPlayer), Is.False);
+        });
+    }
 }

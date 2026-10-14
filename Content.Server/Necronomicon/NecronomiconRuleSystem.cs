@@ -268,6 +268,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     {
         rule.Comp.FinalConversions = demon.Comp.Conversions;
         rule.Comp.FinalConsumedNames = new List<string>(demon.Comp.ConsumedNames);
+        rule.Comp.FinalExorcisedNames = new List<string>(demon.Comp.ExorcisedNames);
         rule.Comp.FinalDemonspawn = demon.Comp.DemonspawnSummoned;
         rule.Comp.FinalFear = demon.Comp.TotalFearEarned;
         rule.Comp.FinalPuppetPossessions = demon.Comp.PuppetPossessions;
@@ -324,14 +325,23 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             ("minutes", (int) survived.TotalMinutes),
             ("seconds", survived.Seconds)));
 
-        args.AddLine(Loc.GetString("necro-round-end-stat-souls", ("count", c.FinalConversions)));
+        // Souls consumed are the ones the book kept; exorcised Deadites were won back.
+        args.AddLine(Loc.GetString("necro-round-end-stat-souls",
+            ("count", Math.Max(0, c.FinalConversions - c.FinalExorcisedNames.Count))));
+        args.AddLine(Loc.GetString("necro-round-end-stat-deadites",
+            ("count", c.FinalConversions),
+            ("exorcised", c.FinalExorcisedNames.Count)));
         args.AddLine(Loc.GetString("necro-round-end-stat-possessions",
             ("count", c.FinalConversions + c.FinalPuppetPossessions),
             ("deadite", c.FinalConversions),
             ("puppet", c.FinalPuppetPossessions)));
+        // A name can appear twice if someone was exorcised and later claimed again; match them up one for one.
+        var freed = new List<string>(c.FinalExorcisedNames);
         foreach (var name in c.FinalConsumedNames)
         {
-            args.AddLine(Loc.GetString("necro-round-end-deadite", ("name", name)));
+            var wasFreed = freed.Remove(name);
+            args.AddLine(Loc.GetString(wasFreed ? "necro-round-end-deadite-exorcised" : "necro-round-end-deadite",
+                ("name", name)));
         }
 
         args.AddLine(Loc.GetString("necro-round-end-stat-demonspawn",

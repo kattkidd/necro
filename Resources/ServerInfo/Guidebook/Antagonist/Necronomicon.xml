@@ -7,6 +7,7 @@
   <Box>
     <GuideEntityEmbed Entity="NecronomiconBook" Caption="The Necronomicon"/>
     <GuideEntityEmbed Entity="MobDemonspawn" Caption="Demonspawn"/>
+    <GuideEntityEmbed Entity="MobDemonspawnAdult" Caption="Grown Demonspawn"/>
   </Box>
 
   As the shift starts, an old tape recorder somewhere aboard finishes reading from the Book of the Dead. Something answers: a [color=#a01818]Kandarian Demon[/color], bound to the [color=#a01818]Necronomicon[/color].
@@ -17,6 +18,8 @@
   - [bold]Anyone could be a Deadite.[/bold] They look completely normal until they reveal themselves. Then their skin goes corpse-pale, their eyes turn milky white and they start screaming.
   - Deadites don't stay down. Beat one into critical and it gets back up shortly after. A heavy slash while it's down severs its head, which stops it for good. Burning the book ends them all.
   - [bold]Mindshields[/bold] protect against possession, until a revealed Deadite reads the passage that melts them away.
+  - [bold]Chaplains can exorcise Deadites.[/bold] Cuff, buckle or down the suspect, then use the [bold]Exorcise[/bold] verb with a Bible in hand and stand still for about twenty seconds. A Deadite comes back as themselves, healed, and the book can't claim them again for ten minutes. A mindshield implanted in the Deadite first halves the time. Anyone else is unharmed: the rite simply finds nothing. The chaplain needs a short rest between rites.
+  - [bold]Demonspawn[/bold] grow into tall, grey, black-eyed adults after ten minutes. Both forms are [color=#88bbff]melted to dust[/color] by holy water (splash or spray it) or a Bible (hit them with it, use it on them or throw it).
 
   ## For the demon
   - You start [bold]incorporeal[/bold]: invisible to the living, untouchable and unable to touch anything.
@@ -25,8 +28,9 @@
   - [bold]JOIN US[/bold] prepares a victim (a Deadite bite does too). [bold]Possess[/bold] then turns them into a disguised Deadite and uses a charge. You start with two.
   - [bold]Demonic Possession[/bold] is harmless: the victim collapses and your words come out of their mouth. With [bold]Speak to the Station[/bold], your next sentence becomes an announcement in their name.
   - [bold]Physical Form[/bold] lets you fight in a body of your chosen shape. If it dies, you return to the ether.
+  - [bold]Deadite Evolution[/bold] in the store improves all your Deadites, present and future. Pick two of four paths, each with two tiers: [bold]Infiltrator[/bold] (silent bites, slower exorcisms, hiding again after revealing), [bold]Brute[/bold] (harder hits, faster recovery, damage resistance), [bold]Stalker[/bold] (speed, longer bites, crippling bites) or [bold]Screamer[/bold] (a terrifying shriek that can knock people down).
   - Your HUD shows your Soul Power, your charges and where your book is. Talk privately with other Kandarian entities using [bold]:k[/bold] (Ancient Sumerian).
 
   ## Victory
-  The Necronomicon wins when no living soul remains aboard. The crew wins by burning the book.
+  The Necronomicon wins when no living soul remains aboard. The crew wins by burning the book. The round-end summary lists souls consumed, possessions, Deadites, Demonspawn, fear harvested, rituals, exorcisms and how long the demon lasted.
 </Document>

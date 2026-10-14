@@ -16,11 +16,13 @@ role-subtype-demonspawn = Demonspawn
 
 necro-briefing = You are a Kandarian Demon bound to the Necronomicon. An old recording of the reading played as the shift began, and you are awake. The book waits in the ether: manifest it where you choose, whisper JOIN US, possess the crew and consume every soul. A living person holding the book stops it leaving the world, and if they burn it, you are banished.
 necro-briefing-character = You serve the Necronomicon. Spend Soul Power (earned from Fear) in your Skill Store. The book cannot leave the physical world while a living, unpossessed person carries it, and fire destroys it.
-deadite-briefing = You are a Deadite, possessed by a Kandarian Demon. Stay disguised as long as you like, then reveal your true form. Bite the living to prepare them for possession. Speak Ancient Sumerian with :k.
-demonspawn-briefing = You are Demonspawn, summoned by the Necronomicon. Claw, bite and terrify. Speak Ancient Sumerian with :k.
+deadite-briefing = You are a Deadite, possessed by a Kandarian Demon. Stay disguised as long as you like, then reveal your true form. Bite the living to prepare them for possession. Speak Ancient Sumerian with :k. Beware the chaplain: if you are restrained, a holy rite can cast the demon out of you.
+demonspawn-briefing = You are Demonspawn, summoned by the Necronomicon. Claw, bite and terrify. Speak Ancient Sumerian with :k. In time you will grow into something bigger. Holy water and Bibles will melt you to dust on contact.
 
 ghost-role-information-demonspawn-name = Demonspawn
 ghost-role-information-demonspawn-description = A small, vicious thing summoned by the Necronomicon. Serve the book.
+ghost-role-information-demonspawn-adult-name = Grown Demonspawn
+ghost-role-information-demonspawn-adult-description = A tall, grey, black-eyed thing that was once a summoned imp. Serve the book.
 ghost-role-information-demonspawn-rules = You are a [color={role-type-team-antagonist-color}][bold]{role-type-team-antagonist-name}[/bold][/color] serving the Necronomicon and its Deadites. Attack the living crew.
 
 chat-radio-sumerian = Ancient Sumerian
@@ -37,6 +39,7 @@ store-category-necro-powers = Supernatural Powers
 store-category-necro-manifestation = Physical Manifestation
 store-category-necro-demonspawn = Demonspawn
 store-category-necro-infiltration = Infiltration
+store-category-necro-deadite-tree = Deadite Evolution
 
 necro-catalog-form-desc = Choose the shape you will wear. Cosmetic until you buy a Physical Form; it grants none of the creature's abilities. Can be changed at any time.
 necro-catalog-form-abomination-name = Form: Abomination
@@ -59,7 +62,7 @@ necro-catalog-hardened-flesh-desc = Your physical form gains 75 health. Stacks t
 necro-catalog-rending-claws-name = Rending Claws
 necro-catalog-rending-claws-desc = Your physical form deals 6 more slash damage. Stacks twice. Requires Physical Form.
 necro-catalog-demonspawn-name = Summon Demonspawn
-necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at you). Taken over by a ghost.
+necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at you). Taken over by a ghost. After ten minutes it grows into a tall, black-eyed adult. Holy water or a Bible destroys it.
 necro-catalog-swift-possession-name = Swift Possession
 necro-catalog-swift-possession-desc = Possession takes 3 seconds instead of 6.
 necro-catalog-far-whisper-name = Far Whisper
@@ -107,6 +110,7 @@ necro-awakened = The recording has finished the reading. You are AWAKE. The Necr
 # Possession
 necro-target-invalid = That is not a soul you can take.
 necro-target-already = That one already belongs to the book.
+necro-target-blessed = {CAPITALIZE(THE($target))} was freed by a holy rite. The book cannot touch them yet.
 necro-target-mindshielded = A mindshield protects {$target}. A revealed Deadite must read the passage to melt it.
 necro-target-not-prepared = They are not ready. Whisper JOIN US or have a Deadite bite them first.
 necro-no-charges = You have no possession charges. Buy more in the Skill Store.
@@ -237,6 +241,7 @@ necro-book-examine-hint = [color=orange]Something about this book wants to be pu
 # Round end
 necro-round-end-header = [color=darkred][bold]The Necronomicon[/bold][/color]
 necro-round-end-deadite = - [color=red]{$name}[/color] became a Deadite
+necro-round-end-deadite-exorcised = - [color=red]{$name}[/color] became a Deadite, but was [color=green]exorcised[/color]
 necro-round-end-survivors = { $count ->
     [0] No living soul remained aboard.
     [one] 1 living soul remained aboard.
@@ -254,7 +259,80 @@ necro-character-name = {$character} ({$alias})
 necro-round-end-time-survived = The demon walked the station for [color=red]{$minutes}m {$seconds}s[/color] and was never banished.
 necro-round-end-time-banished = The demon lasted [color=red]{$minutes}m {$seconds}s[/color] before the book burned.
 necro-round-end-stat-souls = Souls consumed: [color=red]{$count}[/color]
+necro-round-end-stat-deadites = Deadites created: [color=red]{$count}[/color] ({$exorcised} exorcised)
 necro-round-end-stat-possessions = Successful possessions: [color=red]{$count}[/color] ({$deadite} into Deadites, {$puppet} demonic possessions)
 necro-round-end-stat-demonspawn = Demonspawn summoned: [color=red]{$count}[/color] ({$matured} matured)
 necro-round-end-stat-fear = Fear harvested: [color=red]{$fear}[/color] SP. Total Soul Power earned: [color=red]{$sp}[/color]
 necro-round-end-stat-rituals = Mindshields melted: [color=red]{$rituals}[/color]. Exorcisms: [color=green]{$exorcisms}[/color] of {$attempts} attempted
+
+## Chaplain exorcism
+
+deadite-exorcise-verb = Exorcise
+deadite-exorcise-verb-message = Perform a rite of exorcism. They must be restrained, buckled down or incapacitated.
+deadite-exorcise-cooldown = You need to gather your strength before another rite. ({$seconds}s)
+deadite-exorcise-already = A rite is already being performed over them.
+deadite-exorcise-not-restrained = {CAPITALIZE(THE($target))} must be restrained, buckled down or incapacitated for the rite.
+deadite-exorcise-start = {CAPITALIZE(THE($user))} raises a holy book over {THE($target)} and begins an exorcism!
+deadite-exorcise-start-self = You begin the rite of exorcism over {THE($target)}. Hold still for {$seconds} seconds.
+deadite-exorcise-start-victim = Holy words wash over you.
+deadite-exorcise-writhe = {CAPITALIZE(THE($target))} thrashes and howls as the holy words strike!
+deadite-exorcise-burns = THE HOLY WORDS BURN! The priest is trying to cast you out!
+deadite-exorcise-demon-alert = A priest is casting you out of {$target}!
+deadite-exorcise-interrupted = The rite is broken.
+deadite-exorcise-interrupted-deadite = The burning stops. You are still the book's.
+deadite-exorcise-puppet = The voice speaking through {THE($target)} is driven out!
+deadite-exorcise-nothing = The rite ends. There is no evil in {THE($target)}.
+deadite-exorcise-success = With a final shriek, the darkness tears itself out of {THE($target)}!
+deadite-exorcise-success-self = The demon is cast out of {THE($target)}!
+deadite-exorcise-success-victim = The cold thing inside you is gone. You are yourself again.
+deadite-exorcise-demon-lost = Your hold on {$target} is broken!
+deadite-blessing-faded = The warmth of the blessing fades.
+
+## Deadite evolution tree
+
+necro-catalog-infiltrator-1-name = Infiltrator I: Borrowed Skin
+necro-catalog-infiltrator-1-desc = Your disguised Deadites bite silently: no sound, and only the victim notices. Counts as one of your two evolution paths.
+necro-catalog-infiltrator-2-name = Infiltrator II: Deep Roots
+necro-catalog-infiltrator-2-desc = Exorcisms take 50% longer, and revealed Deadites can pull their host's face back on (Wear Their Face).
+necro-catalog-brute-1-name = Brute I: Unholy Strength
+necro-catalog-brute-1-desc = Revealed Deadites hit 60% harder and rise from critical 40% sooner. Counts as one of your two evolution paths.
+necro-catalog-brute-2-name = Brute II: Unyielding
+necro-catalog-brute-2-desc = Revealed Deadites take 25% less damage, and it takes a much heavier blow to sever their heads.
+necro-catalog-stalker-1-name = Stalker I: Hunter's Gait
+necro-catalog-stalker-1-desc = Revealed Deadites move faster, and every Deadite's bite reaches further. Counts as one of your two evolution paths.
+necro-catalog-stalker-2-name = Stalker II: Hamstring
+necro-catalog-stalker-2-desc = A Deadite's bite badly slows its victim for a few seconds. Nobody outruns you.
+necro-catalog-screamer-1-name = Screamer I: Unholy Shriek
+necro-catalog-screamer-1-desc = Deadites gain a shriek that terrifies everyone nearby and harvests their fear. Counts as one of your two evolution paths.
+necro-catalog-screamer-2-name = Screamer II: Deafening Wail
+necro-catalog-screamer-2-desc = The shriek throws nearby crew without a mindshield off their feet.
+
+deadite-tree-gained-infiltratori = The book teaches you to bite without a sound.
+deadite-tree-gained-infiltratorii = The book teaches you to wear their face again, and to cling on against holy words.
+deadite-tree-gained-brutei = Unholy strength floods your limbs.
+deadite-tree-gained-bruteii = Your flesh hardens. Let them try to cut you down.
+deadite-tree-gained-stalkeri = Your legs ache to run. Your jaws reach further.
+deadite-tree-gained-stalkerii = Your bite will cripple them.
+deadite-tree-gained-screameri = A scream builds in your throat. Use it.
+deadite-tree-gained-screamerii = Your scream could knock a grown man down.
+
+deadite-bite-silent-victim = Something nips you. Probably nothing.
+deadite-bite-silent-user = You quietly bite {THE($target)}. Nobody noticed.
+deadite-scream = {CAPITALIZE(THE($user))} lets out an unholy shriek!
+deadite-scream-victim = The shriek claws at the inside of your skull!
+deadite-scream-not-revealed = You must reveal your true form to shriek.
+deadite-conceal = {CAPITALIZE(THE($target))}'s face twitches and colour floods back into their skin.
+deadite-conceal-self = You pull their face back on. You look like them again.
+deadite-conceal-fail = You can't do that right now.
+
+## Demonspawn growth and holy weakness
+
+demonspawn-maturing-soon = Your skin itches and splits. You are about to grow.
+demonspawn-matured = {CAPITALIZE(THE($target))} unfolds out of the little body, tall, grey and black-eyed!
+demonspawn-matured-self = You have grown. You are bigger, stronger and smarter now. Holy things will still destroy you.
+demonspawn-matured-demon = One of your Demonspawn has grown up.
+demonspawn-melting = {CAPITALIZE(THE($target))} shrieks as holy power burns through it!
+demonspawn-melting-self = HOLY FIRE! You are coming apart!
+demonspawn-melting-user = It's melting!
+demonspawn-dust = {CAPITALIZE(THE($target))} crumbles into a pile of grey dust.
+demonspawn-dust-demon = One of your Demonspawn was destroyed by something holy.

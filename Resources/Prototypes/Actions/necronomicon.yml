@@ -202,7 +202,7 @@
     layers:
     - texture: Interface/Actions/zombie-turn.png
   - type: TargetAction
-    range: 1.5
+    range: 2.5 # the real reach (1.5, or 2.5 with Stalker I) is checked server-side
   - type: EntityTargetAction
     canTargetSelf: false
     whitelist:
@@ -231,6 +231,41 @@
       components:
       - HumanoidProfile
     event: !type:DeaditeReadPassageActionEvent
+
+# --- Deadite progression tree ---
+
+- type: entity
+  parent: BaseAction
+  id: ActionDeaditeScream
+  name: Unholy Shriek
+  description: Shriek with the voice of the thing inside you. Everyone nearby is terrified. With Deafening Wail, those close by are thrown off their feet. You must be revealed.
+  components:
+  - type: Action
+    useDelay: 45
+    itemIconStyle: BigAction
+    checkCanInteract: false
+  - type: Sprite
+    layers:
+    - sprite: Interface/Actions/changeling2.rsi
+      state: screech
+  - type: InstantAction
+    event: !type:DeaditeScreamActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionDeaditeConceal
+  name: Wear Their Face
+  description: Pull the stolen face back over your own. You look and sound like your host again, and can reveal yourself later.
+  components:
+  - type: Action
+    useDelay: 60
+    itemIconStyle: BigAction
+  - type: Sprite
+    layers:
+    - sprite: Interface/Actions/changeling2.rsi
+      state: flesh_clothing
+  - type: InstantAction
+    event: !type:DeaditeConcealActionEvent
 
 # --- Demonic possession (harmless puppeting) ---
 

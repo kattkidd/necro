@@ -21,6 +21,12 @@ public sealed partial class NecronomiconSystem
             NecroSpCommand);
     }
 
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        _consoleHost.UnregisterCommand("necrosp");
+    }
+
     [AdminCommand(AdminFlags.Fun)]
     private void NecroSpCommand(IConsoleShell shell, string argstr, string[] args)
     {

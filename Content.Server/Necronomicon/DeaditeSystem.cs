@@ -64,6 +64,7 @@ public sealed partial class DeaditeSystem : EntitySystem
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private SharedVisualBodySystem _visualBody = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private MovementModStatusSystem _movementMod = default!;
 
     public static readonly EntProtoId DeaditeMindRole = "MindRoleDeadite";
     public const string SumerianChannel = "Sumerian";
@@ -93,6 +94,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         SubscribeLocalEvent<DeaditeComponent, MeleeHitEvent>(OnDeaditeMeleeHit);
         SubscribeLocalEvent<DeaditeComponent, DamageChangedEvent>(OnDeaditeDamaged);
         SubscribeLocalEvent<DeaditeComponent, BeforeDamageChangedEvent>(OnDeaditeBeforeDamage);
+        SubscribeLocalEvent<DeaditeComponent, DamageModifyEvent>(OnDeaditeDamageModify);
 
         // Severed head: no moving, using, attacking, picking up or throwing - but still talking.
         SubscribeLocalEvent<DeaditeComponent, UpdateCanMoveEvent>(OnSeveredBlock);
@@ -111,6 +113,9 @@ public sealed partial class DeaditeSystem : EntitySystem
         SubscribeLocalEvent<NecroDemonRoleComponent, GetBriefingEvent>(OnDemonBriefing);
         SubscribeLocalEvent<DeaditeRoleComponent, GetBriefingEvent>(OnDeaditeBriefing);
         SubscribeLocalEvent<DemonspawnRoleComponent, GetBriefingEvent>(OnDemonspawnBriefing);
+
+        InitializeExorcism();
+        InitializeTree();
     }
 
     private void OnDemonBriefing(Entity<NecroDemonRoleComponent> ent, ref GetBriefingEvent args)
@@ -134,6 +139,9 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         var now = _timing.CurTime;
 
+        UpdateTree();
+        UpdateExorcism(now);
+
         // Revealed Deadites snarl every 10-20 seconds.
         var laughers = EntityQueryEnumerator<DeaditeComponent>();
         while (laughers.MoveNext(out var laugher, out var deadite))
@@ -153,7 +161,14 @@ public sealed partial class DeaditeSystem : EntitySystem
 
             if (mob.CurrentState == MobState.Critical || mob.CurrentState == MobState.Dead)
             {
-                regen.ReviveAt ??= now + regen.ReviveDelay;
+                // Holy words pin the body down: no rising while a chaplain is mid-rite.
+                if (HasComp<NecroBeingExorcisedComponent>(uid))
+                {
+                    regen.ReviveAt = null;
+                    continue;
+                }
+
+                regen.ReviveAt ??= now + GetReviveDelay(uid, regen);
                 if (now < regen.ReviveAt)
                     continue;
 
@@ -210,6 +225,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         _actions.AddAction(target, ref deadite.RevealActionEntity, deadite.RevealAction);
         _actions.AddAction(target, ref deadite.BiteActionEntity, deadite.BiteAction);
         _actions.AddAction(target, ref deadite.ReadPassageActionEntity, deadite.ReadPassageAction);
+        GrantTreeActions((target, deadite));
 
         if (_mind.TryGetMind(target, out var mindId, out _))
             _roles.MindAddRole(mindId, DeaditeMindRole);
@@ -252,6 +268,13 @@ public sealed partial class DeaditeSystem : EntitySystem
         ent.Comp.Revealed = true;
         ent.Comp.NextLaugh = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(10, 21));
 
+        // Remember the victim's own colours (once) so an exorcism or Conceal can put them back.
+        if (ent.Comp.OriginalProfiles == null
+            && _visualBody.TryGatherMarkingsData(ent.Owner, null, out var original, out _, out _))
+        {
+            ent.Comp.OriginalProfiles = new Dictionary<ProtoId<OrganCategoryPrototype>, OrganProfileData>(original);
+        }
+
         // Pale skin, completely white eyes.
         ApplyDeaditeLook(ent.Owner, ent.Comp.SkinColor, ent.Comp.EyeColor);
 
@@ -273,9 +296,18 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         if (_necro.TryGetDemon(ent.Comp.Demon, out var demon))
         {
-            _necro.AddSoulPower(demon.Value, ent.Comp.RevealReward);
+            // Paid once: concealing and revealing again only frightens people.
+            if (!ent.Comp.RevealRewarded)
+            {
+                ent.Comp.RevealRewarded = true;
+                _necro.AddSoulPower(demon.Value, ent.Comp.RevealReward);
+            }
+
             _necro.AddFearAround(demon.Value, ent, demon.Value.Comp.WitnessRange, NecroFearSource.Reveal);
         }
+
+        // Infiltrator II can slip the mask back on.
+        GrantTreeActions(ent);
     }
 
     /// <summary>Corpse-pale skin and milky white eyes on any humanoid body.</summary>
@@ -320,8 +352,11 @@ public sealed partial class DeaditeSystem : EntitySystem
 
     private void OnRefreshSpeed(Entity<DeaditeComponent> ent, ref RefreshMovementSpeedModifiersEvent args)
     {
-        if (ent.Comp.Revealed && !ent.Comp.Severed)
-            args.ModifySpeed(ent.Comp.RevealedSpeed, ent.Comp.RevealedSpeed);
+        if (!ent.Comp.Revealed || ent.Comp.Severed)
+            return;
+
+        var speed = HasTree(ent.Comp, NecroUpgrade.StalkerI) ? ent.Comp.StalkerSpeed : ent.Comp.RevealedSpeed;
+        args.ModifySpeed(speed, speed);
     }
 
     private void OnDeaditeMeleeHit(Entity<DeaditeComponent> ent, ref MeleeHitEvent args)
@@ -329,7 +364,21 @@ public sealed partial class DeaditeSystem : EntitySystem
         if (!ent.Comp.Revealed || args.Weapon != args.User || args.HitEntities.Count == 0)
             return;
 
-        args.BonusDamage += ent.Comp.RevealedDamage;
+        args.BonusDamage += HasTree(ent.Comp, NecroUpgrade.BruteI)
+            ? ent.Comp.RevealedDamage * ent.Comp.BruteDamageMultiplier
+            : ent.Comp.RevealedDamage;
+    }
+
+    private void OnDeaditeDamageModify(EntityUid uid, DeaditeComponent comp, DamageModifyEvent args)
+    {
+        // Brute II: revealed Deadites shrug off a quarter of every blow.
+        if (!comp.Revealed || comp.Severed || !HasTree(comp, NecroUpgrade.BruteII))
+            return;
+
+        if (args.Damage.GetTotal() <= FixedPoint2.Zero)
+            return;
+
+        args.Damage *= comp.BruteDamageTaken;
     }
 
     #endregion
@@ -345,8 +394,12 @@ public sealed partial class DeaditeSystem : EntitySystem
         if (!_necro.TryGetDemon(ent.Comp.Demon, out var demon) || !_necro.CanUsePowers(demon.Value, ent))
             return;
 
-        if (!_transform.InRange(Transform(ent).Coordinates, Transform(target).Coordinates, ent.Comp.BiteRange))
+        var range = HasTree(ent.Comp, NecroUpgrade.StalkerI) ? ent.Comp.StalkerBiteRange : ent.Comp.BiteRange;
+        if (!_transform.InRange(Transform(ent).Coordinates, Transform(target).Coordinates, range))
+        {
+            _popup.PopupEntity(Loc.GetString("necro-too-far"), ent, ent, PopupType.SmallCaution);
             return;
+        }
 
         // Mindshields repel the infection (the bite still hurts).
         var shielded = _necro.IsMindshielded(target);
@@ -356,15 +409,34 @@ public sealed partial class DeaditeSystem : EntitySystem
         args.Handled = true;
 
         _damageable.TryChangeDamage(target, ent.Comp.BiteDamage, origin: ent);
-        _audio.PlayPvs(BiteSound, target);
-        _audio.PlayPvs(SnarlSound, ent);
-        _popup.PopupEntity(Loc.GetString("deadite-bite",
-                ("user", Identity.Entity(ent, EntityManager)),
-                ("target", Identity.Entity(target, EntityManager))),
-            target, PopupType.MediumCaution);
+
+        // Infiltrator I: a disguised Deadite's bite is a quiet nip only the victim notices.
+        if (!ent.Comp.Revealed && HasTree(ent.Comp, NecroUpgrade.InfiltratorI))
+        {
+            _popup.PopupEntity(Loc.GetString("deadite-bite-silent-victim"), target, target, PopupType.SmallCaution);
+            _popup.PopupEntity(Loc.GetString("deadite-bite-silent-user",
+                    ("target", Identity.Entity(target, EntityManager))),
+                ent, ent, PopupType.Small);
+        }
+        else
+        {
+            _audio.PlayPvs(BiteSound, target);
+            _audio.PlayPvs(SnarlSound, ent);
+            _popup.PopupEntity(Loc.GetString("deadite-bite",
+                    ("user", Identity.Entity(ent, EntityManager)),
+                    ("target", Identity.Entity(target, EntityManager))),
+                target, PopupType.MediumCaution);
+            _necro.AddFearAround(demon.Value, target, demon.Value.Comp.WitnessRange, NecroFearSource.Witness, exclude: target);
+        }
 
         _necro.AddFear(demon.Value, target, NecroFearSource.Attacked);
-        _necro.AddFearAround(demon.Value, target, demon.Value.Comp.WitnessRange, NecroFearSource.Witness, exclude: target);
+
+        // Stalker II: the wound drags at their legs.
+        if (HasTree(ent.Comp, NecroUpgrade.StalkerII))
+        {
+            _movementMod.TryUpdateMovementSpeedModDuration(target, ent.Comp.StalkerSlowEffect,
+                ent.Comp.StalkerSlowDuration, ent.Comp.StalkerSlowMultiplier);
+        }
 
         if (shielded)
         {
@@ -496,7 +568,16 @@ public sealed partial class DeaditeSystem : EntitySystem
         if (TryComp<DeaditeComponent>(uid, out var deadite) && deadite.Severed)
             return;
 
-        regen.ReviveAt ??= _timing.CurTime + regen.ReviveDelay;
+        regen.ReviveAt ??= _timing.CurTime + GetReviveDelay(uid, regen);
+    }
+
+    /// <summary>Brute I Deadites get back up sooner.</summary>
+    private TimeSpan GetReviveDelay(EntityUid uid, KandarianRegenComponent regen)
+    {
+        if (TryComp<DeaditeComponent>(uid, out var deadite) && HasTree(deadite, NecroUpgrade.BruteI))
+            return regen.ReviveDelay * deadite.BruteReviveMultiplier;
+
+        return regen.ReviveDelay;
     }
 
     /// <summary>
@@ -517,7 +598,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         if (!_mobState.IsCritical(ent))
             return;
 
-        if (args.Damage.DamageDict.TryGetValue("Slash", out var slash) && slash >= ent.Comp.SeverThreshold)
+        if (args.Damage.DamageDict.TryGetValue("Slash", out var slash) && slash >= GetSeverThreshold(ent.Comp))
             return;
 
         // Healing is always allowed.
@@ -535,10 +616,16 @@ public sealed partial class DeaditeSystem : EntitySystem
         if (!_mobState.IsCritical(uid))
             return;
 
-        if (!args.DamageDelta.DamageDict.TryGetValue("Slash", out var slash) || slash < comp.SeverThreshold)
+        if (!args.DamageDelta.DamageDict.TryGetValue("Slash", out var slash) || slash < GetSeverThreshold(comp))
             return;
 
         Sever((uid, comp));
+    }
+
+    /// <summary>Brute II necks are thicker.</summary>
+    private FixedPoint2 GetSeverThreshold(DeaditeComponent comp)
+    {
+        return HasTree(comp, NecroUpgrade.BruteII) ? comp.SeverThreshold + comp.BruteSeverBonus : comp.SeverThreshold;
     }
 
     /// <summary>
@@ -621,12 +708,27 @@ public sealed partial class DeaditeSystem : EntitySystem
         if (!TryComp<DeaditeComponent>(uid, out var comp))
             return;
 
+        StripDeadite(uid, comp);
+
+        _popup.PopupEntity(Loc.GetString("deadite-released", ("target", Identity.Entity(uid, EntityManager))),
+            uid, PopupType.LargeCaution);
+        _mobState.ChangeMobState(uid, MobState.Dead);
+    }
+
+    /// <summary>
+    /// Removes everything that made <paramref name="uid"/> a Deadite (thresholds, actions, Sumerian, accents, mind role,
+    /// the component itself) and refreshes name, speed and movement. Leaves the mob state alone.
+    /// </summary>
+    private void StripDeadite(EntityUid uid, DeaditeComponent comp)
+    {
         if (comp.OriginalDeadThreshold is { } original)
             _thresholds.SetMobStateThreshold(uid, original, MobState.Dead);
 
         _actions.RemoveAction(uid, comp.RevealActionEntity);
         _actions.RemoveAction(uid, comp.BiteActionEntity);
         _actions.RemoveAction(uid, comp.ReadPassageActionEntity);
+        _actions.RemoveAction(uid, comp.ScreamActionEntity);
+        _actions.RemoveAction(uid, comp.ConcealActionEntity);
 
         RemComp<KandarianRegenComponent>(uid);
         RemComp<KandarianEntityComponent>(uid);
@@ -649,13 +751,10 @@ public sealed partial class DeaditeSystem : EntitySystem
             _roles.MindRemoveRole<DeaditeRoleComponent>(mindId);
 
         RemComp<DeaditeComponent>(uid);
+        RemComp<NecroPreparedComponent>(uid);
         _nameMod.RefreshNameModifiers(uid);
         _speed.RefreshMovementSpeedModifiers(uid);
         _blocker.UpdateCanMove(uid);
-
-        _popup.PopupEntity(Loc.GetString("deadite-released", ("target", Identity.Entity(uid, EntityManager))),
-            uid, PopupType.LargeCaution);
-        _mobState.ChangeMobState(uid, MobState.Dead);
     }
 
     #endregion

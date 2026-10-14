@@ -1,3 +1,4 @@
+using Content.Shared.Body;
 using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 using Content.Shared.Necronomicon;
@@ -320,6 +321,10 @@ public sealed partial class NecroDemonComponent : Component
     /// <summary>Names of everyone the book has claimed, for the round-end summary.</summary>
     [ViewVariables]
     public List<string> ConsumedNames = new();
+
+    /// <summary>Names of Deadites the chaplain has freed, for the round-end summary.</summary>
+    [ViewVariables]
+    public List<string> ExorcisedNames = new();
     #endregion
 }
 
@@ -530,11 +535,180 @@ public sealed partial class DeaditeComponent : Component
     /// <summary>Original dead threshold, restored on cleanup.</summary>
     [ViewVariables]
     public FixedPoint2? OriginalDeadThreshold;
+
+    /// <summary>The victim's own skin and eye colours, captured before the first reveal so an exorcism can restore them.</summary>
+    [ViewVariables]
+    public Dictionary<ProtoId<OrganCategoryPrototype>, OrganProfileData>? OriginalProfiles;
+
+    /// <summary>The reveal Soul Power bonus is paid once per Deadite, so Conceal can't be used to farm it.</summary>
+    [ViewVariables]
+    public bool RevealRewarded;
+
+    #region Progression tree (tuning; which tiers are active is read from the demon's store purchases)
+    /// <summary>Infiltrator II: exorcisms of this Deadite take this much longer.</summary>
+    [DataField]
+    public float InfiltratorExorcismMultiplier = 1.5f;
+
+    /// <summary>Brute I: multiplier on the revealed melee bonus.</summary>
+    [DataField]
+    public float BruteDamageMultiplier = 1.6f;
+
+    /// <summary>Brute I: multiplier on the time spent critical before rising again.</summary>
+    [DataField]
+    public float BruteReviveMultiplier = 0.6f;
+
+    /// <summary>Brute II: incoming damage is multiplied by this while revealed.</summary>
+    [DataField]
+    public float BruteDamageTaken = 0.75f;
+
+    /// <summary>Brute II: extra Slash needed in a single blow to sever the head.</summary>
+    [DataField]
+    public FixedPoint2 BruteSeverBonus = 10;
+
+    /// <summary>Stalker I: revealed speed multiplier (replaces <see cref="RevealedSpeed"/>).</summary>
+    [DataField]
+    public float StalkerSpeed = 1.3f;
+
+    /// <summary>Stalker I: bite reach.</summary>
+    [DataField]
+    public float StalkerBiteRange = 2.5f;
+
+    /// <summary>Stalker II: bitten victims are slowed for this long.</summary>
+    [DataField]
+    public TimeSpan StalkerSlowDuration = TimeSpan.FromSeconds(4);
+
+    [DataField]
+    public float StalkerSlowMultiplier = 0.5f;
+
+    [DataField]
+    public EntProtoId StalkerSlowEffect = "DeaditeBiteSlowdownStatusEffect";
+
+    /// <summary>Screamer I: radius of the shriek.</summary>
+    [DataField]
+    public float ScreamRange = 6f;
+
+    /// <summary>Screamer II: anyone this close (and not mindshielded) is knocked off their feet.</summary>
+    [DataField]
+    public float ScreamKnockdownRange = 3f;
+
+    [DataField]
+    public TimeSpan ScreamKnockdownTime = TimeSpan.FromSeconds(2);
+
+    [DataField]
+    public EntProtoId ScreamAction = "ActionDeaditeScream";
+
+    [DataField]
+    public EntProtoId ConcealAction = "ActionDeaditeConceal";
+
+    [ViewVariables]
+    public EntityUid? ScreamActionEntity;
+
+    [ViewVariables]
+    public EntityUid? ConcealActionEntity;
+    #endregion
 }
 
-/// <summary>A summoned Demonspawn.</summary>
+/// <summary>
+/// A summoned Demonspawn. Juveniles grow into an adult after <see cref="MaturationTime"/>; both stages melt into dust
+/// on contact with holy water or a Bible.
+/// </summary>
 [RegisterComponent]
-public sealed partial class DemonspawnComponent : Component;
+public sealed partial class DemonspawnComponent : Component
+{
+    /// <summary>True on the grown form. Adults never mature again.</summary>
+    [DataField]
+    public bool Adult;
+
+    /// <summary>How long after being summoned a juvenile grows up.</summary>
+    [DataField]
+    public TimeSpan MaturationTime = TimeSpan.FromMinutes(10);
+
+    [DataField]
+    public EntProtoId AdultPrototype = "MobDemonspawnAdult";
+
+    /// <summary>Grey skin and pitch-black eyes, applied to the adult's humanoid body.</summary>
+    [DataField]
+    public Color AdultSkinColor = Color.FromHex("#6e6e6e");
+
+    [DataField]
+    public Color AdultEyeColor = Color.Black;
+
+    [ViewVariables]
+    public TimeSpan? MatureAt;
+
+    /// <summary>Set the moment maturation starts so it can only ever happen once.</summary>
+    [ViewVariables]
+    public bool Matured;
+
+    /// <summary>Warning shown to the juvenile shortly before it grows.</summary>
+    [ViewVariables]
+    public bool MaturationWarned;
+
+    /// <summary>Holy water (in units) that has touched this Demonspawn. Reaching the threshold melts it.</summary>
+    [ViewVariables]
+    public FixedPoint2 HolyWaterReceived;
+
+    [DataField]
+    public FixedPoint2 HolyWaterThreshold = 1;
+
+    /// <summary>Set once it starts melting; it can't be saved after that.</summary>
+    [ViewVariables]
+    public TimeSpan? MeltAt;
+
+    [DataField]
+    public TimeSpan MeltDuration = TimeSpan.FromSeconds(1.5);
+
+    [DataField]
+    public EntProtoId DustPrototype = "DemonspawnDust";
+}
+
+/// <summary>Someone a chaplain freed from a Deadite curse. The book cannot claim them again for a while.</summary>
+[RegisterComponent]
+public sealed partial class NecroBlessedComponent : Component
+{
+    [ViewVariables]
+    public TimeSpan ExpiresAt;
+}
+
+/// <summary>Present on a target while an exorcism is underway. Stops a Deadite from regenerating mid-rite.</summary>
+[RegisterComponent]
+public sealed partial class NecroBeingExorcisedComponent : Component
+{
+    [ViewVariables]
+    public EntityUid Exorcist;
+
+    /// <summary>Safety net in case the do-after vanishes without raising its event.</summary>
+    [ViewVariables]
+    public TimeSpan ExpiresAt;
+}
+
+/// <summary>
+/// Exorcism tuning and cooldown, added to anyone who can use a Bible (chaplains) the first time they try.
+/// </summary>
+[RegisterComponent]
+public sealed partial class NecroExorcistComponent : Component
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(20);
+
+    /// <summary>Cooldown after any completed rite (successful or finding nothing), so it can't be spammed.</summary>
+    [DataField]
+    public TimeSpan Cooldown = TimeSpan.FromSeconds(45);
+
+    /// <summary>A mindshield implanted in the Deadite weakens the demon's grip and speeds the rite up.</summary>
+    [DataField]
+    public float MindshieldMultiplier = 0.5f;
+
+    /// <summary>How long a freed victim is immune to JOIN US, bites and possession.</summary>
+    [DataField]
+    public TimeSpan BlessingDuration = TimeSpan.FromMinutes(10);
+
+    [DataField]
+    public float Range = 1.5f;
+
+    [ViewVariables]
+    public TimeSpan NextExorcism;
+}
 
 /// <summary>The demon's physical body.</summary>
 [RegisterComponent]
@@ -638,6 +812,9 @@ public sealed partial class NecronomiconRuleComponent : Component
     // Snapshot for the round-end summary (the demon entity is deleted when it is cast out).
     [ViewVariables]
     public List<string> FinalConsumedNames = new();
+
+    [ViewVariables]
+    public List<string> FinalExorcisedNames = new();
 
     [ViewVariables]
     public int FinalDemonspawn;

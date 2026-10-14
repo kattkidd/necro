@@ -52,6 +52,12 @@ public sealed partial class DeaditeBiteActionEvent : EntityTargetActionEvent;
 /// <summary>Read the passage from the manifested book that melts away a victim's mindshield.</summary>
 public sealed partial class DeaditeReadPassageActionEvent : EntityTargetActionEvent;
 
+/// <summary>Screamer path: an unholy shriek that terrifies everyone nearby.</summary>
+public sealed partial class DeaditeScreamActionEvent : InstantActionEvent;
+
+/// <summary>Infiltrator path: pull the human mask back on after revealing.</summary>
+public sealed partial class DeaditeConcealActionEvent : InstantActionEvent;
+
 // ---------------------------------------------------------------------------------------------
 // Do-afters
 // ---------------------------------------------------------------------------------------------
@@ -64,6 +70,10 @@ public sealed partial class DeaditeReadPassageDoAfterEvent : SimpleDoAfterEvent;
 
 [Serializable, NetSerializable]
 public sealed partial class NecroRecordingDoAfterEvent : SimpleDoAfterEvent;
+
+/// <summary>A chaplain's exorcism rite, performed with a Bible in hand.</summary>
+[Serializable, NetSerializable]
+public sealed partial class DeaditeExorcismDoAfterEvent : SimpleDoAfterEvent;
 
 // ---------------------------------------------------------------------------------------------
 // Skill Store product events (raised on the buyer, validated server-side)
@@ -102,6 +112,16 @@ public enum NecroUpgrade : byte
     FarWhisper,
     HardenedFlesh,
     RendingClaws,
+
+    // Deadite progression tree. Each path has two tiers; see necronomicon_catalog.yml for costs and limits.
+    InfiltratorI,
+    InfiltratorII,
+    BruteI,
+    BruteII,
+    StalkerI,
+    StalkerII,
+    ScreamerI,
+    ScreamerII,
 }
 
 /// <summary>Applies a passive upgrade to the demon.</summary>

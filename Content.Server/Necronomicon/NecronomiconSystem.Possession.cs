@@ -30,6 +30,8 @@ public sealed partial class NecronomiconSystem
             reason = "necro-target-already";
         else if (checkMindshield && IsMindshielded(target))
             reason = "necro-target-mindshielded";
+        else if (HasComp<NecroBlessedComponent>(target))
+            reason = "necro-target-blessed";
 
         if (reason == null)
             return true;

@@ -41,6 +41,11 @@
   name: store-category-necro-infiltration
   priority: 6
 
+- type: storeCategory
+  id: NecroDeaditeTree
+  name: store-category-necro-deadite-tree
+  priority: 7
+
 # --- Appearance (free, cosmetic, changeable) ---
 
 - type: listing
@@ -292,4 +297,165 @@
     stock: 1
   productEvent: !type:NecroUpgradeEvent
     upgrade: FarWhisper
+  raiseProductEventOnUser: true
+
+# --- Deadite progression tree ---
+# Four paths, two tiers each. Tier II needs tier I of the same path. A demon can only commit to two of the four
+# paths (NecroPathLimitCondition). Every tier applies to all of the demon's Deadites, present and future.
+# Effects and tuning: DeaditeSystem.Tree.cs and DeaditeComponent.
+
+- type: listing
+  id: NecroDeaditeInfiltrator1
+  name: necro-catalog-infiltrator-1-name
+  description: necro-catalog-infiltrator-1-desc
+  icon: { sprite: /Textures/Interface/Actions/changeling2.rsi, state: mimicry }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:NecroPathLimitCondition
+    lock: true
+    listings: [ NecroDeaditeInfiltrator1, NecroDeaditeBrute1, NecroDeaditeStalker1, NecroDeaditeScreamer1 ]
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: InfiltratorI
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDeaditeInfiltrator2
+  name: necro-catalog-infiltrator-2-name
+  description: necro-catalog-infiltrator-2-desc
+  icon: { sprite: /Textures/Interface/Actions/changeling2.rsi, state: flesh_clothing }
+  cost:
+    SoulPower: 14
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:BuyBeforeCondition
+    lock: true
+    whitelist:
+    - NecroDeaditeInfiltrator1
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: InfiltratorII
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDeaditeBrute1
+  name: necro-catalog-brute-1-name
+  description: necro-catalog-brute-1-desc
+  icon: { sprite: /Textures/Interface/Actions/changeling.rsi, state: armblade }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:NecroPathLimitCondition
+    lock: true
+    listings: [ NecroDeaditeInfiltrator1, NecroDeaditeBrute1, NecroDeaditeStalker1, NecroDeaditeScreamer1 ]
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: BruteI
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDeaditeBrute2
+  name: necro-catalog-brute-2-name
+  description: necro-catalog-brute-2-desc
+  icon: { sprite: /Textures/Interface/Actions/changeling.rsi, state: devour }
+  cost:
+    SoulPower: 14
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:BuyBeforeCondition
+    lock: true
+    whitelist:
+    - NecroDeaditeBrute1
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: BruteII
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDeaditeStalker1
+  name: necro-catalog-stalker-1-name
+  description: necro-catalog-stalker-1-desc
+  icon: { sprite: /Textures/Interface/Actions/jump.rsi, state: icon }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:NecroPathLimitCondition
+    lock: true
+    listings: [ NecroDeaditeInfiltrator1, NecroDeaditeBrute1, NecroDeaditeStalker1, NecroDeaditeScreamer1 ]
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: StalkerI
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDeaditeStalker2
+  name: necro-catalog-stalker-2-name
+  description: necro-catalog-stalker-2-desc
+  icon: { sprite: /Textures/Interface/Actions/changeling2.rsi, state: neurodepressant_sting }
+  cost:
+    SoulPower: 14
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:BuyBeforeCondition
+    lock: true
+    whitelist:
+    - NecroDeaditeStalker1
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: StalkerII
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDeaditeScreamer1
+  name: necro-catalog-screamer-1-name
+  description: necro-catalog-screamer-1-desc
+  icon: { sprite: /Textures/Interface/Actions/changeling2.rsi, state: screech }
+  cost:
+    SoulPower: 8
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:NecroPathLimitCondition
+    lock: true
+    listings: [ NecroDeaditeInfiltrator1, NecroDeaditeBrute1, NecroDeaditeStalker1, NecroDeaditeScreamer1 ]
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: ScreamerI
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroDeaditeScreamer2
+  name: necro-catalog-screamer-2-name
+  description: necro-catalog-screamer-2-desc
+  icon: /Textures/Interface/Actions/scream.png
+  cost:
+    SoulPower: 14
+  categories:
+  - NecroDeaditeTree
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:BuyBeforeCondition
+    lock: true
+    whitelist:
+    - NecroDeaditeScreamer1
+  productEvent: !type:NecroUpgradeEvent
+    upgrade: ScreamerII
   raiseProductEventOnUser: true

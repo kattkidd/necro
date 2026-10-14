@@ -268,6 +268,7 @@
     proto: necro
   - type: MonkeyAccent
   - type: Demonspawn
+    maturationTime: 600 # seconds until it grows into MobDemonspawnAdult
   - type: KandarianEntity
   - type: KandarianRegen
     reviveDelay: 45
@@ -317,6 +318,84 @@
     raffle:
       settings: short
   - type: GhostTakeoverAvailable
+
+# A grown Demonspawn: a grey-skinned humanoid with pitch-black eyes. Only ever spawned by maturation (DemonspawnSystem),
+# which applies the colours, carries the mind and belongings over and links it to its demon.
+- type: entity
+  parent: MobHuman
+  id: MobDemonspawnAdult
+  name: demonspawn
+  description: Tall, thin and grey as ash, shaped almost like a person. Its eyes are black from lid to lid.
+  suffix: Adult
+  components:
+  - type: Demonspawn
+    adult: true
+  - type: KandarianEntity
+  - type: KandarianRegen
+    reviveDelay: 40
+    passiveHeal: 0.25
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      100000: Dead # cannot die from ordinary damage; regenerates from critical
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 5
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcClaw
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    damage:
+      types:
+        Slash: 12
+  - type: Speech
+    speechSounds: Demonspawn
+  - type: TypingIndicator
+    proto: necro
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Sumerian
+  - type: IntrinsicRadioReceiver
+  - type: ActiveRadio
+    channels:
+    - Sumerian
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: GhostRole
+    makeSentient: true
+    allowMovement: true
+    name: ghost-role-information-demonspawn-adult-name
+    description: ghost-role-information-demonspawn-adult-description
+    rules: ghost-role-information-demonspawn-rules
+    mindRoles:
+    - MindRoleDemonspawn
+    raffle:
+      settings: short
+  - type: GhostTakeoverAvailable
+
+# What's left of a Demonspawn touched by something holy.
+- type: entity
+  parent: Ash
+  id: DemonspawnDust
+  name: grey dust
+  description: A drift of fine grey dust. It smells faintly of rot and incense.
+  components:
+  - type: Sprite
+    sprite: Objects/Materials/materials.rsi
+    state: ash
+    color: "#8a8a8a"
+
+# Stalker II: a Deadite bite drags at the victim's legs.
+- type: entity
+  parent: StatusEffectSlowdown
+  id: DeaditeBiteSlowdownStatusEffect
+  name: deadite bite slowdown
 
 # --- The Necronomicon ---------------------------------------------------------------------------
 - type: entity
