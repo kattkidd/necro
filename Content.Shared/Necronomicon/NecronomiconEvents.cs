@@ -116,6 +116,16 @@ public sealed partial class NecroUpgradeEvent : EntityEventArgs
 // Visuals
 // ---------------------------------------------------------------------------------------------
 
+/// <summary>Special values for <see cref="NecroDemonVisuals.Form"/>.</summary>
+public static class NecroDemonVisualsConstants
+{
+    /// <summary>The demon wears a character shell: hide the demon's own sprite.</summary>
+    public const string HiddenDemon = "hidden|";
+
+    /// <summary>This entity is a character shell: draw it faded, like a ghost.</summary>
+    public const string GhostShell = "shell|";
+}
+
 [Serializable, NetSerializable]
 public enum NecroDemonVisuals : byte
 {

@@ -139,6 +139,10 @@ public sealed partial class NecroDemonComponent : Component
     [ViewVariables]
     public bool UseCharacterForm;
 
+    /// <summary>The black-suited character shell that is this demon's ghost ("My Character" appearance).</summary>
+    [ViewVariables]
+    public EntityUid? GhostShell;
+
     /// <summary>Character used for the physical form when <see cref="UseCharacterForm"/> is set.</summary>
     [ViewVariables]
     public HumanoidCharacterProfile? CharacterProfile;
@@ -335,6 +339,14 @@ public sealed partial class NecroAppearanceOptionComponent : Component
     /// <summary>Use the player's own character as the physical form, and their name with the alias.</summary>
     [DataField]
     public bool UseCharacter;
+}
+
+/// <summary>A lifeless copy of the player's character worn as the demon's ghost. Ghost-layer only, untouchable.</summary>
+[RegisterComponent]
+public sealed partial class NecroGhostShellComponent : Component
+{
+    [ViewVariables]
+    public EntityUid? Demon;
 }
 
 /// <summary>The physical Necronomicon. Can only be destroyed by burning.</summary>

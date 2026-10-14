@@ -129,6 +129,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         {
             demon.Comp.UseCharacterForm = true;
             demon.Comp.CharacterProfile = profile;
+            _necro.SetCharacterGhost(demon, profile);
             _metaData.SetEntityName(demon, Loc.GetString("necro-character-name", ("character", profile.Name), ("alias", alias)));
         }
         else if (option.Form is { } form)

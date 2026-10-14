@@ -84,6 +84,13 @@ public sealed partial class NecronomiconSystem
 
         ent.Comp.SelectedForm = args.Form;
         ent.Comp.UseCharacterForm = false;
+
+        // Switching to a creature form drops the character ghost.
+        if (ent.Comp.GhostShell is { } shell)
+        {
+            ent.Comp.GhostShell = null;
+            QueueDel(shell);
+        }
         _appearance.SetData(ent, NecroDemonVisuals.Form, $"{args.Rsi}|{args.State}");
         _popup.PopupEntity(Loc.GetString("necro-form-selected"), ent, ent, PopupType.Medium);
     }
@@ -269,7 +276,7 @@ public sealed partial class NecronomiconSystem
             return creature;
         }
 
-        var body = _stationSpawning.SpawnPlayerMob(coords, null, ent.Comp.CharacterProfile, null);
+        var body = SpawnCharacterBody(ent.Comp.CharacterProfile!, coords);
         _transform.AttachToGridOrMap(body);
         _metaData.SetEntityName(body, Name(ent));
         _deadite.ApplyDeaditeLook(body);

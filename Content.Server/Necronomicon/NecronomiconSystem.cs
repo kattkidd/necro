@@ -77,6 +77,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         InitializeStore();
         InitializePuppet();
         InitializeCommands();
+        InitializeCharacter();
     }
 
     public override void Update(float frameTime)
@@ -103,6 +104,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
             UpdateManifestationFollow((uid, demon));
             UpdateProximityFear((uid, demon), now);
             UpdateStatus((uid, demon), now);
+            UpdateGhostShell((uid, demon));
         }
 
         UpdateBurning(frameTime);

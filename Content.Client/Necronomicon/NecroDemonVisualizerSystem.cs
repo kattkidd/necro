@@ -17,6 +17,19 @@ public sealed partial class NecroDemonVisualizerSystem : VisualizerSystem<NecroD
         if (!AppearanceSystem.TryGetData<string>(uid, NecroDemonVisuals.Form, out var form, args.Component))
             return;
 
+        if (form == NecroDemonVisualsConstants.HiddenDemon)
+        {
+            SpriteSystem.SetVisible((uid, args.Sprite), false);
+            return;
+        }
+
+        if (form == NecroDemonVisualsConstants.GhostShell)
+        {
+            SpriteSystem.SetColor((uid, args.Sprite), Color.White.WithAlpha(0.75f));
+            return;
+        }
+
+        SpriteSystem.SetVisible((uid, args.Sprite), true);
         var split = form.Split('|');
         if (split.Length != 2 || string.IsNullOrEmpty(split[0]) || string.IsNullOrEmpty(split[1]))
             return;
