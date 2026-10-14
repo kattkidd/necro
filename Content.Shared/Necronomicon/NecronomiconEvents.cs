@@ -70,7 +70,7 @@ public sealed partial class NecroRecordingDoAfterEvent : SimpleDoAfterEvent;
 // ---------------------------------------------------------------------------------------------
 
 /// <summary>Cosmetic form selection. Stores which physical form the demon will use.</summary>
-[DataDefinition]
+[Serializable, NetSerializable, DataDefinition]
 public sealed partial class NecroSelectFormEvent : EntityEventArgs
 {
     /// <summary>Mob prototype spawned when the demon physically manifests.</summary>
@@ -86,11 +86,14 @@ public sealed partial class NecroSelectFormEvent : EntityEventArgs
 }
 
 /// <summary>Adds a possession charge.</summary>
+[Serializable, NetSerializable, DataDefinition]
 public sealed partial class NecroBuyPossessionChargeEvent : EntityEventArgs;
 
 /// <summary>Summons one Demonspawn ghost role.</summary>
+[Serializable, NetSerializable, DataDefinition]
 public sealed partial class NecroSummonDemonspawnEvent : EntityEventArgs;
 
+[Serializable, NetSerializable]
 public enum NecroUpgrade : byte
 {
     FearMultiplier,
@@ -102,7 +105,7 @@ public enum NecroUpgrade : byte
 }
 
 /// <summary>Applies a passive upgrade to the demon.</summary>
-[DataDefinition]
+[Serializable, NetSerializable, DataDefinition]
 public sealed partial class NecroUpgradeEvent : EntityEventArgs
 {
     [DataField(required: true)]
