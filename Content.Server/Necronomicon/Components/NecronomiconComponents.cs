@@ -368,6 +368,12 @@ public sealed partial class DeaditeComponent : Component
     [ViewVariables]
     public bool Revealed;
 
+    [ViewVariables]
+    public TimeSpan NextLaugh;
+
+    [ViewVariables]
+    public TimeSpan NextTalkSound;
+
     /// <summary>Head severed: cannot act, cannot die, can still talk.</summary>
     [ViewVariables]
     public bool Severed;

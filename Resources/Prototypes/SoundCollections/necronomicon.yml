@@ -43,3 +43,36 @@
   spritePath: /Textures/Effects/necro_speech.rsi
   typingState: necro0
   idleState: necro3
+
+# --- Deadites ---
+- type: soundCollection
+  id: DeaditeTalk
+  files:
+  - /Audio/Necronomicon/deadite_talk1.ogg
+  - /Audio/Necronomicon/deadite_talk2.ogg
+  - /Audio/Necronomicon/deadite_talk3.ogg
+
+- type: soundCollection
+  id: DeaditeSnarls
+  files:
+  - /Audio/Necronomicon/deadite_snarl.ogg
+  - /Audio/Necronomicon/deadite_snarl2.ogg
+  - /Audio/Necronomicon/deadite_snarl3.ogg
+  - /Audio/Necronomicon/deadite_snarl4.ogg
+  - /Audio/Necronomicon/deadite_snarl5.ogg
+
+- type: soundCollection
+  id: DeaditeScreams
+  files:
+  - /Audio/Necronomicon/deadite_scream.ogg
+  - /Audio/Necronomicon/deadite_scream2.ogg
+
+- type: soundCollection
+  id: DeaditeLaughs
+  files:
+  - /Audio/Necronomicon/deadite_femalelaugh1.ogg
+  - /Audio/Necronomicon/deadite_femalelaugh2.ogg
+  - /Audio/Necronomicon/deadite_femalelaugh3.ogg
+  - /Audio/Necronomicon/deadite_laughmale1.ogg
+  - /Audio/Necronomicon/deadite_laughmale2.ogg
+  - /Audio/Necronomicon/deadite_laughmale3.ogg

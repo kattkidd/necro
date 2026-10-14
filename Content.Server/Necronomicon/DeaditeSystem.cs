@@ -32,6 +32,8 @@ using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
+using Content.Shared.Chat;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Necronomicon;
@@ -42,6 +44,7 @@ namespace Content.Server.Necronomicon;
 public sealed partial class DeaditeSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private ActionBlockerSystem _blocker = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -65,7 +68,12 @@ public sealed partial class DeaditeSystem : EntitySystem
     public static readonly EntProtoId DeaditeMindRole = "MindRoleDeadite";
     public const string SumerianChannel = "Sumerian";
 
-    private static readonly SoundSpecifier RevealSound = new SoundPathSpecifier("/Audio/Effects/demon_attack1.ogg");
+    private static readonly SoundSpecifier RevealSound = new SoundCollectionSpecifier("DeaditeLaughs");
+    private static readonly SoundSpecifier SnarlSound = new SoundCollectionSpecifier("DeaditeSnarls");
+    private static readonly SoundSpecifier ScreamSound = new SoundCollectionSpecifier("DeaditeScreams");
+    private static readonly SoundSpecifier TalkSound = new SoundCollectionSpecifier("DeaditeTalk");
+    private static readonly SoundSpecifier LaughSound = new SoundCollectionSpecifier("DeaditeLaughs");
+    private static readonly SoundSpecifier PossessedSound = new SoundPathSpecifier("/Audio/Necronomicon/deadite_deaditepossessed.ogg");
     private static readonly SoundSpecifier ShieldMeltSound = new SoundPathSpecifier("/Audio/Effects/desecration-03.ogg");
     private static readonly SoundSpecifier BiteSound = new SoundPathSpecifier("/Audio/Effects/bite.ogg");
 
@@ -94,6 +102,8 @@ public sealed partial class DeaditeSystem : EntitySystem
         SubscribeLocalEvent<DeaditeComponent, PickupAttemptEvent>(OnSeveredBlock);
         SubscribeLocalEvent<DeaditeComponent, ThrowAttemptEvent>(OnSeveredBlock);
         SubscribeLocalEvent<DeaditeComponent, InteractionAttemptEvent>(OnSeveredInteract);
+
+        SubscribeLocalEvent<DeaditeComponent, EntitySpokeEvent>(OnDeaditeSpoke);
 
         SubscribeLocalEvent<KandarianRegenComponent, MobStateChangedEvent>(OnRegenMobState);
 
@@ -124,6 +134,18 @@ public sealed partial class DeaditeSystem : EntitySystem
         base.Update(frameTime);
 
         var now = _timing.CurTime;
+
+        // Revealed Deadites cackle now and then.
+        var laughers = EntityQueryEnumerator<DeaditeComponent>();
+        while (laughers.MoveNext(out var laugher, out var deadite))
+        {
+            if (!deadite.Revealed || deadite.Severed || now < deadite.NextLaugh || !_mobState.IsAlive(laugher))
+                continue;
+
+            deadite.NextLaugh = now + TimeSpan.FromSeconds(_random.Next(40, 90));
+            _audio.PlayPvs(LaughSound, laugher);
+        }
+
         var query = EntityQueryEnumerator<KandarianRegenComponent, MobStateComponent>();
         while (query.MoveNext(out var uid, out var regen, out var mob))
         {
@@ -139,6 +161,7 @@ public sealed partial class DeaditeSystem : EntitySystem
                 regen.ReviveAt = null;
                 _damageable.ClearAllDamage(uid);
                 _mobState.ChangeMobState(uid, MobState.Alive, mob);
+                _audio.PlayPvs(ScreamSound, uid);
                 _popup.PopupEntity(Loc.GetString("deadite-rises", ("target", Identity.Entity(uid, EntityManager))),
                     uid, PopupType.LargeCaution);
 
@@ -194,6 +217,7 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         // Only the victim notices.
         _popup.PopupEntity(Loc.GetString("deadite-converted"), target, target, PopupType.LargeCaution);
+        _audio.PlayGlobal(PossessedSound, target);
     }
 
     /// <summary>Gives the private, unlimited-range Ancient Sumerian channel.</summary>
@@ -227,6 +251,7 @@ public sealed partial class DeaditeSystem : EntitySystem
             return;
 
         ent.Comp.Revealed = true;
+        ent.Comp.NextLaugh = _timing.CurTime + TimeSpan.FromSeconds(45);
 
         // Pale skin, completely white eyes.
         if (_visualBody.TryGatherMarkingsData(ent.Owner, null, out var profiles, out _, out _))
@@ -260,6 +285,20 @@ public sealed partial class DeaditeSystem : EntitySystem
             _necro.AddSoulPower(demon.Value, ent.Comp.RevealReward);
             _necro.AddFearAround(demon.Value, ent, demon.Value.Comp.WitnessRange, NecroFearSource.Reveal);
         }
+    }
+
+    private void OnDeaditeSpoke(Entity<DeaditeComponent> ent, ref EntitySpokeEvent args)
+    {
+        // Disguised Deadites sound normal. Radio (Sumerian) is silent.
+        if (!ent.Comp.Revealed || args.Channel != null)
+            return;
+
+        var now = _timing.CurTime;
+        if (now < ent.Comp.NextTalkSound)
+            return;
+
+        ent.Comp.NextTalkSound = now + TimeSpan.FromSeconds(2);
+        _audio.PlayPvs(TalkSound, ent);
     }
 
     private void OnRefreshName(Entity<DeaditeComponent> ent, ref RefreshNameModifiersEvent args)
@@ -308,6 +347,7 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         _damageable.TryChangeDamage(target, ent.Comp.BiteDamage, origin: ent);
         _audio.PlayPvs(BiteSound, target);
+        _audio.PlayPvs(SnarlSound, ent);
         _popup.PopupEntity(Loc.GetString("deadite-bite",
                 ("user", Identity.Entity(ent, EntityManager)),
                 ("target", Identity.Entity(target, EntityManager))),
@@ -505,6 +545,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         // Bring them back to "alive" so they can speak, but they cannot do anything else.
         _damageable.ClearAllDamage(ent.Owner);
         _mobState.ChangeMobState(ent, MobState.Alive);
+        _audio.PlayPvs(ScreamSound, ent);
         _blocker.UpdateCanMove(ent);
         _speed.RefreshMovementSpeedModifiers(ent.Owner);
 

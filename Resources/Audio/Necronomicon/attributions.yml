@@ -23,3 +23,8 @@
   license: Custom
   copyright: '"Haunted Ghost Baby Crying" 1, 2 and 4 by floraphonic (Pixabay), converted to mono; voice clips trimmed'
   source: https://pixabay.com/sound-effects/haunted-ghost-baby-crying-1-184015/
+
+- files: ["deadite_talk1.ogg", "deadite_talk2.ogg", "deadite_talk3.ogg", "deadite_snarl.ogg", "deadite_snarl2.ogg", "deadite_snarl3.ogg", "deadite_snarl4.ogg", "deadite_snarl5.ogg", "deadite_scream.ogg", "deadite_scream2.ogg", "deadite_femalelaugh1.ogg", "deadite_femalelaugh2.ogg", "deadite_femalelaugh3.ogg", "deadite_laughmale1.ogg", "deadite_laughmale2.ogg", "deadite_laughmale3.ogg", "deadite_deaditepossessed.ogg"]
+  license: Custom
+  copyright: "Deadite voice set supplied by kattkidd for the Necronomicon antagonist, converted to mono"
+  source: https://github.com/kattkidd/necro

@@ -41,7 +41,8 @@ public sealed partial class NecronomiconSystem
 
         demon.Comp.NextStatusUpdate = now + StatusInterval;
 
-        var bookState = demon.Comp.Banished ? NecroBookState.Ether : GetBookState(demon, out var carrier);
+        EntityUid? carrier = null;
+        var bookState = demon.Comp.Banished ? NecroBookState.Ether : GetBookState(demon, out carrier);
         var sp = GetSoulPower(demon).Int();
         var charges = demon.Comp.PossessionCharges;
 
