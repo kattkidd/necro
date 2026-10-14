@@ -138,4 +138,33 @@ public sealed class NecronomiconTests : InteractionTest
             Assert.That(mobState.IsDead(SPlayer), Is.True, "Released Deadites collapse");
         });
     }
+
+    [Test]
+    public async Task DemonicPossessionIsHarmlessAndTemporary()
+    {
+        await Server.WaitAssertion(() =>
+        {
+            var necro = SEntMan.System<NecronomiconSystem>();
+            var standing = SEntMan.System<Content.Shared.Standing.StandingStateSystem>();
+            var blocker = SEntMan.System<Content.Shared.ActionBlocker.ActionBlockerSystem>();
+            var damageable = SEntMan.System<Content.Shared.Damage.Systems.DamageableSystem>();
+            var demon = SpawnAwakeDemon();
+
+            necro.StartPuppet(demon, SPlayer);
+            Assert.That(demon.Comp.PuppetHost, Is.EqualTo(SPlayer));
+            Assert.That(SEntMan.HasComponent<NecroPuppetHostComponent>(SPlayer), Is.True);
+            Assert.That(standing.IsDown(SPlayer), Is.True, "Host collapses");
+            Assert.That(blocker.CanMove(SPlayer), Is.False, "Host cannot move");
+            Assert.That(blocker.CanSpeak(SPlayer), Is.False, "Host cannot speak for themselves");
+            Assert.That(damageable.GetTotalDamage(SPlayer), Is.EqualTo(Content.Shared.FixedPoint.FixedPoint2.Zero), "Harmless");
+            Assert.That(SEntMan.HasComponent<DeaditeComponent>(SPlayer), Is.False, "Not a Deadite conversion");
+            Assert.That(demon.Comp.PossessionCharges, Is.EqualTo(2), "Uses no possession charge");
+
+            necro.EndPuppet(demon);
+            Assert.That(demon.Comp.PuppetHost, Is.Null);
+            Assert.That(SEntMan.HasComponent<NecroPuppetHostComponent>(SPlayer), Is.False);
+            Assert.That(standing.IsDown(SPlayer), Is.False, "Host gets back up");
+            Assert.That(blocker.CanMove(SPlayer), Is.True);
+        });
+    }
 }

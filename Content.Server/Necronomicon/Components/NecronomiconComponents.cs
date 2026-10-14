@@ -143,6 +143,43 @@ public sealed partial class NecroDemonComponent : Component
     public EntProtoId DemonspawnPrototype = "MobDemonspawn";
     #endregion
 
+    #region Demonic possession (harmless puppeting)
+    [DataField]
+    public FixedPoint2 PuppetCost = 3;
+
+    [DataField]
+    public FixedPoint2 PuppetAnnounceCost = 3;
+
+    [DataField]
+    public float PuppetRange = 12f;
+
+    [DataField]
+    public TimeSpan PuppetDuration = TimeSpan.FromSeconds(45);
+
+    [DataField]
+    public TimeSpan PuppetAnnounceCooldown = TimeSpan.FromMinutes(2);
+
+    /// <summary>Cooldown between possessions, counted from when a possession starts.</summary>
+    [DataField]
+    public TimeSpan PuppetCooldown = TimeSpan.FromSeconds(60);
+
+    [ViewVariables]
+    public TimeSpan NextPuppet;
+
+    [ViewVariables]
+    public EntityUid? PuppetHost;
+
+    [ViewVariables]
+    public TimeSpan PuppetEndAt;
+
+    /// <summary>The next sentence the demon speaks becomes a station announcement.</summary>
+    [ViewVariables]
+    public bool PuppetAnnounceNext;
+
+    [ViewVariables]
+    public TimeSpan NextPuppetAnnounce;
+    #endregion
+
     #region Fear
     /// <summary>Multiplier applied to every Fear reward.</summary>
     [ViewVariables]
@@ -290,6 +327,17 @@ public sealed partial class NecroPreparedComponent : Component
 /// <summary>Marks a victim currently being possessed, blocking duplicate conversions.</summary>
 [RegisterComponent]
 public sealed partial class NecroBeingPossessedComponent : Component;
+
+/// <summary>
+/// Someone temporarily puppeted by the demon: collapsed, unable to act or speak for themselves,
+/// while the demon talks through their mouth. Harmless and temporary; not a Deadite.
+/// </summary>
+[RegisterComponent]
+public sealed partial class NecroPuppetHostComponent : Component
+{
+    [ViewVariables]
+    public EntityUid? Demon;
+}
 
 /// <summary>A possessed crew member.</summary>
 [RegisterComponent]

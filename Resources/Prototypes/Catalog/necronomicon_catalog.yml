@@ -164,6 +164,35 @@
   - !type:ListingLimitedStockCondition
     stock: 1
 
+- type: listing
+  id: NecroPuppet
+  name: necro-catalog-puppet-name
+  description: necro-catalog-puppet-desc
+  productAction: ActionNecroPuppet
+  cost:
+    SoulPower: 6
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroPuppetAnnounce
+  name: necro-catalog-puppet-announce-name
+  description: necro-catalog-puppet-announce-desc
+  productAction: ActionNecroPuppetAnnounce
+  cost:
+    SoulPower: 4
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:BuyBeforeCondition
+    whitelist:
+    - NecroPuppet
+
 # --- Physical manifestation ---
 
 - type: listing

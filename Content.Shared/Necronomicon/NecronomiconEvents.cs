@@ -33,6 +33,12 @@ public sealed partial class NecroManifestFormActionEvent : InstantActionEvent;
 /// <summary>Leave the physical form and return to the incorporeal demon.</summary>
 public sealed partial class NecroReturnToEtherActionEvent : InstantActionEvent;
 
+/// <summary>Harmless demonic possession: the victim collapses and the demon speaks through them.</summary>
+public sealed partial class NecroPuppetActionEvent : EntityTargetActionEvent;
+
+/// <summary>While puppeting, the demon's next sentence becomes a station announcement signed by the host.</summary>
+public sealed partial class NecroPuppetAnnounceActionEvent : InstantActionEvent;
+
 // ---------------------------------------------------------------------------------------------
 // Deadite actions
 // ---------------------------------------------------------------------------------------------

@@ -231,3 +231,47 @@
       components:
       - HumanoidProfile
     event: !type:DeaditeReadPassageActionEvent
+
+# --- Demonic possession (harmless puppeting) ---
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroPuppet
+  name: Demonic Possession
+  description: Seize anyone nearby for 45 seconds. They collapse, helpless, and everything you say comes out of their mouth. Harmless. Costs 3 SP. Use it on your host again to let go.
+  components:
+  - type: Action
+    useDelay: 3 # the real cooldown is enforced in code so the host can always be released
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Ghosts/revenant.rsi
+      state: stunned
+  - type: TargetAction
+    checkCanAccess: false
+    range: 12
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:NecroPuppetActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroPuppetAnnounce
+  name: Speak to the Station
+  description: While possessing someone, your next sentence becomes a station announcement signed with their name. Costs 3 SP when spoken. Use again to cancel.
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/shop.png
+  - type: InstantAction
+    event: !type:NecroPuppetAnnounceActionEvent
+

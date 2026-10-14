@@ -75,6 +75,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         InitializePossession();
         InitializeFear();
         InitializeStore();
+        InitializePuppet();
     }
 
     public override void Update(float frameTime)
@@ -104,6 +105,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
         UpdateBurning(frameTime);
         UpdatePrepared(now);
+        UpdatePuppets(now);
     }
 
     #region Soul Power
@@ -254,6 +256,9 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
     private void OnDemonShutdown(Entity<NecroDemonComponent> ent, ref ComponentShutdown args)
     {
+        // Never leave someone stuck on the floor if the demon is removed (cast out, deleted).
+        EndPuppet(ent, popup: false);
+
         if (ent.Comp.Manifestation is { } form && !TerminatingOrDeleted(form))
             QueueDel(form);
     }
@@ -542,6 +547,8 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
         if (demon.Comp.Manifestation is { } form)
             ReturnToEther(form, false);
+
+        EndPuppet(demon);
 
         if (TryComp<StoreComponent>(demon, out var store))
         {

@@ -197,3 +197,20 @@ names-kandarian-title-dataset-7 = the Whispering Rot
 names-kandarian-title-dataset-8 = Child of the Naturom
 names-kandarian-title-dataset-9 = the Shape in the Fog
 names-kandarian-title-dataset-10 = Who Wears the Dead
+
+# Demonic possession (harmless puppeting)
+necro-catalog-puppet-name = Demonic Possession
+necro-catalog-puppet-desc = Unlocks seizing anyone within 12 tiles for 45 seconds, mindshielded or not. They collapse and can't act or speak for themselves; everything you say comes out of their mouth. Harmless and temporary. 3 SP per use; target your host again to let go early. (Ancient Sumerian is unavailable while you hold a host.)
+necro-catalog-puppet-announce-name = Speak to the Station
+necro-catalog-puppet-announce-desc = While possessing someone, make your next sentence a station announcement signed with their name. 3 SP per announcement, 2 minute cooldown. Requires Demonic Possession.
+necro-puppet-busy = You are already wearing someone.
+necro-puppet-not-possessing = You must be possessing someone first.
+necro-puppet-start-others = {CAPITALIZE(THE($target))} convulses and collapses, eyes rolling back!
+necro-puppet-start-host = Something cold slides into you. Your body won't answer. Your mouth moves on its own...
+necro-puppet-start-demon = You are inside {THE($target)} for {$seconds} seconds. Everything you say comes out of their mouth.
+necro-puppet-end-host = The presence leaves you. You can move again.
+necro-puppet-end-demon = You slip out of your host.
+necro-puppet-announce-armed = Your next sentence will be broadcast to the whole station in your host's name.
+necro-puppet-announce-disarmed = Announcement cancelled.
+necro-puppet-announce-cooldown = The station is still listening for you... wait {$seconds} seconds.
+necro-puppet-cooldown = You need to gather yourself... wait {$seconds} seconds.
