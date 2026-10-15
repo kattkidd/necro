@@ -240,7 +240,7 @@ necro-status-book-burning = YOUR BOOK IS ON FIRE!
 necro-status-book-extinguished = The flames on your book die out.
 
 # Examine
-necro-book-examine-hint = [color=orange]Something about this book wants to be put down. Hold onto it: it can't vanish from your hands. Fire might end it for good.[/color]
+necro-book-examine-hint = [color=orange]Something about this book wants to be put down. Hold onto it: it can't vanish from your hands. Fire might end it for good. With it in hand, you could read its passages at someone (the margins are full of a dead professor's notes).[/color]
 
 # Round end
 necro-round-end-header = [color=darkred][bold]The Necronomicon[/bold][/color]
@@ -351,3 +351,60 @@ necro-chant-5 = Naturom Demonto...
 necro-chant-6 = KANDAR!
 necro-roar = {CAPITALIZE($demon)} lets out a roar that shakes the walls!
 necro-poltergeist = Everything around {THE($target)} rises into the air!
+
+## The book's pages and its passages
+
+necronomicon-book-text = [head=1]NATUROM DEMONTO[/head]
+    {""}[italic]Kanda. Estrada. Amantos. Kanda.[/italic]
+
+    Ur-kandar nosferatos estrada emu-shurra, gal-kur ishtu naturom demonto. Kesh-ra amantos dumazi enki-lal, shuba nam-tar ereshki kanda. Ziggur-tu malakh esh-ra, arallu ganzir kanda kanda, nergal-esh dimmu ur-kandar.
+
+    Amantos ki-gal shurrupak, estrada nam-ur lil-tu. Edimmu sha-kanda ugallu, meslam-ta-ea neti kur-nu-gi-a. Kanda ishtu arallu, kanda ishtu ganzir.
+    {""}[color=#4a4a4a][italic]Pencil, in a careful hand: The opening invocation. I read it aloud into the recorder tonight. God forgive me. — R. K.[/italic][/color]
+
+    -=+=-
+
+    {""}[head=2]Shu-nam Edimmu[/head]
+    Edimmu ur-kandar shu-nam, ishtu ka-dingir esh-ra! Nam-tar zi-kanda ul-lu, arallu ganzir kesh-ra amantos. Ki-shar dumazi, ki-shar estrada, ur-nam sha-kanda ul-ti-tu!
+    Utukku kanda nam-shub, ganzir ishtu bar-ra. Edimmu bar-ra! Edimmu bar-ra!
+    {""}[color=#4a4a4a][italic]Margin: This passage commands the spirit OUT of the one it has taken. Hold the book, face the afflicted, and read it through without stopping. The thing inside will writhe and crawl, but it cannot run. It costs the reader. I bled from the nose for an hour, and something has been whispering to me since.[/italic][/color]
+
+    -=+=-
+
+    {""}[head=2]Lal-ur Ganzir[/head]
+    Ganzir lal-ur, ka-sha nam-tur, edimmu-tur ishtu kur. Lal-ur! Lal-ur! Dub-sar kanda emu, ki-kal ash-ra nam-ti ul-ti.
+    {""}[color=#4a4a4a][italic]Margin: Of the small grey things that crawl out of the pages. These words unmake them. So does holy water, I am told, and a Bible. They do not stay small for long.[/italic][/color]
+
+    -=+=-
+
+    {""}[head=2]Nam-shub Kandar[/head]
+    Ishtu ur-mah kanda, sag-gig nam-lu-ulu, edimmu ki-sikil esh-ra. Ma-mu kanda, ma-mu kanda. Gidim gal-gal ishtu kur-ra, nam-erim amantos estrada! Kesh-ra! Kesh-ra! Kanda!
+    Shurrupak nam-tar ki-gal, ur-kandar ishtu ganzir, dumazi amantos ul-ti-tu kesh. Ereshki-gal, ereshki-gal, nam-ur esh-ra kanda.
+    {""}[color=#4a4a4a][italic]Margin: I cannot make sense of the rest. Some pages make the possessed flinch. Some wake things. Do not read them aloud.[/italic][/color]
+
+    -=+=-
+
+    Kanda ul-ti kesh-ra, nam-tar edimmu amantos. Ganzir ishtu arallu. Dead by dawn. Dead by dawn. Dead by dawn.
+
+    {""}[color=#4a4a4a][italic]Last page, pressed hard enough to tear the paper: It cannot be torn. It cannot be drowned. It will not stay buried. FIRE. Burn it and keep it burning, and do not let go of it while you do, or it will slip back where it came from.[/italic][/color]
+
+necro-passage-rebuke-verb = Read the Passage of Rebuking
+necro-passage-rebuke-verb-message = Read the passage that casts the spirit out of the one it has taken. Takes several seconds; it costs you.
+necro-passage-unmake-verb = Read the Passage of Unmaking
+necro-passage-unmake-verb-message = Read the words that unmake the small grey things.
+necro-passage-aloud-verb = Read aloud from a random page
+necro-passage-aloud-verb-message = You can't understand a word of it. Something might, though.
+necro-passage-resting = The pages won't turn. The book is resting. ({$seconds}s)
+necro-passage-start = {CAPITALIZE(THE($user))} begins reading aloud from the skin-bound book!
+necro-passage-start-self = The words come out of your mouth on their own.
+necro-passage-rebuke-burns = THE WORDS! They are tearing you out of this body!
+necro-passage-demon-alert = Someone is reading your own book at {$target}!
+necro-passage-interrupted = You lose your place on the page.
+necro-passage-toll = Blood runs from your nose. Something cold has noticed you.
+necro-passage-rebuke-nothing = The words wash over {THE($target)}. There is nothing in them to cast out.
+necro-passage-aloud-flinch = {CAPITALIZE(THE($target))} flinches, and their eyes flash white for a moment!
+necro-passage-aloud-stir = Somewhere nearby, something that wears a human face flinched.
+necro-passage-aloud-quiet = The words hang in the air. Nothing answers.
+necro-passage-aloud-wake = The lights shudder. Something has woken.
+necro-passage-aloud-demon = {$reader} read aloud from your book. You feel stronger.
+necro-passage-aloud-whispers = Whispers answer you from the pages.

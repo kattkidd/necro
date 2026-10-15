@@ -81,6 +81,18 @@ public sealed partial class NecroRecordingDoAfterEvent : SimpleDoAfterEvent;
 [Serializable, NetSerializable]
 public sealed partial class DeaditeExorcismDoAfterEvent : SimpleDoAfterEvent;
 
+/// <summary>Reading the Passage of Rebuking from the Necronomicon at a possessed body.</summary>
+[Serializable, NetSerializable]
+public sealed partial class NecroBookRebukeDoAfterEvent : SimpleDoAfterEvent;
+
+/// <summary>Reading the Passage of Unmaking from the Necronomicon at a Demonspawn.</summary>
+[Serializable, NetSerializable]
+public sealed partial class NecroBookUnmakeDoAfterEvent : SimpleDoAfterEvent;
+
+/// <summary>Reading aloud from a random page of the Necronomicon. Anything can happen.</summary>
+[Serializable, NetSerializable]
+public sealed partial class NecroBookReadAloudDoAfterEvent : SimpleDoAfterEvent;
+
 // ---------------------------------------------------------------------------------------------
 // Skill Store product events (raised on the buyer, validated server-side)
 // ---------------------------------------------------------------------------------------------

@@ -433,6 +433,43 @@ public sealed partial class NecronomiconComponent : Component
 
     [DataField]
     public EntProtoId DestroyedSpawn = "Ash";
+
+    #region Passages (read by a living, unpossessed person holding the book)
+    /// <summary>The book needs to rest between readings.</summary>
+    [DataField]
+    public TimeSpan ReadCooldown = TimeSpan.FromSeconds(60);
+
+    [ViewVariables]
+    public TimeSpan NextReading;
+
+    /// <summary>How close the target of a passage must be.</summary>
+    [DataField]
+    public float ReadRange = 2f;
+
+    [DataField]
+    public TimeSpan RebukeTime = TimeSpan.FromSeconds(8);
+
+    [DataField]
+    public TimeSpan UnmakeTime = TimeSpan.FromSeconds(5);
+
+    [DataField]
+    public TimeSpan ReadAloudTime = TimeSpan.FromSeconds(4);
+
+    /// <summary>Someone rebuked out of a body can't be claimed again for this long.</summary>
+    [DataField]
+    public TimeSpan RebukeBlessing = TimeSpan.FromMinutes(5);
+
+    /// <summary>What reading from the book costs the reader.</summary>
+    [DataField]
+    public DamageSpecifier ReaderToll = new()
+    {
+        DamageDict = new() { { "Cellular", 6 } },
+    };
+
+    /// <summary>A rebuked Deadite crawls while the passage is read at it.</summary>
+    [DataField]
+    public float RebukeSlow = 0.4f;
+    #endregion
 }
 
 /// <summary>A victim prepared for possession by JOIN US or a Deadite bite.</summary>

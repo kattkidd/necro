@@ -577,6 +577,13 @@
       map: [ "overlay" ]
   - type: Appearance
   - type: Necronomicon
+  # Written in blood in a language nobody living can read, with the late professor's pencilled notes.
+  - type: Paper
+    content: necronomicon-book-text
+    editingDisabled: true
+  - type: PaperVisuals
+    backgroundModulate: "#b8a68a"
+    defaultTextColor: "#7a0606"
   - type: Flammable
     fireSpread: false
     canResistFire: false

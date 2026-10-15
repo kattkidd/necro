@@ -78,6 +78,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         InitializePuppet();
         InitializeCommands();
         InitializeSupernatural();
+        InitializePassages();
     }
 
     public override void Update(float frameTime)
