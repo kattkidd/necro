@@ -1,3 +1,5 @@
+using Content.Server.Chat.Systems;
+using Content.Server.Emoting.Systems;
 using Content.Server.Mind;
 using Content.Server.Necronomicon.Components;
 using Content.Shared.ActionBlocker;
@@ -34,6 +36,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Shared.Chat;
+using Content.Shared.Chat.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Necronomicon;
@@ -60,7 +63,7 @@ public sealed partial class DeaditeSystem : EntitySystem
     [Dependency] private NameModifierSystem _nameMod = default!;
     [Dependency] private NecronomiconSystem _necro = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
-    [Dependency] private ReplacementAccentSystem _replacementAccent = default!;
+    [Dependency] private ChatSystem _chat = default!;
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private SharedVisualBodySystem _visualBody = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -69,7 +72,10 @@ public sealed partial class DeaditeSystem : EntitySystem
     public static readonly EntProtoId DeaditeMindRole = "MindRoleDeadite";
     public const string SumerianChannel = "Sumerian";
 
-    private static readonly SoundSpecifier RevealSound = new SoundCollectionSpecifier("DeaditeLaughs");
+    private static readonly ProtoId<EmoteSoundsPrototype> DeaditeEmoteSounds = "DeaditeEmotes";
+    private const string LaughEmote = "Laugh";
+    private const string ScreamEmote = "Scream";
+    private const string SnarlEmote = "Snarl";
     private static readonly SoundSpecifier SnarlSound = new SoundCollectionSpecifier("DeaditeSnarls");
     private static readonly SoundSpecifier ScreamSound = new SoundCollectionSpecifier("DeaditeScreams");
     private static readonly SoundSpecifier TalkSound = new SoundCollectionSpecifier("DeaditeTalk");
@@ -105,6 +111,8 @@ public sealed partial class DeaditeSystem : EntitySystem
         SubscribeLocalEvent<DeaditeComponent, InteractionAttemptEvent>(OnSeveredInteract);
 
         SubscribeLocalEvent<DeaditeComponent, EntitySpokeEvent>(OnDeaditeSpoke);
+        SubscribeLocalEvent<DeaditeComponent, EmoteEvent>(OnDeaditeEmote,
+            before: new[] { typeof(VocalSystem), typeof(BodyEmotesSystem) });
 
         SubscribeLocalEvent<KandarianRegenComponent, MobStateChangedEvent>(OnRegenMobState);
 
@@ -150,7 +158,9 @@ public sealed partial class DeaditeSystem : EntitySystem
                 continue;
 
             deadite.NextLaugh = now + TimeSpan.FromSeconds(_random.Next(10, 21));
-            _audio.PlayPvs(SnarlSound, laugher);
+            // A real emote: it shows in chat and plays through the Deadite voice below.
+            _chat.TryEmoteWithChat(laugher, _random.Prob(0.35f) ? LaughEmote : SnarlEmote,
+                ignoreActionBlocker: true, forceEmote: true);
         }
 
         var query = EntityQueryEnumerator<KandarianRegenComponent, MobStateComponent>();
@@ -175,7 +185,7 @@ public sealed partial class DeaditeSystem : EntitySystem
                 regen.ReviveAt = null;
                 _damageable.ClearAllDamage(uid);
                 _mobState.ChangeMobState(uid, MobState.Alive, mob);
-                _audio.PlayPvs(ScreamSound, uid);
+                _chat.TryEmoteWithChat(uid, ScreamEmote, ignoreActionBlocker: true, forceEmote: true);
                 _popup.PopupEntity(Loc.GetString("deadite-rises", ("target", Identity.Entity(uid, EntityManager))),
                     uid, PopupType.LargeCaution);
 
@@ -183,6 +193,7 @@ public sealed partial class DeaditeSystem : EntitySystem
                     && _necro.TryGetDemon(kandarian.Demon, out var demon))
                 {
                     _necro.AddFearAround(demon.Value, uid, demon.Value.Comp.WitnessRange, NecroFearSource.Supernatural);
+                    _necro.SupernaturalBurst(Transform(uid).Coordinates, demon.Value.Comp.SupernaturalRange, 2);
                 }
 
                 continue;
@@ -231,7 +242,7 @@ public sealed partial class DeaditeSystem : EntitySystem
             _roles.MindAddRole(mindId, DeaditeMindRole);
 
         // Only the victim notices.
-        _popup.PopupEntity(Loc.GetString("deadite-converted"), target, target, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("deadite-converted"), target, PopupType.LargeCaution);
         _audio.PlayGlobal(PossessedSound, target);
     }
 
@@ -278,9 +289,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         // Pale skin, completely white eyes.
         ApplyDeaditeLook(ent.Owner, ent.Comp.SkinColor, ent.Comp.EyeColor);
 
-        // Loud and vulgar.
-        EnsureComp<AllCapsAccentComponent>(ent);
-        _replacementAccent.ApplyAccent(ent, ent.Comp.Accent);
+        // Revealed Deadites still talk normally; their voice is in the laughs, snarls and screams (emotes).
 
         _nameMod.RefreshNameModifiers(ent.Owner);
         _speed.RefreshMovementSpeedModifiers(ent.Owner);
@@ -289,7 +298,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         _actions.RemoveAction(ent.Owner, ent.Comp.RevealActionEntity);
         ent.Comp.RevealActionEntity = null;
 
-        _audio.PlayPvs(RevealSound, ent);
+        _chat.TryEmoteWithChat(ent, LaughEmote, ignoreActionBlocker: true, forceEmote: true);
         _jitter.DoJitter(ent, TimeSpan.FromSeconds(3), true, 15f, 8f);
         _popup.PopupEntity(Loc.GetString("deadite-reveal", ("target", Identity.Entity(ent, EntityManager))),
             ent, PopupType.LargeCaution);
@@ -304,6 +313,7 @@ public sealed partial class DeaditeSystem : EntitySystem
             }
 
             _necro.AddFearAround(demon.Value, ent, demon.Value.Comp.WitnessRange, NecroFearSource.Reveal);
+            _necro.SupernaturalBurst(Transform(ent).Coordinates, demon.Value.Comp.SupernaturalRange, 3);
         }
 
         // Infiltrator II can slip the mask back on.
@@ -341,6 +351,18 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         ent.Comp.NextTalkSound = now + TimeSpan.FromSeconds(2);
         _audio.PlayPvs(TalkSound, ent);
+    }
+
+    /// <summary>
+    /// A revealed Deadite's laughs, screams and snarls (typed or automatic) come out in the Deadite voice.
+    /// Disguised Deadites sound like their host.
+    /// </summary>
+    private void OnDeaditeEmote(Entity<DeaditeComponent> ent, ref EmoteEvent args)
+    {
+        if (args.Handled || !ent.Comp.Revealed || !args.Emote.Category.HasFlag(EmoteCategory.Vocal))
+            return;
+
+        args.Handled = _chat.TryPlayEmoteSound(ent, ProtoMan.Index(DeaditeEmoteSounds), args.Emote);
     }
 
     private void OnRefreshName(Entity<DeaditeComponent> ent, ref RefreshNameModifiersEvent args)
@@ -397,7 +419,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         var range = HasTree(ent.Comp, NecroUpgrade.StalkerI) ? ent.Comp.StalkerBiteRange : ent.Comp.BiteRange;
         if (!_transform.InRange(Transform(ent).Coordinates, Transform(target).Coordinates, range))
         {
-            _popup.PopupEntity(Loc.GetString("necro-too-far"), ent, ent, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-too-far"), ent, PopupType.SmallCaution);
             return;
         }
 
@@ -413,10 +435,10 @@ public sealed partial class DeaditeSystem : EntitySystem
         // Infiltrator I: a disguised Deadite's bite is a quiet nip only the victim notices.
         if (!ent.Comp.Revealed && HasTree(ent.Comp, NecroUpgrade.InfiltratorI))
         {
-            _popup.PopupEntity(Loc.GetString("deadite-bite-silent-victim"), target, target, PopupType.SmallCaution);
-            _popup.PopupEntity(Loc.GetString("deadite-bite-silent-user",
+            _popup.PopupCursor(Loc.GetString("deadite-bite-silent-victim"), target, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-bite-silent-user",
                     ("target", Identity.Entity(target, EntityManager))),
-                ent, ent, PopupType.Small);
+                ent, PopupType.Small);
         }
         else
         {
@@ -440,12 +462,12 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         if (shielded)
         {
-            _popup.PopupEntity(Loc.GetString("deadite-bite-shielded"), ent, ent, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-bite-shielded"), ent, PopupType.SmallCaution);
             return;
         }
 
         _necro.Prepare(demon.Value, target);
-        _popup.PopupEntity(Loc.GetString("deadite-bite-prepared"), target, target, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("deadite-bite-prepared"), target, PopupType.LargeCaution);
     }
 
     #endregion
@@ -508,7 +530,7 @@ public sealed partial class DeaditeSystem : EntitySystem
             return true;
 
         if (popup)
-            _popup.PopupEntity(Loc.GetString(reason, ("target", Identity.Entity(target, EntityManager))), ent, ent, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString(reason, ("target", Identity.Entity(target, EntityManager))), ent, PopupType.SmallCaution);
 
         return false;
     }
@@ -524,9 +546,13 @@ public sealed partial class DeaditeSystem : EntitySystem
             return;
 
         MeltMindshield(target);
+        _necro.Chant(target, 5);
 
         if (_necro.TryGetDemon(ent.Comp.Demon, out var demon))
+        {
             demon.Value.Comp.RitualsPerformed++;
+            _necro.SupernaturalBurst(Transform(target).Coordinates, demon.Value.Comp.SupernaturalRange, 3);
+        }
     }
 
     /// <summary>Removes every mindshield implant from the victim.</summary>
@@ -551,7 +577,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         _jitter.DoJitter(target, TimeSpan.FromSeconds(5), true, 20f, 10f);
         _popup.PopupEntity(Loc.GetString("deadite-ritual-melt", ("target", Identity.Entity(target, EntityManager))),
             target, PopupType.LargeCaution);
-        _popup.PopupEntity(Loc.GetString("deadite-ritual-melt-victim"), target, target, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("deadite-ritual-melt-victim"), target, PopupType.LargeCaution);
     }
 
     #endregion
@@ -645,7 +671,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         // Bring them back to "alive" so they can speak, but they cannot do anything else.
         _damageable.ClearAllDamage(ent.Owner);
         _mobState.ChangeMobState(ent, MobState.Alive);
-        _audio.PlayPvs(ScreamSound, ent);
+        _chat.TryEmoteWithChat(ent, ScreamEmote, ignoreActionBlocker: true, forceEmote: true);
         _blocker.UpdateCanMove(ent);
         _speed.RefreshMovementSpeedModifiers(ent.Owner);
 
@@ -716,7 +742,7 @@ public sealed partial class DeaditeSystem : EntitySystem
     }
 
     /// <summary>
-    /// Removes everything that made <paramref name="uid"/> a Deadite (thresholds, actions, Sumerian, accents, mind role,
+    /// Removes everything that made <paramref name="uid"/> a Deadite (thresholds, actions, Sumerian, mind role,
     /// the component itself) and refreshes name, speed and movement. Leaves the mob state alone.
     /// </summary>
     private void StripDeadite(EntityUid uid, DeaditeComponent comp)
@@ -739,12 +765,6 @@ public sealed partial class DeaditeSystem : EntitySystem
             active.Channels.Remove(SumerianChannel);
             if (active.Channels.Count == 0)
                 RemComp<ActiveRadioComponent>(uid);
-        }
-
-        if (comp.Revealed)
-        {
-            RemComp<AllCapsAccentComponent>(uid);
-            RemComp<ReplacementAccentComponent>(uid);
         }
 
         if (_mind.TryGetMind(uid, out var mindId, out _))

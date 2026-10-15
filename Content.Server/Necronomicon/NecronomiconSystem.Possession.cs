@@ -37,7 +37,7 @@ public sealed partial class NecronomiconSystem
             return true;
 
         if (popupUser is { } user)
-            _popup.PopupEntity(Loc.GetString(reason, ("target", Identity.Entity(target, EntityManager))), user, user, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString(reason, ("target", Identity.Entity(target, EntityManager))), user, PopupType.SmallCaution);
 
         return false;
     }
@@ -47,13 +47,13 @@ public sealed partial class NecronomiconSystem
     {
         if (!IsBookManifested(demon, out var book))
         {
-            _popup.PopupEntity(Loc.GetString("necro-book-must-be-manifested"), user, user, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-book-must-be-manifested"), user, PopupType.SmallCaution);
             return false;
         }
 
         if (!_transform.InRange(Transform(book.Value).Coordinates, Transform(target).Coordinates, range))
         {
-            _popup.PopupEntity(Loc.GetString("necro-book-too-far"), user, user, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-book-too-far"), user, PopupType.SmallCaution);
             return false;
         }
 
@@ -80,14 +80,14 @@ public sealed partial class NecronomiconSystem
         // which can follow people around instead of waiting for them to wander past the book.
         if (!IsBookManifested(ent, out _))
         {
-            _popup.PopupEntity(Loc.GetString("necro-book-must-be-manifested"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-book-must-be-manifested"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
         var range = HasUpgrade(ent, NecroUpgrade.FarWhisper) ? ent.Comp.FarWhisperJoinUsRange : ent.Comp.JoinUsRange;
         if (!_transform.InRange(Transform(args.Performer).Coordinates, Transform(target).Coordinates, range))
         {
-            _popup.PopupEntity(Loc.GetString("necro-too-far"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-too-far"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
@@ -96,12 +96,12 @@ public sealed partial class NecronomiconSystem
 
         // The whisper (only the victim hears it) and the shudder.
         _audio.PlayGlobal(ent.Comp.WhisperSound, target);
-        _popup.PopupEntity(Loc.GetString("necro-join-us-victim"), target, target, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("necro-join-us-victim"), target, PopupType.LargeCaution);
         _popup.PopupEntity(Loc.GetString("necro-join-us-shudder", ("target", Identity.Entity(target, EntityManager))),
             target, Robust.Shared.Player.Filter.PvsExcept(target), true, PopupType.Medium);
         _jitter.DoJitter(target, TimeSpan.FromSeconds(4), true, 8f, 6f);
-        _popup.PopupEntity(Loc.GetString("necro-join-us-success", ("target", Identity.Entity(target, EntityManager))),
-            args.Performer, args.Performer, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("necro-join-us-success", ("target", Identity.Entity(target, EntityManager))),
+            args.Performer, PopupType.Medium);
 
         AddFear(ent, target, NecroFearSource.Supernatural);
     }
@@ -115,7 +115,7 @@ public sealed partial class NecronomiconSystem
 
         if (ent.Comp.PossessionCharges <= 0)
         {
-            _popup.PopupEntity(Loc.GetString("necro-no-charges"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-no-charges"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
@@ -124,13 +124,13 @@ public sealed partial class NecronomiconSystem
 
         if (!HasComp<NecroPreparedComponent>(target))
         {
-            _popup.PopupEntity(Loc.GetString("necro-target-not-prepared"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-target-not-prepared"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
         if (!_transform.InRange(Transform(args.Performer).Coordinates, Transform(target).Coordinates, ent.Comp.PossessCasterRange))
         {
-            _popup.PopupEntity(Loc.GetString("necro-too-far"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-too-far"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
@@ -151,11 +151,18 @@ public sealed partial class NecronomiconSystem
         if (!_doAfter.TryStartDoAfter(doAfter))
             return;
 
-        EnsureComp<NecroBeingPossessedComponent>(target);
+        var possessing = EnsureComp<NecroBeingPossessedComponent>(target);
+        possessing.NextChant = _timing.CurTime;
+        possessing.ChantIndex = 0;
+        possessing.ExpiresAt = _timing.CurTime + duration + TimeSpan.FromSeconds(3);
         args.Handled = true;
 
-        _popup.PopupEntity(Loc.GetString("necro-possess-start-victim"), target, target, PopupType.LargeCaution);
+        // Held down for the whole possession: no running, no fighting it off.
+        _stun.TryUpdateParalyzeDuration(target, duration + TimeSpan.FromSeconds(1));
+
+        _popup.PopupCursor(Loc.GetString("necro-possess-start-victim"), target, PopupType.LargeCaution);
         _jitter.DoJitter(target, duration, true, 12f, 8f);
+        SupernaturalBurst(Transform(target).Coordinates, ent.Comp.SupernaturalRange, 3);
     }
 
     private void OnPossessDoAfter(Entity<NecroDemonComponent> ent, ref NecroPossessDoAfterEvent args)
@@ -180,7 +187,8 @@ public sealed partial class NecronomiconSystem
         if (!BookNear(ent, target, ent.Comp.PossessRange + ent.Comp.PossessCompletionGrace, args.User))
             return;
 
-        ConvertToDeadite(ent, target);
+        if (ConvertToDeadite(ent, target))
+            SupernaturalBurst(Transform(target).Coordinates, ent.Comp.SupernaturalRange, 5);
     }
 
     /// <summary>Consumes a charge and turns the victim into a disguised Deadite.</summary>
@@ -197,20 +205,39 @@ public sealed partial class NecronomiconSystem
         _deadite.MakeDeadite(target, demon);
         AddSoulPower(demon, demon.Comp.ConversionReward);
 
-        _popup.PopupEntity(Loc.GetString("necro-possess-success",
+        _popup.PopupCursor(Loc.GetString("necro-possess-success",
                 ("target", Identity.Entity(target, EntityManager)),
                 ("charges", demon.Comp.PossessionCharges)),
-            demon, demon, PopupType.Large);
+            demon, PopupType.Large);
 
         if (demon.Comp.Manifestation is { } form)
-            _popup.PopupEntity(Loc.GetString("necro-possess-success",
+            _popup.PopupCursor(Loc.GetString("necro-possess-success",
                     ("target", Identity.Entity(target, EntityManager)),
                     ("charges", demon.Comp.PossessionCharges)),
-                form, form, PopupType.Large);
+                form, PopupType.Large);
 
         var ev = new NecroSoulConsumedEvent(demon, target);
         RaiseLocalEvent(ref ev);
         return true;
+    }
+
+    private void UpdatePossessing(TimeSpan now)
+    {
+        var query = EntityQueryEnumerator<NecroBeingPossessedComponent>();
+        while (query.MoveNext(out var uid, out var possessing))
+        {
+            if (now >= possessing.ExpiresAt)
+            {
+                RemCompDeferred<NecroBeingPossessedComponent>(uid);
+                continue;
+            }
+
+            if (now < possessing.NextChant)
+                continue;
+
+            possessing.NextChant = now + ChantInterval;
+            Chant(uid, possessing.ChantIndex++);
+        }
     }
 
     private void UpdatePrepared(TimeSpan now)

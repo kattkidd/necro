@@ -16,7 +16,7 @@ role-subtype-demonspawn = Demonspawn
 
 necro-briefing = You are a Kandarian Demon bound to the Necronomicon. An old recording of the reading played as the shift began, and you are awake. The book waits in the ether: manifest it where you choose, whisper JOIN US, possess the crew and consume every soul. A living person holding the book stops it leaving the world, and if they burn it, you are banished.
 necro-briefing-character = You serve the Necronomicon. Spend Soul Power (earned from Fear) in your Skill Store. The book cannot leave the physical world while a living, unpossessed person carries it, and fire destroys it.
-deadite-briefing = You are a Deadite, possessed by a Kandarian Demon. Stay disguised as long as you like, then reveal your true form. Bite the living to prepare them for possession. Speak Ancient Sumerian with :k. Beware the chaplain: if you are restrained, a holy rite can cast the demon out of you.
+deadite-briefing = You are a Deadite, possessed by a Kandarian Demon. Stay disguised as long as you like, then reveal your true form. Bite the living to prepare them for possession. Speak Ancient Sumerian with :k. Once revealed, your laughs, screams and snarls come out in the voice of the dead. Beware the chaplain: if you are restrained, a holy rite can cast the demon out of you.
 demonspawn-briefing = You are Demonspawn, summoned by the Necronomicon. Claw, bite and terrify. Speak Ancient Sumerian with :k. In time you will grow into something bigger. Holy water and Bibles will melt you to dust on contact.
 
 ghost-role-information-demonspawn-name = Demonspawn
@@ -41,10 +41,14 @@ store-category-necro-demonspawn = Demonspawn
 store-category-necro-infiltration = Infiltration
 store-category-necro-deadite-tree = Deadite Evolution
 
-necro-catalog-form-desc = Choose the shape you will wear. Cosmetic until you buy a Physical Form; it grants none of the creature's abilities. Can be changed at any time.
+necro-catalog-form-desc = Choose the shape you will wear. Each form has its own speed, toughness and claws once you buy a Physical Form. Can be changed at any time.
 necro-catalog-form-abomination-name = Form: Abomination
 necro-catalog-form-hellspawn-name = Form: Hellspawn
 necro-catalog-form-flesh-name = Form: Flesh Golem
+necro-catalog-form-wraith-name = Form: Wraith
+necro-catalog-form-lover-name = Form: Shambling Lover
+necro-catalog-form-crawler-name = Form: Crawler
+necro-catalog-form-apparition-name = Form: Apparition
 necro-catalog-charge-name = Possession Charge
 necro-catalog-charge-desc = One more soul for the book. Each successful possession consumes a charge.
 necro-catalog-fear-amplify-name = Amplify Fear
@@ -133,7 +137,7 @@ necro-charge-bought = Possession charges: {$charges}.
 necro-demonspawn-summoned = Something small and grey claws its way out of nothing!
 necro-upgrade-bought = Your power grows.
 necro-form-recovering = Your last body was destroyed. You can manifest again in {$seconds} seconds.
-necro-form-manifest = A monstrous shape tears itself into existence!
+necro-form-manifest = {CAPITALIZE($demon)} tears itself into existence!
 necro-form-destroyed = Your body is destroyed! You slip back into the ether.
 necro-form-dissolves = The creature collapses into black smoke.
 
@@ -253,7 +257,7 @@ guide-entry-necronomicon = Necronomicon
 
 # Appearance loadout
 loadout-group-necro-appearance = Appearance
-necro-character-name = {$character} ({$alias})
+loadout-group-necro-aura = Aura
 
 # Round-end statistics
 necro-round-end-time-survived = The demon walked the station for [color=red]{$minutes}m {$seconds}s[/color] and was never banished.
@@ -336,3 +340,14 @@ demonspawn-melting-self = HOLY FIRE! You are coming apart!
 demonspawn-melting-user = It's melting!
 demonspawn-dust = {CAPITALIZE(THE($target))} crumbles into a pile of grey dust.
 demonspawn-dust-demon = One of your Demonspawn was destroyed by something holy.
+
+## Kandarian chant and supernatural events
+
+necro-chant-1 = Kanda...
+necro-chant-2 = Estrada...
+necro-chant-3 = Amantos...
+necro-chant-4 = Kanda! Kanda!
+necro-chant-5 = Naturom Demonto...
+necro-chant-6 = KANDAR!
+necro-roar = {CAPITALIZE($demon)} lets out a roar that shakes the walls!
+necro-poltergeist = Everything around {THE($target)} rises into the air!

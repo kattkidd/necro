@@ -1,6 +1,6 @@
-# Kandarian Demon appearance, chosen before the round in
+# Kandarian Demon loadout, chosen before the round in
 # Character Setup → Antags → Kandarian Demon → Loadout (next to the alias).
-# Each option's preview entity carries NecroAppearanceOption, which says what it means.
+# Each option's preview entity carries a component that says what it means.
 
 - type: loadoutGroup
   id: NecroDemonAppearance
@@ -11,23 +11,23 @@
   - NecroAppearanceAbomination
   - NecroAppearanceHellspawn
   - NecroAppearanceFlesh
-  - NecroAppearanceCharacter
+  - NecroAppearanceWraith
+  - NecroAppearanceLover
+  - NecroAppearanceCrawler
+  - NecroAppearanceApparition
 
-- type: loadout
-  id: NecroAppearanceAbomination
-  dummyEntity: NecroAppearanceDummyAbomination
-
-- type: loadout
-  id: NecroAppearanceHellspawn
-  dummyEntity: NecroAppearanceDummyHellspawn
-
-- type: loadout
-  id: NecroAppearanceFlesh
-  dummyEntity: NecroAppearanceDummyFlesh
-
-- type: loadout
-  id: NecroAppearanceCharacter
-  dummyEntity: NecroAppearanceDummyCharacter
+- type: loadoutGroup
+  id: NecroDemonAura
+  name: loadout-group-necro-aura
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - NecroAuraCrimson
+  - NecroAuraBile
+  - NecroAuraVoid
+  - NecroAuraEmber
+  - NecroAuraCorpse
+  - NecroAuraAbyss
 
 - type: entity
   abstract: true
@@ -36,11 +36,17 @@
   components:
   - type: Sprite
 
+# --- Forms: your ghost's shape and the body you get with Physical Form -----------------------------
+
+- type: loadout
+  id: NecroAppearanceAbomination
+  dummyEntity: NecroAppearanceDummyAbomination
+
 - type: entity
   parent: NecroAppearanceDummyBase
   id: NecroAppearanceDummyAbomination
   name: Abomination
-  description: Your ghost and your physical form take the shape of an abomination.
+  description: "Form: Slow and brutal. Very tough, hits hardest."
   components:
   - type: Sprite
     sprite: Mobs/Demons/abomination.rsi
@@ -50,11 +56,15 @@
     rsi: /Textures/Mobs/Demons/abomination.rsi
     state: abomination
 
+- type: loadout
+  id: NecroAppearanceHellspawn
+  dummyEntity: NecroAppearanceDummyHellspawn
+
 - type: entity
   parent: NecroAppearanceDummyBase
   id: NecroAppearanceDummyHellspawn
   name: Hellspawn
-  description: Your ghost and your physical form take the shape of a hellspawn.
+  description: "Form: Balanced speed, toughness and claws."
   components:
   - type: Sprite
     sprite: Mobs/Demons/hellspawn.rsi
@@ -64,11 +74,15 @@
     rsi: /Textures/Mobs/Demons/hellspawn.rsi
     state: alive
 
+- type: loadout
+  id: NecroAppearanceFlesh
+  dummyEntity: NecroAppearanceDummyFlesh
+
 - type: entity
   parent: NecroAppearanceDummyBase
   id: NecroAppearanceDummyFlesh
   name: Flesh Golem
-  description: Your ghost and your physical form take the shape of a flesh golem.
+  description: "Form: The toughest and slowest form. Crushing blows."
   components:
   - type: Sprite
     sprite: Mobs/Aliens/flesh.rsi
@@ -78,17 +92,178 @@
     rsi: /Textures/Mobs/Aliens/flesh.rsi
     state: golem
 
+- type: loadout
+  id: NecroAppearanceWraith
+  dummyEntity: NecroAppearanceDummyWraith
+
 - type: entity
   parent: NecroAppearanceDummyBase
-  id: NecroAppearanceDummyCharacter
-  name: My Character
-  description: You are the demon wearing your selected character. You are named "Character Name (Alias)", and your physical form is that character, deathly pale with white eyes.
+  id: NecroAppearanceDummyWraith
+  name: Wraith
+  description: "Form: The fastest form, with quick weak strikes. Fragile."
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/revenant.rsi
+    state: active
+  - type: NecroAppearanceOption
+    form: MobKandarianFormWraith
+    rsi: /Textures/Mobs/Ghosts/revenant.rsi
+    state: active
+
+- type: loadout
+  id: NecroAppearanceLover
+  dummyEntity: NecroAppearanceDummyLover
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAppearanceDummyLover
+  name: Shambling Lover
+  description: "Form: Sturdy and biting. A little tougher than a hellspawn."
+  components:
+  - type: Sprite
+    sprite: Mobs/Aliens/flesh.rsi
+    state: lover
+  - type: NecroAppearanceOption
+    form: MobKandarianFormLover
+    rsi: /Textures/Mobs/Aliens/flesh.rsi
+    state: lover
+
+- type: loadout
+  id: NecroAppearanceCrawler
+  dummyEntity: NecroAppearanceDummyCrawler
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAppearanceDummyCrawler
+  name: Crawler
+  description: "Form: Very fast and low to the ground. Fairly fragile."
+  components:
+  - type: Sprite
+    sprite: Mobs/Aliens/Argocyte/argocyte_common.rsi
+    state: crawler
+  - type: NecroAppearanceOption
+    form: MobKandarianFormCrawler
+    rsi: /Textures/Mobs/Aliens/Argocyte/argocyte_common.rsi
+    state: crawler
+
+- type: loadout
+  id: NecroAppearanceApparition
+  dummyEntity: NecroAppearanceDummyApparition
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAppearanceDummyApparition
+  name: Apparition
+  description: "Form: A drifting dead thing with a freezing touch. Quick, not tough."
   components:
   - type: Sprite
     sprite: Mobs/Ghosts/ghost_human.rsi
     state: animated
-    color: "#ff9090cc"
   - type: NecroAppearanceOption
-    useCharacter: true
+    form: MobKandarianFormApparition
     rsi: /Textures/Mobs/Ghosts/ghost_human.rsi
     state: animated
+
+# --- Auras: the tint of your ghost and the glow of your physical form ------------------------------
+
+- type: loadout
+  id: NecroAuraCrimson
+  dummyEntity: NecroAuraDummyCrimson
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAuraDummyCrimson
+  name: Crimson
+  description: "Aura: The colour of old blood. The classic."
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/revenant.rsi
+    state: idle
+    color: "#a01818"
+  - type: NecroAuraOption
+    color: "#a01818"
+
+- type: loadout
+  id: NecroAuraBile
+  dummyEntity: NecroAuraDummyBile
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAuraDummyBile
+  name: Bile
+  description: "Aura: A sickly, rotten green."
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/revenant.rsi
+    state: idle
+    color: "#5fa020"
+  - type: NecroAuraOption
+    color: "#5fa020"
+
+- type: loadout
+  id: NecroAuraVoid
+  dummyEntity: NecroAuraDummyVoid
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAuraDummyVoid
+  name: Void
+  description: "Aura: A deep, wrong violet."
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/revenant.rsi
+    state: idle
+    color: "#6a2cc0"
+  - type: NecroAuraOption
+    color: "#6a2cc0"
+
+- type: loadout
+  id: NecroAuraEmber
+  dummyEntity: NecroAuraDummyEmber
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAuraDummyEmber
+  name: Ember
+  description: "Aura: The orange of a fire that will not go out."
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/revenant.rsi
+    state: idle
+    color: "#e06010"
+  - type: NecroAuraOption
+    color: "#e06010"
+
+- type: loadout
+  id: NecroAuraCorpse
+  dummyEntity: NecroAuraDummyCorpse
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAuraDummyCorpse
+  name: Corpse Light
+  description: "Aura: The grey-white of a drowned face."
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/revenant.rsi
+    state: idle
+    color: "#c8d0c0"
+  - type: NecroAuraOption
+    color: "#c8d0c0"
+
+- type: loadout
+  id: NecroAuraAbyss
+  dummyEntity: NecroAuraDummyAbyss
+
+- type: entity
+  parent: NecroAppearanceDummyBase
+  id: NecroAuraDummyAbyss
+  name: Abyss
+  description: "Aura: Cold blue, like deep water at night."
+  components:
+  - type: Sprite
+    sprite: Mobs/Ghosts/revenant.rsi
+    state: idle
+    color: "#2050c0"
+  - type: NecroAuraOption
+    color: "#2050c0"

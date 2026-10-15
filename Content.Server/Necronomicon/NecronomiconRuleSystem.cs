@@ -13,14 +13,17 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Necronomicon;
 using Robust.Shared.Player;
 using Content.Shared.Station.Systems;
+using Content.Shared.Preferences.Loadouts;
 using Robust.Shared.Audio;
+using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Necronomicon;
 
 /// <summary>
 /// Round-start rule for the Necronomicon antagonist.
 /// One player becomes a Kandarian Demon. An old recording of the Necronomicon reading is already playing somewhere
-/// aboard when the round starts; the demon wakes immediately and the book appears beside the recorder. Crew win by burning the book,
+/// aboard when the round starts; the demon wakes immediately and keeps the book in the ether until it manifests it. Crew win by burning the book,
 /// the Necronomicon wins when no eligible soul is left aboard the station.
 /// </summary>
 public sealed partial class NecronomiconRuleSystem : GameRuleSystem<NecronomiconRuleComponent>
@@ -41,6 +44,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     /// <summary>Role loadout holding the player's chosen demon name (Character Setup → Antags → Loadout).</summary>
     public const string DemonLoadoutId = "AntagNecronomicon";
     public const string AppearanceGroupId = "NecroDemonAppearance";
+    public const string AuraGroupId = "NecroDemonAura";
 
     private static readonly SoundSpecifier VictorySound = new SoundPathSpecifier("/Audio/Effects/demon_consume.ogg");
 
@@ -97,8 +101,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     }
 
     /// <summary>
-    /// Reads the player's Kandarian Demon loadout: the alias (name) and the appearance.
-    /// "My Character" makes the demon "Character Name (Alias)" and uses that character as the physical form.
+    /// Reads the player's Kandarian Demon loadout: the alias (name), the form and the aura colour.
     /// </summary>
     private void ApplyLoadout(ICommonSession? session, Entity<NecroDemonComponent> demon)
     {
@@ -112,30 +115,33 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         if (!string.IsNullOrWhiteSpace(loadout.EntityName))
             _metaData.SetEntityName(demon, loadout.EntityName.Trim());
 
-        var alias = Name(demon);
+        if (TryGetPickedDummy(loadout, AppearanceGroupId) is { } formDummy
+            && formDummy.TryComp<NecroAppearanceOptionComponent>(out var option, _factory))
+        {
+            demon.Comp.SelectedForm = option.Form;
+            _appearance.SetData(demon, NecroDemonVisuals.Form, $"{option.Rsi}|{option.State}");
+        }
 
-        if (!loadout.SelectedLoadouts.TryGetValue(AppearanceGroupId, out var picks) || picks.Count == 0)
-            return;
+        if (TryGetPickedDummy(loadout, AuraGroupId) is { } auraDummy
+            && auraDummy.TryComp<NecroAuraOptionComponent>(out var aura, _factory))
+        {
+            demon.Comp.AuraColor = aura.Color;
+            _appearance.SetData(demon, NecroDemonVisuals.Tint, aura.Color);
+        }
+    }
+
+    /// <summary>The preview entity of whatever the player picked in a loadout group, if anything.</summary>
+    private EntityPrototype? TryGetPickedDummy(RoleLoadout loadout, string groupId)
+    {
+        if (!loadout.SelectedLoadouts.TryGetValue(groupId, out var picks) || picks.Count == 0)
+            return null;
 
         if (!ProtoMan.TryIndex(picks[0].Prototype, out var pickProto)
             || pickProto.DummyEntity is not { } dummyId
-            || !ProtoMan.TryIndex(dummyId, out var dummy)
-            || !dummy.TryComp<NecroAppearanceOptionComponent>(out var option, _factory))
-            return;
+            || !ProtoMan.TryIndex(dummyId, out var dummy))
+            return null;
 
-        _appearance.SetData(demon, NecroDemonVisuals.Form, $"{option.Rsi}|{option.State}");
-
-        if (option.UseCharacter)
-        {
-            demon.Comp.UseCharacterForm = true;
-            demon.Comp.CharacterProfile = profile;
-            _necro.SetCharacterGhost(demon, profile);
-            _metaData.SetEntityName(demon, Loc.GetString("necro-character-name", ("character", profile.Name), ("alias", alias)));
-        }
-        else if (option.Form is { } form)
-        {
-            demon.Comp.SelectedForm = form;
-        }
+        return dummy;
     }
 
     private void OnRecordingPlayed(ref NecroRecordingPlayedEvent args)
@@ -183,20 +189,20 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
     }
 
     /// <summary>
-    /// Counts the eligible souls left aboard the station. Disconnected players still count (their bodies can be possessed),
-    /// ghosted/abandoned and dead bodies don't, and minds are followed through transfers because we look at whoever
-    /// currently owns each body.
+    /// Counts the living people left aboard that the book hasn't claimed: every living, non-Kandarian humanoid body on
+    /// the station (or on the demon's map), whether or not a player is in it. Catatonic and disconnected bodies count,
+    /// because they can still be possessed, so a round can't be won by converting the only connected player.
     /// </summary>
-    public int CountRemainingSouls()
+    public int CountRemainingSouls(MapId? demonMap = null)
     {
         var count = 0;
         var query = EntityQueryEnumerator<HumanoidProfileComponent, MobStateComponent>();
         while (query.MoveNext(out var uid, out _, out _))
         {
-            if (!_necro.IsEligibleSoul(uid))
+            if (!_necro.IsPossessableBody(uid))
                 continue;
 
-            if (_station.GetOwningStation(uid) == null)
+            if (_station.GetOwningStation(uid) == null && (demonMap == null || Transform(uid).MapID != demonMap))
                 continue;
 
             count++;
@@ -214,7 +220,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         if (!demon.Value.Comp.Awakened || demon.Value.Comp.Banished || demon.Value.Comp.Conversions == 0)
             return;
 
-        if (CountRemainingSouls() > 0)
+        if (CountRemainingSouls(Transform(demon.Value).MapID) > 0)
             return;
 
         SetOutcome(rule, NecroOutcome.NecronomiconVictory);

@@ -1,0 +1,29 @@
+# Necronomicon voices. Used through the normal emote system, so typing "*laughs" or "*screams" as a revealed
+# Deadite (or as any Demonspawn) plays these, and the automatic snarls show up in chat as emotes.
+
+- type: emoteSounds
+  id: DeaditeEmotes
+  params:
+    variation: 0.08
+  sounds:
+    Laugh:
+      collection: DeaditeLaughs
+    Scream:
+      collection: DeaditeScreams
+    Snarl:
+      collection: DeaditeSnarls
+    Growl:
+      collection: DeaditeSnarls
+    Hiss:
+      collection: DeaditeSnarls
+    Howl:
+      collection: DeaditeScreams
+    Crying:
+      collection: DeaditeLaughs
+
+- type: emoteSounds
+  id: DemonspawnEmotes
+  params:
+    variation: 0.1
+  sound:
+    collection: DemonspawnCries

@@ -77,7 +77,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         InitializeStore();
         InitializePuppet();
         InitializeCommands();
-        InitializeCharacter();
+        InitializeSupernatural();
     }
 
     public override void Update(float frameTime)
@@ -104,11 +104,11 @@ public sealed partial class NecronomiconSystem : EntitySystem
             UpdateManifestationFollow((uid, demon));
             UpdateProximityFear((uid, demon), now);
             UpdateStatus((uid, demon), now);
-            UpdateGhostShell((uid, demon));
         }
 
         UpdateBurning(frameTime);
         UpdatePrepared(now);
+        UpdatePossessing(now);
         UpdatePuppets(now);
     }
 
@@ -147,8 +147,8 @@ public sealed partial class NecronomiconSystem : EntitySystem
         var current = GetSoulPower(demon);
         if (current < cost)
         {
-            _popup.PopupEntity(Loc.GetString("necro-not-enough-sp", ("cost", cost), ("current", current)),
-                popupTarget, popupTarget, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-not-enough-sp", ("cost", cost), ("current", current)),
+                popupTarget, PopupType.SmallCaution);
             return false;
         }
 
@@ -187,7 +187,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
     /// <summary>
     /// Any living non-Kandarian humanoid body, with or without a player (SSD and catatonic bodies included).
-    /// Used for possession, JOIN US and bites. Fear and victory still only count <see cref="IsEligibleSoul"/>.
+    /// Used for possession, JOIN US, bites and the victory count. Fear only comes from <see cref="IsEligibleSoul"/>.
     /// </summary>
     public bool IsPossessableBody(EntityUid uid)
     {
@@ -216,7 +216,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
         if (!demon.Comp.Awakened)
         {
-            _popup.PopupEntity(Loc.GetString("necro-dormant"), user, user, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-dormant"), user, PopupType.SmallCaution);
             return false;
         }
 
@@ -325,7 +325,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
     {
         if (demon.Comp.PendingTransition != NecroBookTransition.None)
         {
-            _popup.PopupEntity(Loc.GetString("necro-book-transition-busy"), user, user, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-book-transition-busy"), user, PopupType.SmallCaution);
             return false;
         }
 
@@ -337,13 +337,13 @@ public sealed partial class NecronomiconSystem : EntitySystem
         {
             if (manifested)
             {
-                _popup.PopupEntity(Loc.GetString("necro-book-already-manifested"), user, user);
+                _popup.PopupCursor(Loc.GetString("necro-book-already-manifested"), user);
                 return false;
             }
 
             if (demon.Comp.Manifestation != null)
             {
-                _popup.PopupEntity(Loc.GetString("necro-book-not-while-physical"), user, user, PopupType.SmallCaution);
+                _popup.PopupCursor(Loc.GetString("necro-book-not-while-physical"), user, PopupType.SmallCaution);
                 return false;
             }
 
@@ -353,13 +353,13 @@ public sealed partial class NecronomiconSystem : EntitySystem
         {
             if (!manifested)
             {
-                _popup.PopupEntity(Loc.GetString("necro-book-already-hidden"), user, user);
+                _popup.PopupCursor(Loc.GetString("necro-book-already-hidden"), user);
                 return false;
             }
 
             if (IsPinnedByCrew(book, out _))
             {
-                _popup.PopupEntity(Loc.GetString("necro-book-pinned"), user, user, PopupType.MediumCaution);
+                _popup.PopupCursor(Loc.GetString("necro-book-pinned"), user, PopupType.MediumCaution);
                 return false;
             }
 
@@ -374,7 +374,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         demon.Comp.TransitionCoords = Transform(user).Coordinates;
 
         var msg = kind == NecroBookTransition.Manifesting ? "necro-book-manifest-start" : "necro-book-demanifest-start";
-        _popup.PopupEntity(Loc.GetString(msg), user, user, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString(msg), user, PopupType.Medium);
 
         if (manifested)
             _popup.PopupEntity(Loc.GetString("necro-book-stirring"), book, PopupType.MediumCaution);
@@ -394,7 +394,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         if (demon.Comp.PendingTransition == NecroBookTransition.Demanifesting && IsPinnedByCrew(book, out _))
         {
             demon.Comp.PendingTransition = NecroBookTransition.None;
-            _popup.PopupEntity(Loc.GetString("necro-book-pinned-interrupted"), user, user, PopupType.MediumCaution);
+            _popup.PopupCursor(Loc.GetString("necro-book-pinned-interrupted"), user, PopupType.MediumCaution);
             _popup.PopupEntity(Loc.GetString("necro-book-settles"), book, PopupType.Medium);
             return;
         }
@@ -427,8 +427,9 @@ public sealed partial class NecronomiconSystem : EntitySystem
         if (TryComp<NecronomiconComponent>(book, out var bookComp))
             _audio.PlayPvs(bookComp.ManifestSound, book);
 
+        // The demon sees the book appear; no second line of text on top of it.
         _popup.PopupEntity(Loc.GetString("necro-book-appears"), book, PopupType.MediumCaution);
-        _popup.PopupEntity(Loc.GetString("necro-book-manifested"), demon, demon, PopupType.Medium);
+        SupernaturalBurst(Transform(book).Coordinates, 3f, 1);
     }
 
     /// <summary>Pulls the book back into the demon. Re-checks the pin rule; nothing may bypass it.</summary>
@@ -439,7 +440,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
         if (IsPinnedByCrew(book.Value, out _))
         {
-            _popup.PopupEntity(Loc.GetString("necro-book-pinned"), demon, demon, PopupType.MediumCaution);
+            _popup.PopupCursor(Loc.GetString("necro-book-pinned"), demon, PopupType.MediumCaution);
             return false;
         }
 
@@ -464,7 +465,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         if (!_container.Insert(book.Value, container, force: true))
             return false;
 
-        _popup.PopupEntity(Loc.GetString("necro-book-demanifested"), demon, demon, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("necro-book-demanifested"), demon, PopupType.Medium);
         return true;
     }
 
@@ -530,7 +531,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
                 _popup.PopupEntity(Loc.GetString($"necro-book-burn-stage-{stage}"), uid, PopupType.LargeCaution);
 
                 if (book.Demon is { } demon)
-                    _popup.PopupEntity(Loc.GetString("necro-book-burning-demon"), demon, demon, PopupType.LargeCaution);
+                    _popup.PopupCursor(Loc.GetString("necro-book-burning-demon"), demon, PopupType.LargeCaution);
             }
 
             if (book.BurnProgress >= book.BurnTime)
@@ -582,7 +583,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
             _store.UpdateUserInterface(null, demon, store);
         }
 
-        _popup.PopupEntity(Loc.GetString("necro-banished"), demon, demon, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("necro-banished"), demon, PopupType.LargeCaution);
     }
 
     #endregion
@@ -676,7 +677,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         demon.Comp.AwakenedAt = _timing.CurTime;
         EnsureBook(demon);
 
-        _popup.PopupEntity(Loc.GetString("necro-awakened"), demon, demon, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("necro-awakened"), demon, PopupType.LargeCaution);
     }
 
     #endregion

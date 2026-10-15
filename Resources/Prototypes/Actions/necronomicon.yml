@@ -172,6 +172,37 @@
   - type: InstantAction
     event: !type:NecroReturnToEtherActionEvent
 
+- type: entity
+  parent: BaseAction
+  id: ActionNecroUnholyRoar
+  name: Unholy Roar
+  description: Roar with the voice of the book. Lights die, the room shakes, and anyone close without a mindshield is thrown to the floor.
+  components:
+  - type: Action
+    useDelay: 40
+    itemIconStyle: BigAction
+  - type: Sprite
+    layers:
+    - sprite: Interface/Actions/changeling2.rsi
+      state: screech
+  - type: InstantAction
+    event: !type:NecroUnholyRoarActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroPoltergeist
+  name: Poltergeist
+  description: Every loose object around you is torn into the air and hurled at the nearest living person.
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/malfunction.png
+  - type: InstantAction
+    event: !type:NecroPoltergeistActionEvent
+
 # --- Deadites ---
 
 - type: entity

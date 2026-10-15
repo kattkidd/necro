@@ -93,23 +93,23 @@ public sealed partial class DeaditeSystem
 
         if (now < exorcist.NextExorcism)
         {
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-cooldown",
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-cooldown",
                     ("seconds", (int) Math.Ceiling((exorcist.NextExorcism - now).TotalSeconds))),
-                user, user, PopupType.SmallCaution);
+                user, PopupType.SmallCaution);
             return false;
         }
 
         if (HasComp<NecroBeingExorcisedComponent>(target))
         {
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-already"), user, user, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-already"), user, PopupType.SmallCaution);
             return false;
         }
 
         if (!IsRestrained(target))
         {
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-not-restrained",
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-not-restrained",
                     ("target", Identity.Entity(target, EntityManager))),
-                user, user, PopupType.SmallCaution);
+                user, PopupType.SmallCaution);
             return false;
         }
 
@@ -138,9 +138,9 @@ public sealed partial class DeaditeSystem
         _audio.PlayPvs(ExorcismStartSound, target);
         _popup.PopupEntity(Loc.GetString("deadite-exorcise-start", ("user", userIdentity), ("target", targetIdentity)),
             user, Filter.PvsExcept(user), true, PopupType.Medium);
-        _popup.PopupEntity(Loc.GetString("deadite-exorcise-start-self", ("target", targetIdentity),
+        _popup.PopupCursor(Loc.GetString("deadite-exorcise-start-self", ("target", targetIdentity),
                 ("seconds", (int) duration.TotalSeconds)),
-            user, user, PopupType.Medium);
+            user, PopupType.Medium);
 
         if (TryComp<DeaditeComponent>(target, out var deadite))
         {
@@ -150,20 +150,20 @@ public sealed partial class DeaditeSystem
             _jitter.DoJitter(target, duration, true, 14f, 10f);
             _popup.PopupEntity(Loc.GetString("deadite-exorcise-writhe", ("target", targetIdentity)),
                 target, Filter.PvsExcept(target), true, PopupType.LargeCaution);
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-burns"), target, target, PopupType.LargeCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-burns"), target, PopupType.LargeCaution);
 
             if (_necro.TryGetDemon(deadite.Demon, out var demon))
             {
                 demon.Value.Comp.ExorcismAttempts++;
                 var alert = Loc.GetString("deadite-exorcise-demon-alert", ("target", Name(target)));
-                _popup.PopupEntity(alert, demon.Value, demon.Value, PopupType.LargeCaution);
+                _popup.PopupCursor(alert, demon.Value, PopupType.LargeCaution);
                 if (demon.Value.Comp.Manifestation is { } form)
-                    _popup.PopupEntity(alert, form, form, PopupType.LargeCaution);
+                    _popup.PopupCursor(alert, form, PopupType.LargeCaution);
             }
         }
         else
         {
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-start-victim"), target, target, PopupType.Medium);
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-start-victim"), target, PopupType.Medium);
         }
 
         return true;
@@ -200,9 +200,9 @@ public sealed partial class DeaditeSystem
 
         if (args.Cancelled)
         {
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-interrupted"), args.User, args.User, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-interrupted"), args.User, PopupType.SmallCaution);
             if (HasComp<DeaditeComponent>(target))
-                _popup.PopupEntity(Loc.GetString("deadite-exorcise-interrupted-deadite"), target, target, PopupType.Medium);
+                _popup.PopupCursor(Loc.GetString("deadite-exorcise-interrupted-deadite"), target, PopupType.Medium);
             return;
         }
 
@@ -211,9 +211,9 @@ public sealed partial class DeaditeSystem
 
         if (!IsRestrained(target) || _mobState.IsDead(target))
         {
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-not-restrained",
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-not-restrained",
                     ("target", Identity.Entity(target, EntityManager))),
-                args.User, args.User, PopupType.SmallCaution);
+                args.User, PopupType.SmallCaution);
             return;
         }
 
@@ -230,8 +230,8 @@ public sealed partial class DeaditeSystem
                 return;
             }
 
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-nothing", ("target", Identity.Entity(target, EntityManager))),
-                args.User, args.User, PopupType.Medium);
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-nothing", ("target", Identity.Entity(target, EntityManager))),
+                args.User, PopupType.Medium);
             return;
         }
 
@@ -268,12 +268,12 @@ public sealed partial class DeaditeSystem
         _audio.PlayPvs(ScreamSound, target);
         _popup.PopupEntity(Loc.GetString("deadite-exorcise-success", ("target", Identity.Entity(target, EntityManager))),
             target, Filter.PvsExcept(target), true, PopupType.Large);
-        _popup.PopupEntity(Loc.GetString("deadite-exorcise-success-victim"), target, target, PopupType.Large);
+        _popup.PopupCursor(Loc.GetString("deadite-exorcise-success-victim"), target, PopupType.Large);
 
         if (exorcist is { } user)
         {
-            _popup.PopupEntity(Loc.GetString("deadite-exorcise-success-self", ("target", Identity.Entity(target, EntityManager))),
-                user, user, PopupType.Large);
+            _popup.PopupCursor(Loc.GetString("deadite-exorcise-success-self", ("target", Identity.Entity(target, EntityManager))),
+                user, PopupType.Large);
         }
 
         if (_necro.TryGetDemon(demonUid, out var demon))
@@ -282,9 +282,9 @@ public sealed partial class DeaditeSystem
             demon.Value.Comp.ExorcisedNames.Add(name);
 
             var lost = Loc.GetString("deadite-exorcise-demon-lost", ("target", name));
-            _popup.PopupEntity(lost, demon.Value, demon.Value, PopupType.LargeCaution);
+            _popup.PopupCursor(lost, demon.Value, PopupType.LargeCaution);
             if (demon.Value.Comp.Manifestation is { } form)
-                _popup.PopupEntity(lost, form, form, PopupType.LargeCaution);
+                _popup.PopupCursor(lost, form, PopupType.LargeCaution);
         }
     }
 
@@ -297,7 +297,7 @@ public sealed partial class DeaditeSystem
                 continue;
 
             RemCompDeferred<NecroBlessedComponent>(uid);
-            _popup.PopupEntity(Loc.GetString("deadite-blessing-faded"), uid, uid, PopupType.Small);
+            _popup.PopupCursor(Loc.GetString("deadite-blessing-faded"), uid, PopupType.Small);
         }
 
         var exorcising = EntityQueryEnumerator<NecroBeingExorcisedComponent>();

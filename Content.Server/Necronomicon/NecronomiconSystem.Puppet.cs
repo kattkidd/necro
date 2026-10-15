@@ -69,15 +69,15 @@ public sealed partial class NecronomiconSystem
 
         if (ent.Comp.PuppetHost != null)
         {
-            _popup.PopupEntity(Loc.GetString("necro-puppet-busy"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-puppet-busy"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
         if (_timing.CurTime < ent.Comp.NextPuppet)
         {
-            _popup.PopupEntity(Loc.GetString("necro-puppet-cooldown",
+            _popup.PopupCursor(Loc.GetString("necro-puppet-cooldown",
                     ("seconds", (int) (ent.Comp.NextPuppet - _timing.CurTime).TotalSeconds)),
-                args.Performer, args.Performer, PopupType.SmallCaution);
+                args.Performer, PopupType.SmallCaution);
             return;
         }
 
@@ -85,13 +85,13 @@ public sealed partial class NecronomiconSystem
         if (!HasComp<HumanoidProfileComponent>(target) || IsKandarian(target) || !_mobState.IsAlive(target)
             || HasComp<NecroPuppetHostComponent>(target))
         {
-            _popup.PopupEntity(Loc.GetString("necro-target-invalid"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-target-invalid"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
         if (!_transform.InRange(Transform(args.Performer).Coordinates, Transform(target).Coordinates, ent.Comp.PuppetRange))
         {
-            _popup.PopupEntity(Loc.GetString("necro-too-far"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-too-far"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
@@ -118,11 +118,11 @@ public sealed partial class NecronomiconSystem
 
         _popup.PopupEntity(Loc.GetString("necro-puppet-start-others", ("target", Identity.Entity(host, EntityManager))),
             host, Robust.Shared.Player.Filter.PvsExcept(host), true, PopupType.MediumCaution);
-        _popup.PopupEntity(Loc.GetString("necro-puppet-start-host"), host, host, PopupType.LargeCaution);
-        _popup.PopupEntity(Loc.GetString("necro-puppet-start-demon",
+        _popup.PopupCursor(Loc.GetString("necro-puppet-start-host"), host, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("necro-puppet-start-demon",
                 ("target", Identity.Entity(host, EntityManager)),
                 ("seconds", (int) demon.Comp.PuppetDuration.TotalSeconds)),
-            demon, demon, PopupType.Medium);
+            demon, PopupType.Medium);
 
         AddFearAround(demon, host, demon.Comp.WitnessRange, NecroFearSource.Supernatural, exclude: host);
     }
@@ -147,8 +147,8 @@ public sealed partial class NecronomiconSystem
         if (!popup)
             return;
 
-        _popup.PopupEntity(Loc.GetString("necro-puppet-end-host"), host, host, PopupType.Medium);
-        _popup.PopupEntity(Loc.GetString("necro-puppet-end-demon"), demon, demon, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("necro-puppet-end-host"), host, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("necro-puppet-end-demon"), demon, PopupType.Medium);
     }
 
     private void OnPuppetAnnounceAction(Entity<NecroDemonComponent> ent, ref NecroPuppetAnnounceActionEvent args)
@@ -158,23 +158,23 @@ public sealed partial class NecronomiconSystem
 
         if (ent.Comp.PuppetHost == null)
         {
-            _popup.PopupEntity(Loc.GetString("necro-puppet-not-possessing"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-puppet-not-possessing"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
         if (_timing.CurTime < ent.Comp.NextPuppetAnnounce)
         {
-            _popup.PopupEntity(Loc.GetString("necro-puppet-announce-cooldown",
+            _popup.PopupCursor(Loc.GetString("necro-puppet-announce-cooldown",
                     ("seconds", (int) (ent.Comp.NextPuppetAnnounce - _timing.CurTime).TotalSeconds)),
-                args.Performer, args.Performer, PopupType.SmallCaution);
+                args.Performer, PopupType.SmallCaution);
             return;
         }
 
         // Paid when the announcement is actually made.
         args.Handled = true;
         ent.Comp.PuppetAnnounceNext = !ent.Comp.PuppetAnnounceNext;
-        _popup.PopupEntity(Loc.GetString(ent.Comp.PuppetAnnounceNext ? "necro-puppet-announce-armed" : "necro-puppet-announce-disarmed"),
-            args.Performer, args.Performer, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString(ent.Comp.PuppetAnnounceNext ? "necro-puppet-announce-armed" : "necro-puppet-announce-disarmed"),
+            args.Performer, PopupType.Medium);
     }
 
     /// <summary>

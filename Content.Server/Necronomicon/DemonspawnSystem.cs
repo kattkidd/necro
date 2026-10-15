@@ -1,7 +1,11 @@
+using Content.Server.Chat.Systems;
+using Content.Server.Emoting.Systems;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Mind;
 using Content.Server.Necronomicon.Components;
 using Content.Shared.Bible.Components;
+using Content.Shared.Chat;
+using Content.Shared.Chat.Prototypes;
 using Content.Shared.Chemistry;
 using Content.Shared.Cuffs;
 using Content.Shared.Hands.EntitySystems;
@@ -11,6 +15,7 @@ using Content.Shared.Inventory;
 using Content.Shared.Jittering;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Speech.EntitySystems;
 using Content.Shared.Stunnable;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Melee.Events;
@@ -19,6 +24,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Console;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Necronomicon;
@@ -42,6 +48,8 @@ public sealed class DemonspawnSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IConsoleHost _consoleHost = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedCuffableSystem _cuffable = default!;
     [Dependency] private DeaditeSystem _deadite = default!;
@@ -50,6 +58,7 @@ public sealed class DemonspawnSystem : EntitySystem
     [Dependency] private SharedJitteringSystem _jitter = default!;
     [Dependency] private MindSystem _mind = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private NecronomiconSystem _necro = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedStunSystem _stun = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -59,6 +68,8 @@ public sealed class DemonspawnSystem : EntitySystem
     private static readonly SoundSpecifier MatureSound = new SoundCollectionSpecifier("DemonspawnCries");
     private static readonly EntProtoId HolyLight = "HolyLightEffect";
     private const string HolyWater = "Holywater";
+    private static readonly ProtoId<EmoteSoundsPrototype> DemonspawnEmoteSounds = "DemonspawnEmotes";
+    private static readonly string[] CryEmotes = { "Scream", "Laugh", "Snarl" };
 
     /// <summary>Warn the juvenile this long before it grows.</summary>
     private static readonly TimeSpan MaturationWarning = TimeSpan.FromSeconds(30);
@@ -78,6 +89,8 @@ public sealed class DemonspawnSystem : EntitySystem
         SubscribeLocalEvent<DemonspawnComponent, AttackedEvent>(OnAttacked);
         SubscribeLocalEvent<DemonspawnComponent, ThrowHitByEvent>(OnThrowHitBy);
         SubscribeLocalEvent<DemonspawnComponent, ReactionEntityEvent>(OnReaction);
+        SubscribeLocalEvent<DemonspawnComponent, EmoteEvent>(OnEmote,
+            before: new[] { typeof(VocalSystem), typeof(BodyEmotesSystem) });
 
         // Testing helper, like necrosp: growing up normally takes ten minutes.
         _consoleHost.RegisterCommand("necromature",
@@ -115,8 +128,36 @@ public sealed class DemonspawnSystem : EntitySystem
 
     private void OnMapInit(Entity<DemonspawnComponent> ent, ref MapInitEvent args)
     {
-        if (!ent.Comp.Adult)
+        ent.Comp.NextCry = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(15, 31));
+
+        // Adults spawned any way at all (maturing, admin spawn menu) get their look once the body is built.
+        if (ent.Comp.Adult)
+            ent.Comp.LookPending = true;
+        else
             ent.Comp.MatureAt = _timing.CurTime + ent.Comp.MaturationTime;
+    }
+
+    /// <summary>Every vocal emote a Demonspawn makes, typed or automatic, is one of its cries.</summary>
+    private void OnEmote(Entity<DemonspawnComponent> ent, ref EmoteEvent args)
+    {
+        if (args.Handled || !args.Emote.Category.HasFlag(EmoteCategory.Vocal))
+            return;
+
+        args.Handled = _chat.TryPlayEmoteSound(ent, ProtoMan.Index(DemonspawnEmoteSounds), args.Emote);
+    }
+
+    /// <summary>Grey skin, pitch-black eyes, no appetite.</summary>
+    private void ApplyAdultLook(Entity<DemonspawnComponent> ent)
+    {
+        ent.Comp.LookPending = false;
+
+        foreach (var name in AdultStrippedComponents)
+        {
+            if (EntityManager.ComponentFactory.TryGetRegistration(name, out var registration))
+                RemComp(ent, registration.Type);
+        }
+
+        _deadite.ApplyDeaditeLook(ent, ent.Comp.AdultSkinColor, ent.Comp.AdultEyeColor);
     }
 
     public override void Update(float frameTime)
@@ -134,13 +175,23 @@ public sealed class DemonspawnSystem : EntitySystem
                 continue;
             }
 
+            if (comp.LookPending)
+                ApplyAdultLook((uid, comp));
+
+            if (now >= comp.NextCry)
+            {
+                comp.NextCry = now + TimeSpan.FromSeconds(_random.Next(15, 31));
+                if (_mobState.IsAlive(uid))
+                    _chat.TryEmoteWithChat(uid, _random.Pick(CryEmotes), ignoreActionBlocker: true, forceEmote: true);
+            }
+
             if (comp.Adult || comp.Matured || comp.MatureAt is not { } matureAt)
                 continue;
 
             if (!comp.MaturationWarned && now >= matureAt - MaturationWarning)
             {
                 comp.MaturationWarned = true;
-                _popup.PopupEntity(Loc.GetString("demonspawn-maturing-soon"), uid, uid, PopupType.MediumCaution);
+                _popup.PopupCursor(Loc.GetString("demonspawn-maturing-soon"), uid, PopupType.MediumCaution);
                 _jitter.DoJitter(uid, TimeSpan.FromSeconds(3), true, 4f, 4f);
             }
 
@@ -199,14 +250,12 @@ public sealed class DemonspawnSystem : EntitySystem
             adultComp.MatureAt = null;
         }
 
-        foreach (var name in AdultStrippedComponents)
+        // Grey skin, eyes black as pitch (again next tick, in case the body wasn't finished yet).
+        if (adultComp != null)
         {
-            if (EntityManager.ComponentFactory.TryGetRegistration(name, out var registration))
-                RemComp(adult, registration.Type);
+            ApplyAdultLook((adult, adultComp));
+            adultComp.LookPending = true;
         }
-
-        // Grey skin, eyes black as pitch.
-        _deadite.ApplyDeaditeLook(adult, juvenile.Comp.AdultSkinColor, juvenile.Comp.AdultEyeColor);
 
         TransferBelongings(juvenile.Owner, adult);
 
@@ -220,14 +269,15 @@ public sealed class DemonspawnSystem : EntitySystem
             && TryComp<NecroDemonComponent>(demonUid, out var demon))
         {
             demon.DemonspawnMatured++;
-            _popup.PopupEntity(Loc.GetString("demonspawn-matured-demon"), demonUid, demonUid, PopupType.Medium);
+            _popup.PopupCursor(Loc.GetString("demonspawn-matured-demon"), demonUid, PopupType.Medium);
         }
 
         _audio.PlayPvs(MatureSound, adult);
+        _necro.SupernaturalBurst(coords, 4f, 2);
         _jitter.DoJitter(adult, TimeSpan.FromSeconds(3), true, 10f, 8f);
         _popup.PopupEntity(Loc.GetString("demonspawn-matured", ("target", Identity.Entity(adult, EntityManager))),
             adult, PopupType.LargeCaution);
-        _popup.PopupEntity(Loc.GetString("demonspawn-matured-self"), adult, adult, PopupType.Large);
+        _popup.PopupCursor(Loc.GetString("demonspawn-matured-self"), adult, PopupType.Large);
 
         QueueDel(juvenile);
         return adult;
@@ -326,10 +376,10 @@ public sealed class DemonspawnSystem : EntitySystem
 
         _popup.PopupEntity(Loc.GetString("demonspawn-melting", ("target", Identity.Entity(ent, EntityManager))),
             ent, PopupType.LargeCaution);
-        _popup.PopupEntity(Loc.GetString("demonspawn-melting-self"), ent, ent, PopupType.LargeCaution);
+        _popup.PopupCursor(Loc.GetString("demonspawn-melting-self"), ent, PopupType.LargeCaution);
 
         if (cause is { } user && user != ent.Owner)
-            _popup.PopupEntity(Loc.GetString("demonspawn-melting-user"), user, user, PopupType.Medium);
+            _popup.PopupCursor(Loc.GetString("demonspawn-melting-user"), user, PopupType.Medium);
     }
 
     private void CrumbleToDust(Entity<DemonspawnComponent> ent)
@@ -349,7 +399,7 @@ public sealed class DemonspawnSystem : EntitySystem
             coords, PopupType.LargeCaution);
 
         if (CompOrNull<KandarianEntityComponent>(ent)?.Demon is { } demonUid && Exists(demonUid))
-            _popup.PopupEntity(Loc.GetString("demonspawn-dust-demon"), demonUid, demonUid, PopupType.MediumCaution);
+            _popup.PopupCursor(Loc.GetString("demonspawn-dust-demon"), demonUid, PopupType.MediumCaution);
 
         // The player's mind is ghosted by the mind system when the body is deleted.
         QueueDel(ent);

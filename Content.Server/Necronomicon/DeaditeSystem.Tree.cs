@@ -5,7 +5,6 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Necronomicon;
 using Content.Shared.Popups;
-using Content.Shared.Speech.Components;
 using Content.Shared.Stunnable;
 using Robust.Shared.Audio;
 using Robust.Shared.Player;
@@ -76,8 +75,8 @@ public sealed partial class DeaditeSystem
                 GrantTreeActions((uid, deadite));
                 _speed.RefreshMovementSpeedModifiers(uid);
 
-                _popup.PopupEntity(Loc.GetString($"deadite-tree-gained-{upgrade.ToString().ToLowerInvariant()}"),
-                    uid, uid, PopupType.Medium);
+                _popup.PopupCursor(Loc.GetString($"deadite-tree-gained-{upgrade.ToString().ToLowerInvariant()}"),
+                    uid, PopupType.Medium);
             }
         }
 
@@ -116,7 +115,7 @@ public sealed partial class DeaditeSystem
         // (A severed head can still scream.)
         if (!ent.Comp.Revealed)
         {
-            _popup.PopupEntity(Loc.GetString("deadite-scream-not-revealed"), ent, ent, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-scream-not-revealed"), ent, PopupType.SmallCaution);
             return;
         }
 
@@ -140,7 +139,7 @@ public sealed partial class DeaditeSystem
                 continue;
 
             _jitter.DoJitter(uid, TimeSpan.FromSeconds(3), true, 8f, 6f);
-            _popup.PopupEntity(Loc.GetString("deadite-scream-victim"), uid, uid, PopupType.MediumCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-scream-victim"), uid, PopupType.MediumCaution);
 
             if (!knockdown || _necro.IsMindshielded(uid))
                 continue;
@@ -170,7 +169,7 @@ public sealed partial class DeaditeSystem
 
         if (ent.Comp.Severed || !_mobState.IsAlive(ent))
         {
-            _popup.PopupEntity(Loc.GetString("deadite-conceal-fail"), ent, ent, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("deadite-conceal-fail"), ent, PopupType.SmallCaution);
             return;
         }
 
@@ -187,8 +186,6 @@ public sealed partial class DeaditeSystem
         ent.Comp.Revealed = false;
         RestoreOriginalLook(ent.Comp, ent);
 
-        RemComp<AllCapsAccentComponent>(ent);
-        RemComp<ReplacementAccentComponent>(ent);
         _nameMod.RefreshNameModifiers(ent.Owner);
         _speed.RefreshMovementSpeedModifiers(ent.Owner);
 
@@ -199,7 +196,7 @@ public sealed partial class DeaditeSystem
         _jitter.DoJitter(ent, TimeSpan.FromSeconds(2), true, 6f, 4f);
         _popup.PopupEntity(Loc.GetString("deadite-conceal", ("target", Identity.Entity(ent, EntityManager))),
             ent, Filter.PvsExcept(ent), true, PopupType.MediumCaution);
-        _popup.PopupEntity(Loc.GetString("deadite-conceal-self"), ent, ent, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("deadite-conceal-self"), ent, PopupType.Medium);
     }
 
     /// <summary>Restores the skin and eye colours captured before the first reveal.</summary>

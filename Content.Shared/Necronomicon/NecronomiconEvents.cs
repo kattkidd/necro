@@ -33,6 +33,12 @@ public sealed partial class NecroManifestFormActionEvent : InstantActionEvent;
 /// <summary>Leave the physical form and return to the incorporeal demon.</summary>
 public sealed partial class NecroReturnToEtherActionEvent : InstantActionEvent;
 
+/// <summary>Physical form: a roar that throws nearby crew to the floor and sets the room shaking.</summary>
+public sealed partial class NecroUnholyRoarActionEvent : InstantActionEvent;
+
+/// <summary>Physical form: every loose object nearby is hurled through the air.</summary>
+public sealed partial class NecroPoltergeistActionEvent : InstantActionEvent;
+
 /// <summary>Harmless demonic possession: the victim collapses and the demon speaks through them.</summary>
 public sealed partial class NecroPuppetActionEvent : EntityTargetActionEvent;
 
@@ -136,19 +142,12 @@ public sealed partial class NecroUpgradeEvent : EntityEventArgs
 // Visuals
 // ---------------------------------------------------------------------------------------------
 
-/// <summary>Special values for <see cref="NecroDemonVisuals.Form"/>.</summary>
-public static class NecroDemonVisualsConstants
-{
-    /// <summary>The demon wears a character shell: hide the demon's own sprite.</summary>
-    public const string HiddenDemon = "hidden|";
-
-    /// <summary>This entity is a character shell: draw it faded, like a ghost.</summary>
-    public const string GhostShell = "shell|";
-}
-
 [Serializable, NetSerializable]
 public enum NecroDemonVisuals : byte
 {
     /// <summary>String "rsiPath|state" of the selected cosmetic form.</summary>
     Form,
+
+    /// <summary>Aura colour tinting the incorporeal demon.</summary>
+    Tint,
 }

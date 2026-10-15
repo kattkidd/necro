@@ -22,8 +22,8 @@ public sealed partial class NecronomiconSystem
 {
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private MobThresholdSystem _thresholds = default!;
-    [Dependency] private Content.Shared.Station.Systems.StationSpawningSystem _stationSpawning = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private SharedPointLightSystem _lights = default!;
 
     private void InitializeStore()
     {
@@ -91,16 +91,8 @@ public sealed partial class NecronomiconSystem
             return;
 
         ent.Comp.SelectedForm = args.Form;
-        ent.Comp.UseCharacterForm = false;
-
-        // Switching to a creature form drops the character ghost.
-        if (ent.Comp.GhostShell is { } shell)
-        {
-            ent.Comp.GhostShell = null;
-            QueueDel(shell);
-        }
         _appearance.SetData(ent, NecroDemonVisuals.Form, $"{args.Rsi}|{args.State}");
-        _popup.PopupEntity(Loc.GetString("necro-form-selected"), ent, ent, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("necro-form-selected"), ent, PopupType.Medium);
     }
 
     private void OnBuyCharge(Entity<NecroDemonComponent> ent, ref NecroBuyPossessionChargeEvent args)
@@ -109,8 +101,8 @@ public sealed partial class NecronomiconSystem
             return;
 
         ent.Comp.PossessionCharges++;
-        _popup.PopupEntity(Loc.GetString("necro-charge-bought", ("charges", ent.Comp.PossessionCharges)),
-            ent, ent, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("necro-charge-bought", ("charges", ent.Comp.PossessionCharges)),
+            ent, PopupType.Medium);
     }
 
     private void OnSummonDemonspawn(Entity<NecroDemonComponent> ent, ref NecroSummonDemonspawnEvent args)
@@ -130,6 +122,7 @@ public sealed partial class NecronomiconSystem
         ent.Comp.DemonspawnSummoned++;
 
         _popup.PopupEntity(Loc.GetString("necro-demonspawn-summoned"), spawn, PopupType.LargeCaution);
+        SupernaturalBurst(coords, ent.Comp.SupernaturalRange, 3);
         _audio.PlayPvs(ent.Comp.DemonspawnSummonSound, spawn);
         AddFearAround(ent, spawn, ent.Comp.WitnessRange, NecroFearSource.Supernatural);
     }
@@ -167,7 +160,7 @@ public sealed partial class NecronomiconSystem
             // SwiftPossession / FarWhisper are read from the purchase count.
         }
 
-        _popup.PopupEntity(Loc.GetString("necro-upgrade-bought"), ent, ent, PopupType.Medium);
+        _popup.PopupCursor(Loc.GetString("necro-upgrade-bought"), ent, PopupType.Medium);
     }
 
     #region Powers
@@ -183,7 +176,7 @@ public sealed partial class NecronomiconSystem
 
         if (!_transform.InRange(Transform(args.Performer).Coordinates, Transform(target).Coordinates, ent.Comp.WhisperRange))
         {
-            _popup.PopupEntity(Loc.GetString("necro-too-far"), args.Performer, args.Performer, PopupType.SmallCaution);
+            _popup.PopupCursor(Loc.GetString("necro-too-far"), args.Performer, PopupType.SmallCaution);
             return;
         }
 
@@ -196,10 +189,10 @@ public sealed partial class NecronomiconSystem
         var shielded = IsMindshielded(target);
         var line = Loc.GetString($"necro-whisper-line-{_random.Next(1, 7)}");
         _audio.PlayGlobal(ent.Comp.WhisperSound, target);
-        _popup.PopupEntity(line, target, target, shielded ? PopupType.Medium : PopupType.LargeCaution);
+        _popup.PopupCursor(line, target, shielded ? PopupType.Medium : PopupType.LargeCaution);
         _jitter.DoJitter(target, TimeSpan.FromSeconds(shielded ? 1 : 4), true, 6f, 5f);
-        _popup.PopupEntity(Loc.GetString("necro-whisper-sent", ("target", Identity.Entity(target, EntityManager))),
-            args.Performer, args.Performer);
+        _popup.PopupCursor(Loc.GetString("necro-whisper-sent", ("target", Identity.Entity(target, EntityManager))),
+            args.Performer);
 
         AddFear(ent, target, NecroFearSource.Supernatural);
     }
@@ -238,9 +231,9 @@ public sealed partial class NecronomiconSystem
 
         if (_timing.CurTime < ent.Comp.NextManifestForm)
         {
-            _popup.PopupEntity(Loc.GetString("necro-form-recovering",
+            _popup.PopupCursor(Loc.GetString("necro-form-recovering",
                 ("seconds", (int) (ent.Comp.NextManifestForm - _timing.CurTime).TotalSeconds)),
-                args.Performer, args.Performer, PopupType.SmallCaution);
+                args.Performer, PopupType.SmallCaution);
             return;
         }
 
@@ -276,46 +269,35 @@ public sealed partial class NecronomiconSystem
         }
 
         _mind.TransferTo(mindId, form);
-        _popup.PopupEntity(Loc.GetString("necro-form-manifest"), form, PopupType.LargeCaution);
+
+        // Powers of the ether (Whisper, Dark Presence, Demonic Possession...) live on the mind and would follow it
+        // into the body. In the physical world the body gets its own: Unholy Roar, Poltergeist and Return to Ether.
+        _actions.RemoveProvidedActions(form, mindId);
+
+        _popup.PopupEntity(Loc.GetString("necro-form-manifest", ("demon", form)), form, PopupType.LargeCaution);
+        Chant(form, _random.Next(ChantLines.Length));
+        SupernaturalBurst(Transform(form).Coordinates, ent.Comp.SupernaturalRange, 6);
         AddFearAround(ent, form, ent.Comp.WitnessRange, NecroFearSource.Reveal);
     }
 
     /// <summary>
-    /// Spawns the demon's body: either the chosen creature form (stats from its prototype) or, if the player picked
-    /// "My Character", their own character with a Deadite's pale skin and white eyes and demon-strength claws.
+    /// Spawns the demon's body in the chosen form. Stats come from the form's prototype; the body carries the demon's
+    /// name and glows in its aura colour.
     /// </summary>
     private EntityUid SpawnPhysicalForm(Entity<NecroDemonComponent> ent)
     {
-        var coords = Transform(ent).Coordinates;
-
-        if (!ent.Comp.UseCharacterForm || ent.Comp.CharacterProfile == null)
-        {
-            var creature = Spawn(ent.Comp.SelectedForm, coords);
-            _transform.AttachToGridOrMap(creature);
-            return creature;
-        }
-
-        var body = SpawnCharacterBody(ent.Comp.CharacterProfile!, coords);
-        _transform.AttachToGridOrMap(body);
-        _metaData.SetEntityName(body, Name(ent));
-        _deadite.ApplyDeaditeLook(body);
-        _deadite.GrantSumerian(body);
-
-        if (TryComp<MeleeWeaponComponent>(body, out var melee))
-        {
-            melee.Damage = new DamageSpecifier(ent.Comp.CharacterFormDamage);
-            Dirty(body, melee);
-        }
-
-        // NecroManifestationComponent's MapInit already ran on spawn for creature forms; do it by hand here.
-        var manifestation = EnsureComp<NecroManifestationComponent>(body);
-        _actions.AddAction(body, ref manifestation.ReturnActionEntity, manifestation.ReturnAction);
-        return body;
+        var creature = Spawn(ent.Comp.SelectedForm, Transform(ent).Coordinates);
+        _transform.AttachToGridOrMap(creature);
+        _metaData.SetEntityName(creature, Name(ent));
+        _lights.SetColor(creature, ent.Comp.AuraColor);
+        return creature;
     }
 
     private void OnManifestationMapInit(Entity<NecroManifestationComponent> ent, ref MapInitEvent args)
     {
         _actions.AddAction(ent, ref ent.Comp.ReturnActionEntity, ent.Comp.ReturnAction);
+        _actions.AddAction(ent, ref ent.Comp.RoarActionEntity, ent.Comp.RoarAction);
+        _actions.AddAction(ent, ref ent.Comp.PoltergeistActionEntity, ent.Comp.PoltergeistAction);
     }
 
     private void OnReturnToEther(Entity<NecroManifestationComponent> ent, ref NecroReturnToEtherActionEvent args)
@@ -366,7 +348,7 @@ public sealed partial class NecronomiconSystem
             if (destroyed)
             {
                 demon.Value.Comp.NextManifestForm = _timing.CurTime + demon.Value.Comp.ManifestFormCooldownOnDeath;
-                _popup.PopupEntity(Loc.GetString("necro-form-destroyed"), demon.Value, demon.Value, PopupType.LargeCaution);
+                _popup.PopupCursor(Loc.GetString("necro-form-destroyed"), demon.Value, PopupType.LargeCaution);
             }
         }
 

@@ -55,3 +55,4 @@
   canCustomizeName: true
   groups:
   - NecroDemonAppearance
+  - NecroDemonAura

@@ -93,6 +93,66 @@
     state: golem
   raiseProductEventOnUser: true
 
+- type: listing
+  id: NecroFormWraith
+  name: necro-catalog-form-wraith-name
+  description: necro-catalog-form-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/revenant.rsi, state: active }
+  cost:
+    SoulPower: 0
+  categories:
+  - NecroAppearance
+  productEvent: !type:NecroSelectFormEvent
+    form: MobKandarianFormWraith
+    rsi: /Textures/Mobs/Ghosts/revenant.rsi
+    state: active
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroFormLover
+  name: necro-catalog-form-lover-name
+  description: necro-catalog-form-desc
+  icon: { sprite: /Textures/Mobs/Aliens/flesh.rsi, state: lover }
+  cost:
+    SoulPower: 0
+  categories:
+  - NecroAppearance
+  productEvent: !type:NecroSelectFormEvent
+    form: MobKandarianFormLover
+    rsi: /Textures/Mobs/Aliens/flesh.rsi
+    state: lover
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroFormCrawler
+  name: necro-catalog-form-crawler-name
+  description: necro-catalog-form-desc
+  icon: { sprite: /Textures/Mobs/Aliens/Argocyte/argocyte_common.rsi, state: crawler }
+  cost:
+    SoulPower: 0
+  categories:
+  - NecroAppearance
+  productEvent: !type:NecroSelectFormEvent
+    form: MobKandarianFormCrawler
+    rsi: /Textures/Mobs/Aliens/Argocyte/argocyte_common.rsi
+    state: crawler
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroFormApparition
+  name: necro-catalog-form-apparition-name
+  description: necro-catalog-form-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/ghost_human.rsi, state: animated }
+  cost:
+    SoulPower: 0
+  categories:
+  - NecroAppearance
+  productEvent: !type:NecroSelectFormEvent
+    form: MobKandarianFormApparition
+    rsi: /Textures/Mobs/Ghosts/ghost_human.rsi
+    state: animated
+  raiseProductEventOnUser: true
+
 # --- Possession ---
 
 - type: listing

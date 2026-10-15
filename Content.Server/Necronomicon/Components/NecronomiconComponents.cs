@@ -145,24 +145,9 @@ public sealed partial class NecroDemonComponent : Component
     [DataField]
     public EntProtoId SelectedForm = "MobKandarianFormAbomination";
 
-    /// <summary>The physical form is the player's own character (chosen in the antag loadout).</summary>
-    [ViewVariables]
-    public bool UseCharacterForm;
-
-    /// <summary>The black-suited character shell that is this demon's ghost ("My Character" appearance).</summary>
-    [ViewVariables]
-    public EntityUid? GhostShell;
-
-    /// <summary>Character used for the physical form when <see cref="UseCharacterForm"/> is set.</summary>
-    [ViewVariables]
-    public HumanoidCharacterProfile? CharacterProfile;
-
-    /// <summary>Unarmed damage of a character-form body (a normal person punches much weaker).</summary>
+    /// <summary>Colour of the demon's ghostly tint and of its physical form's glow (Aura, chosen in the loadout).</summary>
     [DataField]
-    public DamageSpecifier CharacterFormDamage = new()
-    {
-        DamageDict = new() { { "Slash", 14 } },
-    };
+    public Color AuraColor = Color.FromHex("#a01818");
 
     [DataField]
     public FixedPoint2 HardenedFleshBonus = 75;
@@ -178,6 +163,27 @@ public sealed partial class NecroDemonComponent : Component
 
     [DataField]
     public EntProtoId DemonspawnPrototype = "MobDemonspawn";
+
+    /// <summary>Radius of the poltergeist burst (flickering lights, flying objects) around supernatural events.</summary>
+    [DataField]
+    public float SupernaturalRange = 5f;
+
+    /// <summary>Physical form: anyone this close to an Unholy Roar (and not mindshielded) is thrown down.</summary>
+    [DataField]
+    public float RoarKnockdownRange = 3f;
+
+    [DataField]
+    public TimeSpan RoarKnockdownTime = TimeSpan.FromSeconds(2.5);
+
+    [DataField]
+    public float RoarRange = 7f;
+
+    /// <summary>Physical form: Poltergeist hurls up to this many loose objects.</summary>
+    [DataField]
+    public int PoltergeistObjects = 8;
+
+    [DataField]
+    public float PoltergeistRange = 6f;
     #endregion
 
     #region Demonic possession (harmless puppeting)
@@ -369,9 +375,9 @@ public sealed class NecroVictimFear
 [RegisterComponent]
 public sealed partial class NecroAppearanceOptionComponent : Component
 {
-    /// <summary>Physical form prototype. Ignored when <see cref="UseCharacter"/> is set.</summary>
-    [DataField]
-    public EntProtoId? Form;
+    /// <summary>Physical form prototype.</summary>
+    [DataField(required: true)]
+    public EntProtoId Form;
 
     /// <summary>RSI and state shown on the incorporeal ghost.</summary>
     [DataField(required: true)]
@@ -379,18 +385,17 @@ public sealed partial class NecroAppearanceOptionComponent : Component
 
     [DataField(required: true)]
     public string State = string.Empty;
-
-    /// <summary>Use the player's own character as the physical form, and their name with the alias.</summary>
-    [DataField]
-    public bool UseCharacter;
 }
 
-/// <summary>A lifeless copy of the player's character worn as the demon's ghost. Ghost-layer only, untouchable.</summary>
+/// <summary>
+/// Put on the preview entity of an aura loadout (Character Setup → Antags → Kandarian Demon → Loadout).
+/// Tints the demon's ghost and colours its physical form's glow.
+/// </summary>
 [RegisterComponent]
-public sealed partial class NecroGhostShellComponent : Component
+public sealed partial class NecroAuraOptionComponent : Component
 {
-    [ViewVariables]
-    public EntityUid? Demon;
+    [DataField(required: true)]
+    public Color Color;
 }
 
 /// <summary>The physical Necronomicon. Can only be destroyed by burning.</summary>
@@ -438,9 +443,23 @@ public sealed partial class NecroPreparedComponent : Component
     public TimeSpan ExpiresAt;
 }
 
-/// <summary>Marks a victim currently being possessed, blocking duplicate conversions.</summary>
+/// <summary>
+/// Marks a victim currently being possessed, blocking duplicate conversions. While it's on them they are held down
+/// and the Kandarian chant rises around them.
+/// </summary>
 [RegisterComponent]
-public sealed partial class NecroBeingPossessedComponent : Component;
+public sealed partial class NecroBeingPossessedComponent : Component
+{
+    [ViewVariables]
+    public TimeSpan NextChant;
+
+    [ViewVariables]
+    public int ChantIndex;
+
+    /// <summary>Safety net: removed after this even if the do-after never reports back.</summary>
+    [ViewVariables]
+    public TimeSpan ExpiresAt;
+}
 
 /// <summary>
 /// Someone temporarily puppeted by the demon: collapsed, unable to act or speak for themselves,
@@ -660,6 +679,14 @@ public sealed partial class DemonspawnComponent : Component
 
     [DataField]
     public EntProtoId DustPrototype = "DemonspawnDust";
+
+    /// <summary>Adults get their grey skin and black eyes the tick after they spawn (once the body exists).</summary>
+    [ViewVariables]
+    public bool LookPending;
+
+    /// <summary>Next automatic cry (a real emote, shown in chat).</summary>
+    [ViewVariables]
+    public TimeSpan NextCry;
 }
 
 /// <summary>Someone a chaplain freed from a Deadite curse. The book cannot claim them again for a while.</summary>
@@ -722,6 +749,18 @@ public sealed partial class NecroManifestationComponent : Component
 
     [ViewVariables]
     public EntityUid? ReturnActionEntity;
+
+    [DataField]
+    public EntProtoId RoarAction = "ActionNecroUnholyRoar";
+
+    [ViewVariables]
+    public EntityUid? RoarActionEntity;
+
+    [DataField]
+    public EntProtoId PoltergeistAction = "ActionNecroPoltergeist";
+
+    [ViewVariables]
+    public EntityUid? PoltergeistActionEntity;
 }
 
 /// <summary>

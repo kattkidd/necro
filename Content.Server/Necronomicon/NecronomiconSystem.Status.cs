@@ -53,17 +53,17 @@ public sealed partial class NecronomiconSystem
             switch (bookState)
             {
                 case NecroBookState.Held when carrier is { } holder:
-                    _popup.PopupEntity(Loc.GetString("necro-status-book-held",
-                        ("holder", Identity.Entity(holder, EntityManager))), viewer, viewer, PopupType.LargeCaution);
+                    _popup.PopupCursor(Loc.GetString("necro-status-book-held",
+                        ("holder", Identity.Entity(holder, EntityManager))), viewer, PopupType.LargeCaution);
                     break;
                 case NecroBookState.Manifested when demon.Comp.LastBookState == NecroBookState.Held:
-                    _popup.PopupEntity(Loc.GetString("necro-status-book-released"), viewer, viewer, PopupType.Medium);
+                    _popup.PopupCursor(Loc.GetString("necro-status-book-released"), viewer, PopupType.Medium);
                     break;
                 case NecroBookState.Burning:
-                    _popup.PopupEntity(Loc.GetString("necro-status-book-burning"), viewer, viewer, PopupType.LargeCaution);
+                    _popup.PopupCursor(Loc.GetString("necro-status-book-burning"), viewer, PopupType.LargeCaution);
                     break;
                 case NecroBookState.Manifested when demon.Comp.LastBookState == NecroBookState.Burning:
-                    _popup.PopupEntity(Loc.GetString("necro-status-book-extinguished"), viewer, viewer, PopupType.Medium);
+                    _popup.PopupCursor(Loc.GetString("necro-status-book-extinguished"), viewer, PopupType.Medium);
                     break;
             }
 
