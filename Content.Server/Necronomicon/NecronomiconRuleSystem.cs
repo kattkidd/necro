@@ -107,7 +107,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             _transform.AttachToGridOrMap(pages);
         }
 
-        // Brujo talismans and Linda's necklace, scattered around the station for the crew to find.
+        // Brujo talismans, scattered around the station for the crew to find.
         foreach (var relic in ent.Comp.HiddenRelics)
         {
             if (!_station.TryFindRandomTile(out _, out _, out _, out var relicCoords))

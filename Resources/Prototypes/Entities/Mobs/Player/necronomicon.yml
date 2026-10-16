@@ -688,12 +688,13 @@
       settings: short
   - type: GhostTakeoverAvailable
 
-# The Deadite in the cellar (Evil Dead II). Bought in the Skill Store; possessed and revealed on arrival.
+# One of the wicked dead, dragged up out of Hell by the book and given a body. Bought in the Skill Store;
+# possessed and revealed on arrival.
 - type: entity
   parent: MobHuman
-  id: MobDeaditeCellarWitch
-  name: Henrietta
-  description: A swollen, grey-skinned crone with long knotted hair and milky eyes. She has been in the cellar a long time.
+  id: MobDeaditeWickedDead
+  name: wicked dead
+  description: A body that was never anyone aboard, grey and swollen, its eyes milky white. Whatever wears it has been dead a very long time.
   suffix: Necronomicon
   components:
   - type: MobThresholds
@@ -713,8 +714,8 @@
   - type: GhostRole
     makeSentient: true
     allowMovement: true
-    name: ghost-role-information-cellar-witch-name
-    description: ghost-role-information-cellar-witch-description
+    name: ghost-role-information-wicked-dead-name
+    description: ghost-role-information-wicked-dead-description
     rules: ghost-role-information-demonspawn-rules
     mindRoles:
     - MindRoleDeadite
@@ -782,43 +783,3 @@
   - type: Item
     sprite: Clothing/Neck/Misc/dinkystar.rsi
   - type: NecroTalisman
-
-# Evil Dead II: the necklace Ash gave Linda. Shown to a Deadite, the person inside remembers themselves.
-- type: entity
-  parent: ClothingNeckBling
-  id: NecroLindaNecklace
-  name: magnifying-glass necklace
-  description: A silver chain with a little magnifying glass hanging from it. Someone gave it to someone they loved. Show it to the possessed and they might remember who they are, for a moment.
-  components:
-  - type: Sprite
-    sprite: Clothing/Neck/Misc/bling.rsi
-    color: "#d8e0e8"
-  - type: NecroLindaNecklace
-
-# Army of Darkness: "Shop smart. Shop S-Mart."
-- type: entity
-  parent: WeaponShotgunDoubleBarreled
-  id: WeaponShotgunBoomstick
-  name: boomstick
-  description: A twelve-gauge, double-barreled Remington. S-Mart's top of the line. Hail to the king, baby.
-
-- type: entity
-  parent: ClothingUniformJumpsuitColorRed
-  id: ClothingUniformSMart
-  name: S-Mart uniform
-  description: Housewares department. Name tag says "Ash". Shop smart.
-
-- type: entity
-  parent: CrateSecgear
-  id: CrateSMartHousewares
-  name: S-Mart housewares crate
-  description: Shop smart. Shop S-Mart. Everything a stock boy needs to fight the Army of Darkness. Requires Security access to open.
-  components:
-  - type: EntityTableContainerFill
-    containers:
-      entity_storage: !type:AllSelector
-        children:
-        - id: WeaponShotgunBoomstick
-        - id: BoxLethalshot
-        - id: Chainsaw
-        - id: ClothingUniformSMart

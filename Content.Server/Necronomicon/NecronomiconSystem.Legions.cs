@@ -13,7 +13,7 @@ namespace Content.Server.Necronomicon;
 /// The demon's servants beyond possession, and the wards against it:
 /// <list type="bullet">
 /// <item><b>From the Grave</b> (The Evil Dead): a corpse rises as a Deadite. A ghost takes it if its owner is gone.</item>
-/// <item><b>The Cellar</b> (Evil Dead II): a single, monstrous Deadite crone claws her way up, ghost-controlled.</item>
+/// <item><b>The Wicked Dead</b>: one of the wicked dead is dragged up out of Hell into a body of flesh, ghost-controlled.</item>
 /// <item><b>Army of Darkness</b> (Army of Darkness): a squad of deadite skeletons.</item>
 /// <item><b>Brujo talismans</b> (Ash vs Evil Dead): the demon's powers can't touch anyone near one.</item>
 /// </list>
@@ -23,7 +23,7 @@ public sealed partial class NecronomiconSystem
     private void InitializeLegions()
     {
         SubscribeLocalEvent<NecroDemonComponent, NecroRiseAgainActionEvent>(OnRiseAgain);
-        SubscribeLocalEvent<NecroDemonComponent, NecroSummonCellarDeaditeEvent>(OnSummonCellarDeadite);
+        SubscribeLocalEvent<NecroDemonComponent, NecroSummonWickedDeadEvent>(OnSummonWickedDead);
         SubscribeLocalEvent<NecroDemonComponent, NecroRaiseArmyEvent>(OnRaiseArmy);
     }
 
@@ -121,34 +121,34 @@ public sealed partial class NecronomiconSystem
 
     #endregion
 
-    #region The Cellar and the Army of Darkness
+    #region The Wicked Dead and the Army of Darkness
 
-    private void OnSummonCellarDeadite(Entity<NecroDemonComponent> ent, ref NecroSummonCellarDeaditeEvent args)
+    private void OnSummonWickedDead(Entity<NecroDemonComponent> ent, ref NecroSummonWickedDeadEvent args)
     {
         if (!ValidatePurchase(ent))
             return;
 
         var coords = ServantSpawnCoords(ent);
-        var witch = Spawn(ent.Comp.CellarDeaditePrototype, coords);
-        _transform.AttachToGridOrMap(witch);
+        var risen = Spawn(ent.Comp.WickedDeadPrototype, coords);
+        _transform.AttachToGridOrMap(risen);
 
-        _deadite.MakeDeadite(witch, ent);
-        if (TryComp<DeaditeComponent>(witch, out var deadite))
+        _deadite.MakeDeadite(risen, ent);
+        if (TryComp<DeaditeComponent>(risen, out var deadite))
         {
-            // Stronger than any possessed crew member, and her neck is thick.
+            // Older and stronger than any possessed crew member, and much harder to cut apart.
             deadite.RevealRewarded = true;
             deadite.RevealedDamage = new Content.Shared.Damage.DamageSpecifier
             {
                 DamageDict = new() { { "Slash", 12 }, { "Blunt", 8 } },
             };
             deadite.SeverThreshold = 25;
-            _deadite.Reveal((witch, deadite));
+            _deadite.Reveal((risen, deadite));
         }
 
-        _audio.PlayPvs(ent.Comp.DemonspawnSummonSound, witch);
-        _popup.PopupEntity(Loc.GetString("necro-cellar-witch"), witch, PopupType.LargeCaution);
+        _audio.PlayPvs(ent.Comp.DemonspawnSummonSound, risen);
+        _popup.PopupEntity(Loc.GetString("necro-wicked-dead"), risen, PopupType.LargeCaution);
         SupernaturalBurst(coords, ent.Comp.SupernaturalRange, 4);
-        AddFearAround(ent, witch, ent.Comp.WitnessRange, NecroFearSource.Supernatural);
+        AddFearAround(ent, risen, ent.Comp.WitnessRange, NecroFearSource.Supernatural);
     }
 
     private void OnRaiseArmy(Entity<NecroDemonComponent> ent, ref NecroRaiseArmyEvent args)

@@ -9,8 +9,6 @@
     <GuideEntityEmbed Entity="NecroLostPages" Caption="The lost pages"/>
     <GuideEntityEmbed Entity="KandarianDagger" Caption="Kandarian dagger"/>
     <GuideEntityEmbed Entity="NecroBrujoTalisman" Caption="Brujo talisman"/>
-    <GuideEntityEmbed Entity="NecroLindaNecklace" Caption="Linda's necklace"/>
-    <GuideEntityEmbed Entity="WeaponShotgunBoomstick" Caption="Boomstick"/>
     <GuideEntityEmbed Entity="MobDemonspawn" Caption="Demonspawn"/>
     <GuideEntityEmbed Entity="MobDemonspawnAdult" Caption="Grown Demonspawn"/>
   </Box>
@@ -26,8 +24,6 @@
   - [bold]Anyone could be a Deadite.[/bold] They look completely normal until they reveal themselves. Then their skin goes corpse-pale, their eyes turn milky white and they start screaming.
   - A revealed Deadite floats up off the floor, talks normally, taunts ("Join us!", "Dead by dawn!") and its laughs, screams and snarls are unmistakable. The possessed don't die by ordinary means: beat one into critical and it gets back up shortly after. Only dismemberment stops it: a heavy slash while it's down takes its head, and it stays down. Burning the book ends them all.
   - [bold]Brujo talismans[/bold] (two are hidden aboard) ward whoever carries one or stands next to one: JOIN US, possession, bites and the demon's powers slide off. Each block burns it; it crumbles after three.
-  - [bold]Linda's necklace[/bold] (hidden aboard): hold it up to a Deadite and the person inside remembers themselves, freezing them for a few seconds. It also breaks a Possessed Puppet.
-  - Cargo sells the [bold]S-Mart housewares crate[/bold]: a boomstick, shells, a chainsaw and the uniform. Shop smart.
   - [bold]Mindshields[/bold] protect against possession, until a revealed Deadite reads the passage that melts them away.
   - [bold]Chaplains can exorcise Deadites.[/bold] Cuff, buckle or down the suspect, then use the [bold]Exorcise[/bold] verb with a Bible in hand and stand still for about twenty seconds. A Deadite comes back as themselves, healed, and the book can't claim them again for ten minutes. A mindshield implanted in the Deadite first halves the time. Anyone else is unharmed: the rite simply finds nothing. The chaplain needs a short rest between rites.
   - [bold]Demonspawn[/bold] grow into tall, grey, black-eyed adults after ten minutes. Both forms are [color=#88bbff]melted to dust[/color] by holy water (splash or spray it) or a Bible (hit them with it, use it on them or throw it).
@@ -36,7 +32,7 @@
   - Before the round, pick your [bold]alias[/bold], your [bold]form[/bold] (Abomination, Hellspawn, Flesh Golem, Wraith, Shambling Lover, Crawler or Apparition) and your [bold]aura[/bold] colour in Character Setup → Antags → Kandarian Demon → Loadout. Each form has its own speed, toughness and claws.
   - You start [bold]incorporeal[/bold]: invisible to the living, untouchable and unable to touch anything.
   - Powers from the films, bought in the store: [bold]Voices in the Woods[/bold] (whispers), [bold]The Laughing Cabin[/bold] (lights flicker, furniture laughs), [bold]The Force[/bold] (charge through the station, flattening people), [bold]The Trees[/bold] (roots hold a victim), [bold]The Hand[/bold] (a victim's hand turns on them), [bold]Baal's Deceit[/bold] (make someone see a friend's eyes flash white), [bold]Possessed Puppet[/bold] and [bold]Dead by Dawn[/bold] (every Deadite rises, healed and fast).
-  - Servants: [bold]From the Grave[/bold] (raise a corpse as a Deadite, played by a ghost if nobody's in it), [bold]The Deadite in the Cellar[/bold] (Henrietta, a huge ghost-controlled Deadite) and the [bold]Army of Darkness[/bold] (deadite skeletons).
+  - Servants: [bold]From the Grave[/bold] (raise a corpse as a Deadite, played by a ghost if nobody's in it), [bold]Call Up the Wicked Dead[/bold] (one of the wicked dead dragged out of Hell into a body: a huge, ghost-controlled Deadite) and the [bold]Army of Darkness[/bold] (deadite skeletons).
   - Revealed Deadites can [bold]Swallow Their Soul[/bold]: feed on someone down and dying to heal and feed the book.
   - [bold]Soul Power[/bold] comes from fear: monsters near the crew, monsters speaking, attacks, witnesses and supernatural events. Spend it in the [bold]Skill Store[/bold].
   - [bold]Manifest Necronomicon[/bold] puts the book in the world where you stand. JOIN US reaches 12 tiles from you while the book is in the world, and possession needs the victim within 20 tiles of the book (they can run while it happens).

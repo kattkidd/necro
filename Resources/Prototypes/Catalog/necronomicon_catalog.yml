@@ -603,9 +603,9 @@
     stock: 1
 
 - type: listing
-  id: NecroCellarWitch
-  name: necro-catalog-cellar-witch-name
-  description: necro-catalog-cellar-witch-desc
+  id: NecroWickedDead
+  name: necro-catalog-wicked-dead-name
+  description: necro-catalog-wicked-dead-desc
   icon: { sprite: /Textures/Mobs/Ghosts/ghost_human.rsi, state: icon }
   cost:
     SoulPower: 20
@@ -614,7 +614,7 @@
   conditions:
   - !type:ListingLimitedStockCondition
     stock: 1
-  productEvent: !type:NecroSummonCellarDeaditeEvent
+  productEvent: !type:NecroSummonWickedDeadEvent
   raiseProductEventOnUser: true
 
 - type: listing

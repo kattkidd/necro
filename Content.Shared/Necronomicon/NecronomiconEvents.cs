@@ -148,9 +148,9 @@ public sealed partial class NecroSelectFormEvent : EntityEventArgs
     public string State = string.Empty;
 }
 
-/// <summary>Raises the Deadite in the cellar (Evil Dead II).</summary>
+/// <summary>Drags one of the wicked dead up out of Hell into a body of flesh.</summary>
 [Serializable, NetSerializable, DataDefinition]
-public sealed partial class NecroSummonCellarDeaditeEvent : EntityEventArgs;
+public sealed partial class NecroSummonWickedDeadEvent : EntityEventArgs;
 
 /// <summary>Raises a squad of the Army of Darkness (Army of Darkness).</summary>
 [Serializable, NetSerializable, DataDefinition]

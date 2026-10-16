@@ -227,7 +227,7 @@ public sealed partial class NecroDemonComponent : Component
     public EntProtoId RisenGhostRole = "NecroRisenGhostRole";
 
     [DataField]
-    public EntProtoId CellarDeaditePrototype = "MobDeaditeCellarWitch";
+    public EntProtoId WickedDeadPrototype = "MobDeaditeWickedDead";
 
     [DataField]
     public EntProtoId ArmyPrototype = "MobDeaditeSkeleton";
@@ -1050,7 +1050,7 @@ public sealed partial class NecronomiconRuleComponent : Component
 
     /// <summary>Hidden aboard at round start, each in its own random spot.</summary>
     [DataField]
-    public List<EntProtoId> HiddenRelics = new() { "NecroBrujoTalisman", "NecroBrujoTalisman", "NecroLindaNecklace" };
+    public List<EntProtoId> HiddenRelics = new() { "NecroBrujoTalisman", "NecroBrujoTalisman" };
 
     [DataField]
     public TimeSpan CheckInterval = TimeSpan.FromSeconds(10);
@@ -1156,18 +1156,3 @@ public sealed partial class NecroTalismanComponent : Component
     public float Range = 1.5f;
 }
 
-/// <summary>
-/// Linda's necklace (Evil Dead II): shown to a Deadite, the person inside remembers who they are for a moment.
-/// </summary>
-[RegisterComponent]
-public sealed partial class NecroLindaNecklaceComponent : Component
-{
-    [DataField]
-    public TimeSpan Cooldown = TimeSpan.FromSeconds(30);
-
-    [DataField]
-    public TimeSpan StunTime = TimeSpan.FromSeconds(4);
-
-    [ViewVariables]
-    public TimeSpan NextUse;
-}
