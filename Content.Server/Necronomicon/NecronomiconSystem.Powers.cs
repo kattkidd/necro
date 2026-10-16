@@ -119,7 +119,8 @@ public sealed partial class NecronomiconSystem
 
     private void OnGraspingRoots(Entity<NecroDemonComponent> ent, ref NecroGraspingRootsActionEvent args)
     {
-        if (args.Handled || !CanUsePowers(ent, args.Performer) || !ValidLivingTarget(args.Target, args.Performer))
+        if (args.Handled || !CanUsePowers(ent, args.Performer) || !ValidLivingTarget(args.Target, args.Performer)
+            || TryWard(args.Target, args.Performer))
             return;
 
         if (!TrySpendSoulPower(ent, ent.Comp.RootsCost, args.Performer))
@@ -145,7 +146,8 @@ public sealed partial class NecronomiconSystem
 
     private void OnPossessedHand(Entity<NecroDemonComponent> ent, ref NecroPossessedHandActionEvent args)
     {
-        if (args.Handled || !CanUsePowers(ent, args.Performer) || !ValidLivingTarget(args.Target, args.Performer))
+        if (args.Handled || !CanUsePowers(ent, args.Performer) || !ValidLivingTarget(args.Target, args.Performer)
+            || TryWard(args.Target, args.Performer))
             return;
 
         var target = args.Target;
@@ -182,7 +184,8 @@ public sealed partial class NecronomiconSystem
 
     private void OnDeceit(Entity<NecroDemonComponent> ent, ref NecroDeceitActionEvent args)
     {
-        if (args.Handled || !CanUsePowers(ent, args.Performer) || !ValidLivingTarget(args.Target, args.Performer))
+        if (args.Handled || !CanUsePowers(ent, args.Performer) || !ValidLivingTarget(args.Target, args.Performer)
+            || TryWard(args.Target, args.Performer))
             return;
 
         var target = args.Target;

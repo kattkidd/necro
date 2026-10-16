@@ -23,6 +23,12 @@ ghost-role-information-demonspawn-name = Demonspawn
 ghost-role-information-demonspawn-description = A small, vicious thing summoned by the Necronomicon. Serve the book.
 ghost-role-information-demonspawn-adult-name = Grown Demonspawn
 ghost-role-information-demonspawn-adult-description = A tall, grey, black-eyed thing that was once a summoned imp. Serve the book.
+ghost-role-information-risen-deadite-name = Risen Deadite
+ghost-role-information-risen-deadite-description = A corpse the Book of the Dead would not let lie. Swallow their souls.
+ghost-role-information-cellar-witch-name = Henrietta, the Deadite in the cellar
+ghost-role-information-cellar-witch-description = Professor Knowby's wife, long dead and very much possessed. Serve the book.
+ghost-role-information-army-of-darkness-name = Army of Darkness skeleton
+ghost-role-information-army-of-darkness-description = A soldier of the Army of Darkness, raised from the grave by the Necronomicon.
 ghost-role-information-demonspawn-rules = You are a [color={role-type-team-antagonist-color}][bold]{role-type-team-antagonist-name}[/bold][/color] serving the Necronomicon and its Deadites. Attack the living crew.
 
 chat-radio-sumerian = Ancient Sumerian
@@ -505,3 +511,23 @@ necro-dead-by-dawn-deadite = DEAD BY DAWN! You rise again, stronger and faster!
 deadite-swallow-invalid = You can only feed on the living who are down and dying.
 deadite-swallow-start = {CAPITALIZE(THE($user))} crouches over {THE($target)}, mouth gaping!
 deadite-swallow-done = {CAPITALIZE(THE($user))} swallows {THE($target)}'s soul!
+
+## Servants and relics
+
+necro-catalog-riseagain-name = From the Grave
+necro-catalog-riseagain-desc = Unlocks From the Grave (The Evil Dead): raise a corpse as a revealed Deadite. If nobody's in it, a ghost can take it. Costs 8 SP per use.
+necro-catalog-cellar-witch-name = The Deadite in the Cellar
+necro-catalog-cellar-witch-desc = Evil Dead II: Henrietta claws her way up at the book (or at you). A huge, tough, ghost-controlled Deadite who hits like a truck.
+necro-catalog-army-name = Army of Darkness
+necro-catalog-army-desc = Army of Darkness: three deadite skeletons rise at the book (or at you), controlled by ghosts or by hunger.
+necro-rise-invalid = Only the dead of the living can be raised.
+necro-rise = {CAPITALIZE(THE($target))} jerks, twitches, and rises from death!
+necro-cellar-witch = The floor bulges and splits, and something old and grey climbs out of the dark!
+necro-army-rises = Bones crawl up out of the floor! The Army of Darkness rises!
+necro-talisman-wards = A brujo's talisman flares and the evil slides off {THE($target)}!
+necro-talisman-blocked = A talisman wards them. Your power slides off.
+necro-talisman-crumbles = The talisman burns black and crumbles to ash.
+necro-necklace-shown = {CAPITALIZE(THE($user))} holds up a little silver necklace before {THE($target)}!
+necro-necklace-deadite = The necklace... you REMEMBER. For a moment you are yourself again!
+necro-necklace-dim = The necklace needs a moment before it means anything again.
+necro-round-end-stat-servants = Corpses raised: [color=red]{$risen}[/color]. Army of Darkness skeletons: [color=red]{$army}[/color]

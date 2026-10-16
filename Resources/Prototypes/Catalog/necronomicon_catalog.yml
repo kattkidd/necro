@@ -586,3 +586,48 @@
   conditions:
   - !type:ListingLimitedStockCondition
     stock: 1
+
+# --- Servants from the films ---
+
+- type: listing
+  id: NecroRiseAgain
+  name: necro-catalog-riseagain-name
+  description: necro-catalog-riseagain-desc
+  productAction: ActionNecroRiseAgain
+  cost:
+    SoulPower: 6
+  categories:
+  - NecroDemonspawn
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroCellarWitch
+  name: necro-catalog-cellar-witch-name
+  description: necro-catalog-cellar-witch-desc
+  icon: { sprite: /Textures/Mobs/Ghosts/ghost_human.rsi, state: icon }
+  cost:
+    SoulPower: 20
+  categories:
+  - NecroDemonspawn
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  productEvent: !type:NecroSummonCellarDeaditeEvent
+  raiseProductEventOnUser: true
+
+- type: listing
+  id: NecroArmyOfDarkness
+  name: necro-catalog-army-name
+  description: necro-catalog-army-desc
+  icon: { sprite: /Textures/Mobs/Species/Skeleton/parts.rsi, state: skull_icon }
+  cost:
+    SoulPower: 15
+  categories:
+  - NecroDemonspawn
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 3
+  productEvent: !type:NecroRaiseArmyEvent
+  raiseProductEventOnUser: true

@@ -107,6 +107,16 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             _transform.AttachToGridOrMap(pages);
         }
 
+        // Brujo talismans and Linda's necklace, scattered around the station for the crew to find.
+        foreach (var relic in ent.Comp.HiddenRelics)
+        {
+            if (!_station.TryFindRandomTile(out _, out _, out _, out var relicCoords))
+                continue;
+
+            var item = Spawn(relic, relicCoords);
+            _transform.AttachToGridOrMap(item);
+        }
+
         _necro.PlayRecordingAtRoundStart(recording);
         _necro.Awaken((demonUid, demon));
     }
@@ -290,6 +300,8 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         rule.Comp.FinalFear = demon.Comp.TotalFearEarned;
         rule.Comp.FinalPuppetPossessions = demon.Comp.PuppetPossessions;
         rule.Comp.FinalDemonspawnMatured = demon.Comp.DemonspawnMatured;
+        rule.Comp.FinalRisenDead = demon.Comp.RisenDead;
+        rule.Comp.FinalArmyRaised = demon.Comp.ArmyRaised;
         rule.Comp.FinalRituals = demon.Comp.RitualsPerformed;
         rule.Comp.FinalExorcisms = demon.Comp.Exorcisms;
         rule.Comp.FinalExorcismAttempts = demon.Comp.ExorcismAttempts;
@@ -362,6 +374,9 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
                 ("name", name)));
         }
 
+        args.AddLine(Loc.GetString("necro-round-end-stat-servants",
+            ("risen", c.FinalRisenDead),
+            ("army", c.FinalArmyRaised)));
         args.AddLine(Loc.GetString("necro-round-end-stat-demonspawn",
             ("count", c.FinalDemonspawn),
             ("matured", c.FinalDemonspawnMatured)));

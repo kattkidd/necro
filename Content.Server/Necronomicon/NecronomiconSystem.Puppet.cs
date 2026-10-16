@@ -95,6 +95,9 @@ public sealed partial class NecronomiconSystem
             return;
         }
 
+        if (TryWard(target, args.Performer))
+            return;
+
         if (!TrySpendSoulPower(ent, ent.Comp.PuppetCost, args.Performer))
             return;
 

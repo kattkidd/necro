@@ -3,6 +3,7 @@ using Content.Shared.Chat;
 using Content.Shared.DoAfter;
 using Content.Shared.Humanoid;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Interaction;
 using Content.Shared.Necronomicon;
 using Content.Shared.Popups;
 using Content.Shared.Weapons.Melee.Events;
@@ -20,6 +21,46 @@ public sealed partial class DeaditeSystem
         SubscribeLocalEvent<DeaditeComponent, DeaditeSwallowSoulActionEvent>(OnSwallowSoul);
         SubscribeLocalEvent<DeaditeComponent, DeaditeSwallowSoulDoAfterEvent>(OnSwallowSoulDoAfter);
         SubscribeLocalEvent<NecroKandarianDaggerComponent, MeleeHitEvent>(OnDaggerHit);
+        SubscribeLocalEvent<NecroLindaNecklaceComponent, AfterInteractEvent>(OnNecklaceShown);
+    }
+
+    /// <summary>
+    /// Linda's necklace: shown to a Deadite, the person inside remembers who they are and the demon loses its grip
+    /// for a few seconds. Shown to someone being puppeted, it breaks the puppeting.
+    /// </summary>
+    private void OnNecklaceShown(Entity<NecroLindaNecklaceComponent> ent, ref AfterInteractEvent args)
+    {
+        if (args.Handled || !args.CanReach || args.Target is not { } target || target == args.User)
+            return;
+
+        var deadite = HasComp<DeaditeComponent>(target);
+        var puppet = HasComp<NecroPuppetHostComponent>(target);
+        if (!deadite && !puppet)
+            return;
+
+        args.Handled = true;
+        var now = _timing.CurTime;
+        if (now < ent.Comp.NextUse)
+        {
+            _popup.PopupCursor(Loc.GetString("necro-necklace-dim"), args.User, PopupType.SmallCaution);
+            return;
+        }
+
+        ent.Comp.NextUse = now + ent.Comp.Cooldown;
+
+        if (puppet && TryComp<NecroPuppetHostComponent>(target, out var host) && _necro.TryGetDemon(host.Demon, out var puppeteer))
+            _necro.EndPuppet(puppeteer.Value);
+
+        if (deadite)
+        {
+            _stun.TryUpdateParalyzeDuration(target, ent.Comp.StunTime);
+            _jitter.DoJitter(target, ent.Comp.StunTime, true, 10f, 6f);
+            _popup.PopupCursor(Loc.GetString("necro-necklace-deadite"), target, PopupType.LargeCaution);
+        }
+
+        _popup.PopupEntity(Loc.GetString("necro-necklace-shown",
+                ("user", Identity.Entity(args.User, EntityManager)), ("target", Identity.Entity(target, EntityManager))),
+            target, PopupType.LargeCaution);
     }
 
     private bool CanSwallow(Entity<DeaditeComponent> ent, EntityUid target)

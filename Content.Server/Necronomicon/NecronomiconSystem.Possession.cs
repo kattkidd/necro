@@ -91,6 +91,9 @@ public sealed partial class NecronomiconSystem
             return;
         }
 
+        if (TryWard(target, args.Performer))
+            return;
+
         Prepare(ent, target);
         args.Handled = true;
 
@@ -135,6 +138,9 @@ public sealed partial class NecronomiconSystem
         }
 
         if (!BookNear(ent, target, ent.Comp.PossessRange, args.Performer))
+            return;
+
+        if (TryWard(target, args.Performer))
             return;
 
         var duration = HasUpgrade(ent, NecroUpgrade.SwiftPossession) ? ent.Comp.SwiftPossessDuration : ent.Comp.PossessDuration;

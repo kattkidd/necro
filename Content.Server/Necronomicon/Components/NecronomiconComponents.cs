@@ -215,6 +215,25 @@ public sealed partial class NecroDemonComponent : Component
 
     [DataField]
     public float DeadByDawnSpeed = 1.3f;
+
+    [DataField]
+    public FixedPoint2 RiseCost = 8;
+
+    [DataField]
+    public float RiseRange = 12f;
+
+    /// <summary>Added to a corpse with no player so a ghost can take it.</summary>
+    [DataField]
+    public EntProtoId RisenGhostRole = "NecroRisenGhostRole";
+
+    [DataField]
+    public EntProtoId CellarDeaditePrototype = "MobDeaditeCellarWitch";
+
+    [DataField]
+    public EntProtoId ArmyPrototype = "MobDeaditeSkeleton";
+
+    [DataField]
+    public int ArmySize = 3;
     #endregion
 
     /// <summary>Radius of the poltergeist burst (flickering lights, flying objects) around supernatural events.</summary>
@@ -343,6 +362,14 @@ public sealed partial class NecroDemonComponent : Component
 
     [ViewVariables]
     public int DemonspawnMatured;
+
+    /// <summary>Corpses raised as Deadites.</summary>
+    [ViewVariables]
+    public int RisenDead;
+
+    /// <summary>Skeletons of the Army of Darkness raised.</summary>
+    [ViewVariables]
+    public int ArmyRaised;
 
     /// <summary>Mindshield-melting rituals completed by Deadites.</summary>
     [ViewVariables]
@@ -1021,6 +1048,10 @@ public sealed partial class NecronomiconRuleComponent : Component
     [DataField]
     public EntProtoId PagesPrototype = "NecroLostPages";
 
+    /// <summary>Hidden aboard at round start, each in its own random spot.</summary>
+    [DataField]
+    public List<EntProtoId> HiddenRelics = new() { "NecroBrujoTalisman", "NecroBrujoTalisman", "NecroLindaNecklace" };
+
     [DataField]
     public TimeSpan CheckInterval = TimeSpan.FromSeconds(10);
 
@@ -1055,6 +1086,12 @@ public sealed partial class NecronomiconRuleComponent : Component
     /// <summary>The crew won by opening the rift rather than by fire.</summary>
     [ViewVariables]
     public bool RiftEnding;
+
+    [ViewVariables]
+    public int FinalRisenDead;
+
+    [ViewVariables]
+    public int FinalArmyRaised;
 
     [ViewVariables]
     public int FinalDemonspawn;
@@ -1103,4 +1140,34 @@ public sealed partial class NecroKandarianDaggerComponent : Component
     {
         DamageDict = new() { { "Slash", 15 } },
     };
+}
+
+/// <summary>
+/// A brujo's protective talisman (Ash vs Evil Dead). The demon's powers can't touch anyone carrying one or standing
+/// next to one. Each warding burns it a little; it crumbles after a few.
+/// </summary>
+[RegisterComponent]
+public sealed partial class NecroTalismanComponent : Component
+{
+    [DataField]
+    public int Charges = 3;
+
+    [DataField]
+    public float Range = 1.5f;
+}
+
+/// <summary>
+/// Linda's necklace (Evil Dead II): shown to a Deadite, the person inside remembers who they are for a moment.
+/// </summary>
+[RegisterComponent]
+public sealed partial class NecroLindaNecklaceComponent : Component
+{
+    [DataField]
+    public TimeSpan Cooldown = TimeSpan.FromSeconds(30);
+
+    [DataField]
+    public TimeSpan StunTime = TimeSpan.FromSeconds(4);
+
+    [ViewVariables]
+    public TimeSpan NextUse;
 }

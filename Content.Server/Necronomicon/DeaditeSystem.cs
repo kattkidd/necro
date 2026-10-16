@@ -442,6 +442,9 @@ public sealed partial class DeaditeSystem : EntitySystem
         if (!shielded && !_necro.CanBecomeDeadite(target, ent))
             return;
 
+        if (_necro.TryWard(target, ent))
+            return;
+
         args.Handled = true;
 
         _damageable.TryChangeDamage(target, ent.Comp.BiteDamage, origin: ent);

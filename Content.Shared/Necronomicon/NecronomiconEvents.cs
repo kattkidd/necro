@@ -45,6 +45,9 @@ public sealed partial class NecroPossessedHandActionEvent : EntityTargetActionEv
 /// <summary>Baal's deceit (Ash vs Evil Dead): a victim sees a friend's eyes flash white.</summary>
 public sealed partial class NecroDeceitActionEvent : EntityTargetActionEvent;
 
+/// <summary>Raise a corpse as a Deadite (The Evil Dead: Linda and Shelly would not stay buried).</summary>
+public sealed partial class NecroRiseAgainActionEvent : EntityTargetActionEvent;
+
 /// <summary>"Dead by dawn": the whole station hears it, and every Deadite surges.</summary>
 public sealed partial class NecroDeadByDawnActionEvent : InstantActionEvent;
 
@@ -144,6 +147,14 @@ public sealed partial class NecroSelectFormEvent : EntityEventArgs
     [DataField(required: true)]
     public string State = string.Empty;
 }
+
+/// <summary>Raises the Deadite in the cellar (Evil Dead II).</summary>
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class NecroSummonCellarDeaditeEvent : EntityEventArgs;
+
+/// <summary>Raises a squad of the Army of Darkness (Army of Darkness).</summary>
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class NecroRaiseArmyEvent : EntityEventArgs;
 
 /// <summary>Adds a possession charge.</summary>
 [Serializable, NetSerializable, DataDefinition]
