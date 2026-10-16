@@ -677,7 +677,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
     {
         if (ent.Comp.Played)
         {
-            // The reading is spent, but the professor's log can be rewound and played again.
+            // The reading is spent, but the log can be rewound and played again.
             if (ent.Comp.LogIndex < 0)
             {
                 _popup.PopupEntity(Loc.GetString("necro-recording-rewind"), ent, PopupType.Medium);

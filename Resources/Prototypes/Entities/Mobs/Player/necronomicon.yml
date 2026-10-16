@@ -580,7 +580,7 @@
   # Hears whoever stands near it, so it knows whether they said the words before taking it.
   - type: ActiveListener
     range: 4
-  # Written in blood in a language nobody living can read, with the late professor's pencilled notes.
+  # Written in blood in a language nobody living can read, with a long-dead archaeologist's pencilled notes.
   - type: Paper
     content: necronomicon-book-text
     editingDisabled: true
@@ -607,12 +607,12 @@
     tags:
     - Book
 
-# --- The lost pages (Evil Dead II) --------------------------------------------------------------
+# --- The lost pages ----------------------------------------------------------------------------
 - type: entity
   parent: Paper
   id: NecroLostPages
   name: lost pages of the Necronomicon
-  description: A sheaf of pages torn from the Book of the Dead, interleaved with the professor's daughter's translation notes. Two passages are circled.
+  description: A sheaf of pages torn from the Book of the Dead, interleaved with someone's centuries-old translation notes. Two passages are circled.
   components:
   - type: Sprite
     sprite: Objects/Misc/bureaucracy.rsi
@@ -657,8 +657,8 @@
 - type: entity
   parent: BaseItem
   id: NecroOldRecording
-  name: Professor Knowby's tape recorder
-  description: A battered reel-to-reel recorder. The tape is labelled in Professor Raymond Knowby's careful hand. You can rewind it and play his log again.
+  name: antique tape recorder
+  description: A reel-to-reel recorder, centuries old, the kind nobody has made in a very long time. It still plays. The tape is labelled in a careful hand. You can rewind it and play the log again.
   components:
   - type: Sprite
     sprite: Objects/Fun/clownrecorder.rsi
@@ -723,7 +723,7 @@
       settings: short
   - type: GhostTakeoverAvailable
 
-# A soldier of the Army of Darkness.
+# A soldier of the army of the dead.
 - type: entity
   parent: MobSkeletonPerson
   id: MobDeaditeSkeleton
@@ -768,7 +768,7 @@
 
 # --- Things the crew can find --------------------------------------------------------------------
 
-# Ash vs Evil Dead: El Brujo's protective talismans.
+# Protective talismans made by a brujo to keep the evil out.
 - type: entity
   parent: ClothingNeckBase
   id: NecroBrujoTalisman

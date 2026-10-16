@@ -26,7 +26,7 @@ namespace Content.Server.Necronomicon;
 /// <summary>
 /// Pieces taken straight from the films (The Evil Dead, Evil Dead II, Army of Darkness):
 /// <list type="bullet">
-/// <item><b>The professor's log.</b> The recorder plays Professor Raymond Knowby's log aloud, and can be rewound.</item>
+/// <item><b>The archaeologist's log.</b> The recorder plays the log of the man who first translated the book, and can be rewound.</item>
 /// <item><b>Klaatu Barada Nikto.</b> Whoever takes the book from where it lies had better say the words first.
 /// Fumble them, or don't say them, and the book bites, the dead rise and the demon grows stronger.</item>
 /// <item><b>The lost pages.</b> Two passages: the first conjures the evil into the flesh and holds it there; the second
@@ -51,7 +51,7 @@ public sealed partial class NecronomiconSystem
         SubscribeLocalEvent<NecroLostPagesComponent, NecroPagesRiftDoAfterEvent>(OnRiftDoAfter);
     }
 
-    #region The professor's log
+    #region The archaeologist's log
 
     public void StartRecordingLog(Entity<NecroRecordingComponent> recording)
     {

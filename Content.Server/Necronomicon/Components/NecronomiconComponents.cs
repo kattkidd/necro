@@ -580,7 +580,7 @@ public sealed partial class NecronomiconComponent : Component
 }
 
 /// <summary>
-/// The lost pages of the Necronomicon, torn out and carried off by the professor's daughter.
+/// The lost pages of the Necronomicon, torn out by the archaeologist who first translated it and carried off by his daughter.
 /// Their two passages first conjure the evil into the flesh, then open a rift that casts it out.
 /// </summary>
 [RegisterComponent]
@@ -998,7 +998,7 @@ public sealed partial class NecroRecordingComponent : Component
     [DataField]
     public SoundSpecifier SummonSound = new SoundPathSpecifier("/Audio/Effects/desecration-03.ogg");
 
-    /// <summary>The professor's log, one locale key per line, spoken by the recorder.</summary>
+    /// <summary>The archaeologist's log, one locale key per line, spoken by the recorder.</summary>
     [DataField]
     public List<string> LogLines = new()
     {
@@ -1143,7 +1143,7 @@ public sealed partial class NecroKandarianDaggerComponent : Component
 }
 
 /// <summary>
-/// A brujo's protective talisman (Ash vs Evil Dead). The demon's powers can't touch anyone carrying one or standing
+/// A brujo's protective talisman. The demon's powers can't touch anyone carrying one or standing
 /// next to one. Each warding burns it a little; it crumbles after a few.
 /// </summary>
 [RegisterComponent]

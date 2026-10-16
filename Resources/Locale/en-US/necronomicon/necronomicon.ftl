@@ -27,8 +27,8 @@ ghost-role-information-risen-deadite-name = Risen Deadite
 ghost-role-information-risen-deadite-description = A corpse the Book of the Dead would not let lie. Swallow their souls.
 ghost-role-information-wicked-dead-name = Wicked Dead
 ghost-role-information-wicked-dead-description = One of the wicked dead, dragged up out of Hell by the Book of the Dead and given a body of flesh. Serve the book.
-ghost-role-information-army-of-darkness-name = Army of Darkness skeleton
-ghost-role-information-army-of-darkness-description = A soldier of the Army of Darkness, raised from the grave by the Necronomicon.
+ghost-role-information-army-of-darkness-name = skeleton of the dead army
+ghost-role-information-army-of-darkness-description = A soldier of the army of the dead, raised from the grave by the Necronomicon.
 ghost-role-information-demonspawn-rules = You are a [color={role-type-team-antagonist-color}][bold]{role-type-team-antagonist-name}[/bold][/color] serving the Necronomicon and its Deadites. Attack the living crew.
 
 chat-radio-sumerian = Ancient Sumerian
@@ -61,9 +61,9 @@ necro-catalog-fear-amplify-name = Amplify Fear
 necro-catalog-fear-amplify-desc = All Fear yields 50% more Soul Power. Stacks twice.
 necro-catalog-dread-aura-name = Dread Aura
 necro-catalog-dread-aura-desc = Revealed Deadites, Demonspawn and your physical form generate double Fear just by being near the living.
-necro-catalog-whisper-name = Voices in the Woods
+necro-catalog-whisper-name = Voices in the Dark
 necro-catalog-whisper-desc = Unlocks Whisper: a private terror for one crew member within 12 tiles. 2 SP per use. Mindshields dull it.
-necro-catalog-dark-presence-name = The Laughing Cabin
+necro-catalog-dark-presence-name = The Laughing Room
 necro-catalog-dark-presence-desc = Unlocks Dark Presence: lights flicker and machines misbehave around you. 4 SP per use.
 necro-catalog-physical-form-name = Take Flesh
 necro-catalog-physical-form-desc = Unlocks taking a corporeal, combat-capable body in your chosen form (150 health, 14 slash). 5 SP per use. If the body dies you return to the ether and must wait 2 minutes.
@@ -72,7 +72,7 @@ necro-catalog-hardened-flesh-desc = Your physical form gains 75 health. Stacks t
 necro-catalog-rending-claws-name = Rending Claws
 necro-catalog-rending-claws-desc = Your physical form deals 6 more slash damage. Stacks twice. Requires Physical Form.
 necro-catalog-demonspawn-name = Summon Demonspawn
-necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at you), like the spawn Ruby bore in Ash vs Evil Dead. Taken over by a ghost. After ten minutes it grows into a tall, black-eyed adult. Holy water or a Bible destroys it.
+necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at you). Taken over by a ghost. After ten minutes it grows into a tall, black-eyed adult. Holy water or a Bible destroys it.
 necro-catalog-swift-possession-name = Swift Possession
 necro-catalog-swift-possession-desc = Possession takes 3 seconds instead of 6.
 necro-catalog-far-whisper-name = Far Whisper
@@ -114,7 +114,7 @@ necro-banished = The rift has taken you. You are torn from this world.
 necro-recording-start = A crackling voice begins reading in an ancient tongue...
 necro-recording-finished = The recording ends. Something outside the walls answers.
 necro-recording-spent = The tape is already playing.
-necro-recording-examine = The label reads: "Prof. R. Knowby. Translations of the Necronomicon Ex-Mortis." Use it to rewind and play the professor's log.
+necro-recording-examine = The label is in faded ink: "Translations of the Necronomicon Ex-Mortis." The machine is centuries old and should not still work. Use it to rewind and play the log.
 necro-recording-examine-spent = The reel has run out. Someone, or something, already played it.
 necro-awakened = The recording has finished the reading. You are AWAKE. The Necronomicon waits in the ether: use Manifest Necronomicon to bring it into the world wherever you stand.
 
@@ -369,7 +369,7 @@ necronomicon-book-text = [head=1]NECRONOMICON EX-MORTIS[/head]
     Ur-kandar nosferatos estrata emu-shurra, gal-kur ishtu dumazi enki-lal. Kesh-ra amantos nam-tar ereshki kanda, shuba ziggur-tu malakh esh-ra. Arallu ganzir kanda kanda, nergal-esh dimmu ur-kandar.
 
     Amantos ki-gal shurrupak, estrata nam-ur lil-tu. Edimmu sha-kanda ugallu, meslam-ta-ea neti kur-nu-gi-a. Kanda ishtu arallu, kanda ishtu ganzir.
-    {""}[color=#4a4a4a][italic]Pencil, in a careful hand: The book of burial rites, funerary incantations and passages of demon resurrection. Written by the Dark Ones, bound in human flesh and inked in blood. I recovered it from the ruins of Castle Kandar. I have begun the translation. God help me, I have begun reading it aloud. — Prof. R. Knowby[/italic][/color]
+    {""}[color=#4a4a4a][italic]Pencil, in a careful hand: The book of burial rites, funerary incantations and passages of demon resurrection. Written by the Dark Ones, bound in human flesh and inked in blood. I recovered it from the ruins of Castle Kandar. I have begun the translation. God help me, I have begun reading it aloud.[/italic][/color]
 
     -=+=-
 
@@ -393,9 +393,9 @@ necronomicon-book-text = [head=1]NECRONOMICON EX-MORTIS[/head]
 
     -=+=-
 
-    {""}[color=#4a4a4a][italic]On the inside of the back cover: Several pages are gone. I tore them out myself, the two passages that may yet undo all of this, and sent them away with my daughter Annie. If you have found this book, find those pages.[/italic][/color]
+    {""}[color=#4a4a4a][italic]On the inside of the back cover: Several pages are gone. I tore them out myself, the two passages that may yet undo all of this, and sent them away with my daughter. If you have found this book, find those pages.[/italic][/color]
 
-    {""}[color=#4a4a4a][italic]Below, pressed hard enough to tear the paper: Henrietta is not Henrietta anymore. The possessed do not die. The only way to stop them is the total dismemberment of the body. And whoever lifts this book from where it rests must first speak the words, every one of them: Klaatu. Barada. Nikto.[/italic][/color]
+    {""}[color=#4a4a4a][italic]Below, pressed hard enough to tear the paper: My wife is not my wife anymore. The possessed do not die. The only way to stop them is the total dismemberment of the body. And whoever lifts this book from where it rests must first speak the words, every one of them: Klaatu. Barada. Nikto.[/italic][/color]
 
     {""}[color=#4a4a4a][italic]The last line, barely legible: It cannot be torn. It cannot be drowned. I put it in the fire, and it burned, and in the morning it was whole again. Fire only hurts it. Only the passages on the lost pages can cast it out.[/italic][/color]
 
@@ -421,19 +421,19 @@ necro-passage-aloud-wake = The lights shudder. Something has woken.
 necro-passage-aloud-demon = {$reader} read aloud from your book. You feel stronger.
 necro-passage-aloud-whispers = Whispers answer you from the pages.
 
-## The professor's log (his own words, played by the recorder)
+## The archaeologist's log (his own words, played by the recorder)
 
-necro-tape-speaker = Professor Knowby (recording)
-necro-tape-1 = This is Professor Raymond Knowby. I am recording this at the cabin, where I have brought the book.
+necro-tape-speaker = a crackling voice on the tape
+necro-tape-1 = If anyone ever hears this: I am an archaeologist, and I am recording this far from anywhere, where I have brought the book.
 necro-tape-2 = I recovered it from the ruins of Castle Kandar. The Necronomicon Ex-Mortis. The Book of the Dead.
 necro-tape-3 = It was written by the Dark Ones, bound in human flesh and inked in blood. Burial rites. Funerary incantations. Passages that call the dead back.
 necro-tape-4 = I have translated the first of those passages. I will read it aloud now, for the record.
 necro-tape-5 = Kanda... Estrata... Amantos... Kanda!
-necro-tape-6 = Something is wrong with Henrietta. She is not herself. She speaks in other voices.
+necro-tape-6 = Something is wrong with my wife. She is not herself. She speaks in other voices.
 necro-tape-7 = I have locked her in the cellar. I know now that the possessed cannot be killed by any ordinary means. Only by the total dismemberment of the body.
-necro-tape-8 = I have torn out the pages that might undo this and sent them away with my daughter, Annie. Whoever hears this, find them.
+necro-tape-8 = I have torn out the pages that might undo this and sent them away with my daughter. Whoever hears this, find them.
 necro-tape-9 = And do not take up the book without speaking the words first. Every one of them.
-necro-recording-rewind = The tape rewinds with a long whine, and the professor's voice begins again.
+necro-recording-rewind = The tape rewinds with a long whine, and the dead man's voice begins again.
 necro-recording-log-ends = The tape runs out and clicks to a stop.
 
 ## Klaatu Barada Nikto
@@ -444,13 +444,13 @@ necro-words-fumbled = {CAPITALIZE(THE($user))} didn't say every word! The book s
 necro-words-forgotten = The face on the cover bites {THE($user)}'s hand and SHRIEKS! The dead answer!
 necro-words-demon = {$user} took your book without the words. The dead rise, and you grow stronger.
 
-## The lost pages (Evil Dead II)
+## The lost pages
 
 necronomicon-pages-text = [head=2]The Lost Pages[/head]
-    {""}[color=#3a2a1a][italic]Annie Knowby's notes, pinned to the torn pages.[/italic][/color]
+    {""}[color=#3a2a1a][italic]A daughter's translation notes, pinned to the torn pages, the ink centuries old.[/italic][/color]
 
     {""}[color=#7a0606]Kanda nam-shub ur-kandar, edimmu uzu-ta, edimmu su-ta! Ganzir ishtu kanda, kesh-ra amantos![/color]
-    {""}[color=#3a2a1a][italic]The first passage. It drags the evil into a body of flesh, where it can be touched, and where it can be hurt. Father writes that it will hold it there for a while.[/italic][/color]
+    {""}[color=#3a2a1a][italic]The first passage. It drags the evil into a body of flesh, where it can be touched, and where it can be hurt. My father wrote that it will hold it there for a while.[/italic][/color]
 
     {""}[color=#7a0606]Ka-gal ganzir, ka-gal arallu, ki-a-nag kur-ra bar-ra! Edimmu ishtu ka-gal! Kanda ishtu ka-gal![/color]
     {""}[color=#3a2a1a][italic]The second passage. It opens a rift, a hole in time and space, and the evil is cast through it, the book with it. It only takes what has been made flesh, so read the first passage before the second.[/italic][/color]
@@ -487,15 +487,15 @@ necro-book-scorched-wait = The book is still knitting itself back together. ({$s
 ## Film powers
 
 necro-catalog-rush-name = The Force
-necro-catalog-rush-desc = Unlocks The Force (The Evil Dead): charge in a straight line up to 14 tiles, through doors, flattening anyone in the way. Costs 4 SP per use.
+necro-catalog-rush-desc = Unlocks The Force: charge in a straight line up to 14 tiles, through doors, flattening anyone in the way. Costs 4 SP per use.
 necro-catalog-roots-name = The Trees
-necro-catalog-roots-desc = Unlocks The Trees (The Evil Dead): roots and branches burst up through the floor and hold someone in place for a few seconds. Costs 3 SP per use.
+necro-catalog-roots-desc = Unlocks The Trees: roots and branches burst up through the floor and hold someone in place for a few seconds. Costs 3 SP per use.
 necro-catalog-hand-name = The Hand
-necro-catalog-hand-desc = Unlocks The Hand (Evil Dead II): a victim's own hand turns on them, dropping what it holds and beating them. Mindshields stop it. Costs 3 SP per use.
-necro-catalog-deceit-name = Baal's Deceit
-necro-catalog-deceit-desc = Unlocks Baal's Deceit (Ash vs Evil Dead): show someone a vision of a nearby friend's eyes flashing white. Turn them on each other. Mindshields stop it. Costs 2 SP per use.
+necro-catalog-hand-desc = Unlocks The Hand: a victim's own hand turns on them, dropping what it holds and beating them. Mindshields stop it. Costs 3 SP per use.
+necro-catalog-deceit-name = False Eyes
+necro-catalog-deceit-desc = Unlocks False Eyes: show someone a vision of a nearby friend's eyes flashing white. Turn them on each other. Mindshields stop it. Costs 2 SP per use.
 necro-catalog-deadbydawn-name = Dead by Dawn
-necro-catalog-deadbydawn-desc = Unlocks Dead by Dawn (Evil Dead II): the whole station hears your voice, and every one of your Deadites stands back up, healed and faster for a minute. Once every ten minutes.
+necro-catalog-deadbydawn-desc = Unlocks Dead by Dawn: the whole station hears your voice, and every one of your Deadites stands back up, healed and faster for a minute. Once every ten minutes.
 
 necro-rush-victim = Something unseen slams into you at terrible speed!
 necro-roots = Roots and branches burst up through the floor and wrap around {THE($target)}!
@@ -515,16 +515,16 @@ deadite-swallow-done = {CAPITALIZE(THE($user))} swallows {THE($target)}'s soul!
 ## Servants and relics
 
 necro-catalog-riseagain-name = From the Grave
-necro-catalog-riseagain-desc = Unlocks From the Grave (The Evil Dead): raise a corpse as a revealed Deadite. If nobody's in it, a ghost can take it. Costs 8 SP per use.
+necro-catalog-riseagain-desc = Unlocks From the Grave: raise a corpse as a revealed Deadite. If nobody's in it, a ghost can take it. Costs 8 SP per use.
 necro-catalog-wicked-dead-name = Call Up the Wicked Dead
 necro-catalog-wicked-dead-desc = The book reaches down into Hell and drags one of the wicked dead up into a body of flesh, at the book (or at you). A huge, tough, ghost-controlled Deadite that hits like a truck. Once per round.
-necro-catalog-army-name = Army of Darkness
+necro-catalog-army-name = Army of the Dead
 necro-catalog-army-desc = Three deadite skeletons rise at the book (or at you), controlled by ghosts or by hunger.
 necro-rise-invalid = Only the dead of the living can be raised.
 necro-rise = {CAPITALIZE(THE($target))} jerks, twitches, and rises from death!
 necro-wicked-dead = The floor bulges and splits, and something old and grey drags itself up out of the dark!
-necro-army-rises = Bones crawl up out of the floor! The Army of Darkness rises!
+necro-army-rises = Bones crawl up out of the floor! The army of the dead rises!
 necro-talisman-wards = A brujo's talisman flares and the evil slides off {THE($target)}!
 necro-talisman-blocked = A talisman wards them. Your power slides off.
 necro-talisman-crumbles = The talisman burns black and crumbles to ash.
-necro-round-end-stat-servants = Corpses raised: [color=red]{$risen}[/color]. Army of Darkness skeletons: [color=red]{$army}[/color]
+necro-round-end-stat-servants = Corpses raised: [color=red]{$risen}[/color]. skeleton of the dead armys: [color=red]{$army}[/color]

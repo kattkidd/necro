@@ -97,8 +97,8 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroWhisper
-  name: Voices in the Woods
-  description: "The Evil Dead: the voices that called Cheryl out into the trees. Whisper terrors into someone's mind. Generates Fear. Costs 2 SP."
+  name: Voices in the Dark
+  description: "The voices that call people out into the dark. Whisper terrors into someone's mind. Generates Fear. Costs 2 SP."
   components:
   - type: Action
     useDelay: 20
@@ -122,8 +122,8 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroDarkPresence
-  name: The Laughing Cabin
-  description: "Evil Dead II: the room comes alive. Lights flicker, machines misbehave and the furniture laughs. Generates Fear. Costs 4 SP."
+  name: The Laughing Room
+  description: "The room comes alive. Lights flicker, machines misbehave and the furniture laughs. Generates Fear. Costs 4 SP."
   components:
   - type: Action
     useDelay: 45
@@ -364,7 +364,7 @@
   parent: BaseAction
   id: ActionNecroRush
   name: The Force
-  description: "The Evil Dead: tear across the station in a straight line, up to 14 tiles, faster than anything alive. Doors bang, lights die, and anyone in your path is knocked flat. Costs 4 SP."
+  description: "Tear across the station in a straight line, up to 14 tiles, faster than anything alive. Doors bang, lights die, and anyone in your path is knocked flat. Costs 4 SP."
   components:
   - type: Action
     useDelay: 30
@@ -385,7 +385,7 @@
   parent: BaseAction
   id: ActionNecroGraspingRoots
   name: The Trees
-  description: "The Evil Dead: roots and branches burst up through the floor and hold someone fast for a few seconds. Costs 3 SP."
+  description: "Roots and branches burst up through the floor and hold someone fast for a few seconds. Costs 3 SP."
   components:
   - type: Action
     useDelay: 30
@@ -410,7 +410,7 @@
   parent: BaseAction
   id: ActionNecroPossessedHand
   name: The Hand
-  description: "Evil Dead II: their own hand turns on them. It drops everything it holds and beats them. Mindshields stop it. Costs 3 SP."
+  description: "Their own hand turns on them. It drops everything it holds and beats them. Mindshields stop it. Costs 3 SP."
   components:
   - type: Action
     useDelay: 35
@@ -434,8 +434,8 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroDeceit
-  name: Baal's Deceit
-  description: "Ash vs Evil Dead: show someone a vision of a nearby friend's eyes flashing milky white. True or false, they won't know. Mindshields stop it. Costs 2 SP."
+  name: False Eyes
+  description: "Show someone a vision of a nearby friend's eyes flashing milky white. True or false, they won't know. Mindshields stop it. Costs 2 SP."
   components:
   - type: Action
     useDelay: 30
@@ -460,7 +460,7 @@
   parent: BaseAction
   id: ActionNecroDeadByDawn
   name: Dead by Dawn
-  description: "Evil Dead II: the whole station hears it. Every one of your Deadites stands back up, healed and faster for a minute. Once every ten minutes."
+  description: "The whole station hears it. Every one of your Deadites stands back up, healed and faster for a minute. Once every ten minutes."
   components:
   - type: Action
     useDelay: 600
@@ -499,7 +499,7 @@
   parent: BaseAction
   id: ActionNecroRiseAgain
   name: From the Grave
-  description: "The Evil Dead: they would not stay buried. Raise a corpse as a revealed Deadite. If nobody's in it, a ghost can take it. Costs 8 SP."
+  description: "The dead will not stay buried. Raise a corpse as a revealed Deadite. If nobody's in it, a ghost can take it. Costs 8 SP."
   components:
   - type: Action
     useDelay: 60

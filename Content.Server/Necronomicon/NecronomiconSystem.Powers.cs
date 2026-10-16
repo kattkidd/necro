@@ -21,7 +21,7 @@ namespace Content.Server.Necronomicon;
 /// <item><b>The Force</b> (The Evil Dead): the demon's charge across the station, through doors, bowling people over.</item>
 /// <item><b>The Trees</b> (The Evil Dead): roots and branches burst through the floor and hold a victim fast.</item>
 /// <item><b>The Hand</b> (Evil Dead II): a victim's own hand turns on them.</item>
-/// <item><b>Baal's Deceit</b> (Ash vs Evil Dead): a victim sees a friend's eyes flash white.</item>
+/// <item><b>False Eyes</b>: a victim sees a friend's eyes flash white.</item>
 /// <item><b>Dead by Dawn</b> (Evil Dead II): the whole station hears it, and every Deadite surges back up.</item>
 /// </list>
 /// </summary>
@@ -180,7 +180,7 @@ public sealed partial class NecronomiconSystem
 
     #endregion
 
-    #region Baal's Deceit
+    #region False Eyes
 
     private void OnDeceit(Entity<NecroDemonComponent> ent, ref NecroDeceitActionEvent args)
     {

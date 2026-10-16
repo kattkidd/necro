@@ -100,7 +100,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         var dagger = Spawn(ent.Comp.DaggerPrototype, Transform(demonUid).Coordinates);
         _transform.AttachToGridOrMap(dagger);
 
-        // The professor's lost pages were carried off elsewhere. Somebody will have to find them.
+        // The lost pages were carried off elsewhere. Somebody will have to find them.
         if (_station.TryFindRandomTile(out _, out _, out _, out var pagesCoords))
         {
             var pages = Spawn(ent.Comp.PagesPrototype, pagesCoords);

@@ -15,7 +15,7 @@ namespace Content.Server.Necronomicon;
 /// <item><b>From the Grave</b> (The Evil Dead): a corpse rises as a Deadite. A ghost takes it if its owner is gone.</item>
 /// <item><b>The Wicked Dead</b>: one of the wicked dead is dragged up out of Hell into a body of flesh, ghost-controlled.</item>
 /// <item><b>Army of Darkness</b> (Army of Darkness): a squad of deadite skeletons.</item>
-/// <item><b>Brujo talismans</b> (Ash vs Evil Dead): the demon's powers can't touch anyone near one.</item>
+/// <item><b>Brujo talismans</b>: the demon's powers can't touch anyone near one.</item>
 /// </list>
 /// </summary>
 public sealed partial class NecronomiconSystem

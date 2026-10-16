@@ -42,10 +42,10 @@ public sealed partial class NecroGraspingRootsActionEvent : EntityTargetActionEv
 /// <summary>The possessed hand (Evil Dead II): a victim's hand turns on them.</summary>
 public sealed partial class NecroPossessedHandActionEvent : EntityTargetActionEvent;
 
-/// <summary>Baal's deceit (Ash vs Evil Dead): a victim sees a friend's eyes flash white.</summary>
+/// <summary>False Eyes: a victim sees a friend's eyes flash white.</summary>
 public sealed partial class NecroDeceitActionEvent : EntityTargetActionEvent;
 
-/// <summary>Raise a corpse as a Deadite (The Evil Dead: Linda and Shelly would not stay buried).</summary>
+/// <summary>Raise a corpse as a Deadite: the dead will not stay buried.</summary>
 public sealed partial class NecroRiseAgainActionEvent : EntityTargetActionEvent;
 
 /// <summary>"Dead by dawn": the whole station hears it, and every Deadite surges.</summary>
