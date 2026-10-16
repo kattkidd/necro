@@ -263,6 +263,22 @@
       - HumanoidProfile
     event: !type:DeaditeReadPassageActionEvent
 
+- type: entity
+  parent: BaseAction
+  id: ActionDeaditeTaunt
+  name: Taunt
+  description: Let them hear the voice of the dead. "Join us!"
+  components:
+  - type: Action
+    useDelay: 15
+    itemIconStyle: BigAction
+    checkCanInteract: false
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/scream.png
+  - type: InstantAction
+    event: !type:DeaditeTauntActionEvent
+
 # --- Deadite progression tree ---
 
 - type: entity

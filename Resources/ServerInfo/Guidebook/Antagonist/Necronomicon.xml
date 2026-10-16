@@ -5,19 +5,23 @@
     [color=#999999][italic]"Join us..."[/italic][/color]
   </Box>
   <Box>
-    <GuideEntityEmbed Entity="NecronomiconBook" Caption="The Necronomicon"/>
+    <GuideEntityEmbed Entity="NecronomiconBook" Caption="Necronomicon Ex-Mortis"/>
+    <GuideEntityEmbed Entity="NecroLostPages" Caption="The lost pages"/>
+    <GuideEntityEmbed Entity="KandarianDagger" Caption="Kandarian dagger"/>
     <GuideEntityEmbed Entity="MobDemonspawn" Caption="Demonspawn"/>
     <GuideEntityEmbed Entity="MobDemonspawnAdult" Caption="Grown Demonspawn"/>
   </Box>
 
-  As the shift starts, an old tape recorder somewhere aboard finishes reading from the Book of the Dead. Something answers: a [color=#a01818]Kandarian Demon[/color], bound to the [color=#a01818]Necronomicon[/color].
+  As the shift starts, Professor Raymond Knowby's tape recorder somewhere aboard finishes reading from the [color=#a01818]Necronomicon Ex-Mortis[/color], the Book of the Dead: Sumerian, written by the Dark Ones, bound in human flesh and inked in blood. Something answers: a [color=#a01818]Kandarian Demon[/color]. The Kandarian dagger lies beside the recorder. Play the recorder (or rewind it) to hear the professor's log.
 
   ## For the crew
   - [bold]The book is the demon's anchor.[/bold] It can only be destroyed by [color=orange]fire[/color]. Light it with a lighter, welder or anything hot, and keep it burning for about twenty seconds.
+  - [bold]Klaatu. Barada. Nikto.[/bold] Say the words, every one of them, within a few tiles of the book before you pick it up. Take it without them, or fumble them, and the book bites, the demon grows stronger, every downed Deadite gets back up and you are left open to possession. This happens once each time the book comes into the world.
+  - [bold]Find the lost pages.[/bold] The professor tore out two passages; they're hidden somewhere aboard. Holding them with the book nearby, alt-click them to recite. The first conjures the evil into the flesh (it's dragged into its body and can't leave it for three minutes). The second opens a rift that swallows the demon and the book, if the demon's body is close. That wins the round, just like burning the book.
   - [bold]Read from it.[/bold] It's written in blood in a language nobody living understands, but the late professor's pencilled notes explain a few pages. With the book in your hand, right-click someone to read the [bold]Passage of Rebuking[/bold] (casts a Deadite out of its host; the Deadite can barely move while you read) or a Demonspawn to read the [bold]Passage of Unmaking[/bold]. Alt-click the book to read aloud from a random page and gamble. Every reading draws blood, leaves you open to JOIN US unless you're mindshielded, warns the demon, and the book has to rest for a minute afterwards.
   - [bold]Hold onto it.[/bold] While a living, unpossessed person carries the book (in hand, a pocket or a bag), it [italic]cannot[/italic] vanish back into the ether.
   - [bold]Anyone could be a Deadite.[/bold] They look completely normal until they reveal themselves. Then their skin goes corpse-pale, their eyes turn milky white and they start screaming.
-  - A revealed Deadite talks normally, but its laughs, screams and snarls are unmistakable. Deadites don't stay down. Beat one into critical and it gets back up shortly after. A heavy slash while it's down severs its head, which stops it for good. Burning the book ends them all.
+  - A revealed Deadite floats up off the floor, talks normally, taunts ("Join us!", "Dead by dawn!") and its laughs, screams and snarls are unmistakable. The possessed don't die by ordinary means: beat one into critical and it gets back up shortly after. Only dismemberment stops it: a heavy slash while it's down takes its head, and it stays down. Burning the book ends them all.
   - [bold]Mindshields[/bold] protect against possession, until a revealed Deadite reads the passage that melts them away.
   - [bold]Chaplains can exorcise Deadites.[/bold] Cuff, buckle or down the suspect, then use the [bold]Exorcise[/bold] verb with a Bible in hand and stand still for about twenty seconds. A Deadite comes back as themselves, healed, and the book can't claim them again for ten minutes. A mindshield implanted in the Deadite first halves the time. Anyone else is unharmed: the rite simply finds nothing. The chaplain needs a short rest between rites.
   - [bold]Demonspawn[/bold] grow into tall, grey, black-eyed adults after ten minutes. Both forms are [color=#88bbff]melted to dust[/color] by holy water (splash or spray it) or a Bible (hit them with it, use it on them or throw it).
@@ -25,6 +29,7 @@
   ## For the demon
   - Before the round, pick your [bold]alias[/bold], your [bold]form[/bold] (Abomination, Hellspawn, Flesh Golem, Wraith, Shambling Lover, Crawler or Apparition) and your [bold]aura[/bold] colour in Character Setup → Antags → Kandarian Demon → Loadout. Each form has its own speed, toughness and claws.
   - You start [bold]incorporeal[/bold]: invisible to the living, untouchable and unable to touch anything.
+  - [bold]Dark Presence[/bold] makes the room come alive: lights flicker and the furniture laughs.
   - [bold]Soul Power[/bold] comes from fear: monsters near the crew, monsters speaking, attacks, witnesses and supernatural events. Spend it in the [bold]Skill Store[/bold].
   - [bold]Manifest Necronomicon[/bold] puts the book in the world where you stand. JOIN US reaches 12 tiles from you while the book is in the world, and possession needs the victim within 20 tiles of the book (they can run while it happens).
   - [bold]JOIN US[/bold] prepares a victim (a Deadite bite does too). [bold]Possess[/bold] then turns them into a disguised Deadite and uses a charge. You start with two.

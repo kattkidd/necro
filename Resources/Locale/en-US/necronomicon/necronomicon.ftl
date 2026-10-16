@@ -90,7 +90,7 @@ necro-book-settles = The book shudders, then goes still.
 necro-book-manifest-start = You call the book into the world...
 necro-book-demanifest-start = You begin to draw the book back into the ether...
 necro-book-stirring = The book's pages flutter on their own.
-necro-book-appears = A book bound in skin falls out of thin air.
+necro-book-appears = A book bound in human flesh falls out of thin air.
 necro-book-manifested = The Necronomicon is in the physical world.
 necro-book-vanishes = The book fades away like smoke.
 necro-book-demanifested = The Necronomicon returns to the ether.
@@ -101,13 +101,14 @@ necro-book-burn-stage-1 = The pages blacken and a voice screams from inside the 
 necro-book-burn-stage-2 = The face on the cover twists in agony!
 necro-book-burn-stage-3 = The book is almost gone!
 necro-book-burning-demon = THE BOOK IS BURNING!
+necro-book-rift = The book is torn out of the world, howling, into a spinning hole in the air!
 necro-book-destroyed = The Necronomicon crumbles to ash with a terrible howl.
 necro-banished = The book is ash. You are torn from this world.
 
 necro-recording-start = A crackling voice begins reading in an ancient tongue...
 necro-recording-finished = The recording ends. Something outside the walls answers.
-necro-recording-spent = The tape only hisses now.
-necro-recording-examine = The label reads: "Translations of the Book of the Dead".
+necro-recording-spent = The tape is already playing.
+necro-recording-examine = The label reads: "Prof. R. Knowby. Translations of the Necronomicon Ex-Mortis." Use it to rewind and play the professor's log.
 necro-recording-examine-spent = The reel has run out. Someone, or something, already played it.
 necro-awakened = The recording has finished the reading. You are AWAKE. The Necronomicon waits in the ether: use Manifest Necronomicon to bring it into the world wherever you stand.
 
@@ -144,7 +145,7 @@ necro-form-dissolves = The creature collapses into black smoke.
 # Deadites
 deadite-name-format = Deadite '{$baseName}'
 deadite-converted = Your soul belongs to the Necronomicon now. You are a Deadite. Act normal... until you don't.
-deadite-reveal = {CAPITALIZE(THE($target))}'s skin turns corpse-pale and their eyes go milky white!
+deadite-reveal = {CAPITALIZE(THE($target))} rises off the floor, skin corpse-pale, eyes milky white!
 deadite-rises = {CAPITALIZE(THE($target))} jerks back to their feet!
 deadite-bite = {CAPITALIZE(THE($user))} sinks their teeth into {THE($target)}!
 deadite-bite-shielded = The mindshield repels the curse.
@@ -161,14 +162,16 @@ demonspawn-banished = The demonspawn shrieks and dissolves.
 
 # Round
 necro-announcement-sender = Central Command
+necro-crew-victory-rift-announcement = A spatial anomaly has opened and collapsed aboard the station, taking the Necronomicon with it. Deadite activity has ceased. Recover the bodies and report for evacuation.
 necro-crew-victory-announcement = The Necronomicon has been destroyed. Deadite activity has ceased. Recover the bodies and report for evacuation.
 necro-victory-announcement = ...no living soul answers. Join us.
 necro-round-end-demon = The Kandarian Demon was [color=red]{$name}[/color] ([color=gray]{$username}[/color]).
 necro-round-end-crew-victory = [color=green]The crew burned the Necronomicon![/color]
+necro-round-end-crew-victory-rift = [color=green]The crew read the lost pages: the rift swallowed the Kandarian Demon and the Necronomicon, and cast them back to the Middle Ages![/color]
 necro-round-end-necro-victory = [color=red]Every soul aboard was swallowed by the Necronomicon.[/color]
 necro-round-end-ongoing = The Necronomicon was never destroyed.
 
-# Accent (revealed Deadites; all-caps is applied separately)
+# Deadite taunts (the Taunt action)
 accent-deadite-1 = Join us!
 accent-deadite-2 = We're gonna get you!
 accent-deadite-3 = Dead by dawn!
@@ -344,49 +347,52 @@ demonspawn-dust-demon = One of your Demonspawn was destroyed by something holy.
 ## Kandarian chant and supernatural events
 
 necro-chant-1 = Kanda...
-necro-chant-2 = Estrada...
+necro-chant-2 = Estrata...
 necro-chant-3 = Amantos...
 necro-chant-4 = Kanda! Kanda!
-necro-chant-5 = Naturom Demonto...
+necro-chant-5 = Nosferatos...
 necro-chant-6 = KANDAR!
 necro-roar = {CAPITALIZE($demon)} lets out a roar that shakes the walls!
 necro-poltergeist = Everything around {THE($target)} rises into the air!
 
 ## The book's pages and its passages
 
-necronomicon-book-text = [head=1]NATUROM DEMONTO[/head]
-    {""}[italic]Kanda. Estrada. Amantos. Kanda.[/italic]
+necronomicon-book-text = [head=1]NECRONOMICON EX-MORTIS[/head]
+    {""}[italic]Kanda. Estrata. Amantos. Kanda.[/italic]
 
-    Ur-kandar nosferatos estrada emu-shurra, gal-kur ishtu naturom demonto. Kesh-ra amantos dumazi enki-lal, shuba nam-tar ereshki kanda. Ziggur-tu malakh esh-ra, arallu ganzir kanda kanda, nergal-esh dimmu ur-kandar.
+    Ur-kandar nosferatos estrata emu-shurra, gal-kur ishtu dumazi enki-lal. Kesh-ra amantos nam-tar ereshki kanda, shuba ziggur-tu malakh esh-ra. Arallu ganzir kanda kanda, nergal-esh dimmu ur-kandar.
 
-    Amantos ki-gal shurrupak, estrada nam-ur lil-tu. Edimmu sha-kanda ugallu, meslam-ta-ea neti kur-nu-gi-a. Kanda ishtu arallu, kanda ishtu ganzir.
-    {""}[color=#4a4a4a][italic]Pencil, in a careful hand: The opening invocation. I read it aloud into the recorder tonight. God forgive me. — R. K.[/italic][/color]
+    Amantos ki-gal shurrupak, estrata nam-ur lil-tu. Edimmu sha-kanda ugallu, meslam-ta-ea neti kur-nu-gi-a. Kanda ishtu arallu, kanda ishtu ganzir.
+    {""}[color=#4a4a4a][italic]Pencil, in a careful hand: The book of burial rites, funerary incantations and passages of demon resurrection. Written by the Dark Ones, bound in human flesh and inked in blood. I recovered it from the ruins of Castle Kandar. I have begun the translation. God help me, I have begun reading it aloud. — Prof. R. Knowby[/italic][/color]
 
     -=+=-
 
     {""}[head=2]Shu-nam Edimmu[/head]
-    Edimmu ur-kandar shu-nam, ishtu ka-dingir esh-ra! Nam-tar zi-kanda ul-lu, arallu ganzir kesh-ra amantos. Ki-shar dumazi, ki-shar estrada, ur-nam sha-kanda ul-ti-tu!
+    Edimmu ur-kandar shu-nam, ishtu ka-dingir esh-ra! Nam-tar zi-kanda ul-lu, arallu ganzir kesh-ra amantos. Ki-shar dumazi, ki-shar estrata, ur-nam sha-kanda ul-ti-tu!
     Utukku kanda nam-shub, ganzir ishtu bar-ra. Edimmu bar-ra! Edimmu bar-ra!
-    {""}[color=#4a4a4a][italic]Margin: This passage commands the spirit OUT of the one it has taken. Hold the book, face the afflicted, and read it through without stopping. The thing inside will writhe and crawl, but it cannot run. It costs the reader. I bled from the nose for an hour, and something has been whispering to me since.[/italic][/color]
+    {""}[color=#4a4a4a][italic]Margin: I believe this passage commands the spirit out of the one it has taken. Hold the book, face the afflicted, and read it through without stopping. The thing inside writhes, but it cannot run. It costs the reader. I bled from the nose for an hour, and something has been whispering to me since.[/italic][/color]
 
     -=+=-
 
     {""}[head=2]Lal-ur Ganzir[/head]
     Ganzir lal-ur, ka-sha nam-tur, edimmu-tur ishtu kur. Lal-ur! Lal-ur! Dub-sar kanda emu, ki-kal ash-ra nam-ti ul-ti.
-    {""}[color=#4a4a4a][italic]Margin: Of the small grey things that crawl out of the pages. These words unmake them. So does holy water, I am told, and a Bible. They do not stay small for long.[/italic][/color]
+    {""}[color=#4a4a4a][italic]Margin: Of the small grey things that crawl out of the pages. These words unmake them. So does holy water, and a Bible. They do not stay small for long.[/italic][/color]
 
     -=+=-
 
     {""}[head=2]Nam-shub Kandar[/head]
-    Ishtu ur-mah kanda, sag-gig nam-lu-ulu, edimmu ki-sikil esh-ra. Ma-mu kanda, ma-mu kanda. Gidim gal-gal ishtu kur-ra, nam-erim amantos estrada! Kesh-ra! Kesh-ra! Kanda!
+    Ishtu ur-mah kanda, sag-gig nam-lu-ulu, edimmu ki-sikil esh-ra. Ma-mu kanda, ma-mu kanda. Gidim gal-gal ishtu kur-ra, nam-erim amantos estrata! Kesh-ra! Kesh-ra! Kanda!
     Shurrupak nam-tar ki-gal, ur-kandar ishtu ganzir, dumazi amantos ul-ti-tu kesh. Ereshki-gal, ereshki-gal, nam-ur esh-ra kanda.
     {""}[color=#4a4a4a][italic]Margin: I cannot make sense of the rest. Some pages make the possessed flinch. Some wake things. Do not read them aloud.[/italic][/color]
 
     -=+=-
 
-    Kanda ul-ti kesh-ra, nam-tar edimmu amantos. Ganzir ishtu arallu. Dead by dawn. Dead by dawn. Dead by dawn.
+    {""}[color=#4a4a4a][italic]On the inside of the back cover: Several pages are gone. I tore them out myself, the two passages that may yet undo all of this, and sent them away with my daughter Annie. If you have found this book, find those pages.[/italic][/color]
 
-    {""}[color=#4a4a4a][italic]Last page, pressed hard enough to tear the paper: It cannot be torn. It cannot be drowned. It will not stay buried. FIRE. Burn it and keep it burning, and do not let go of it while you do, or it will slip back where it came from.[/italic][/color]
+    {""}[color=#4a4a4a][italic]Below, pressed hard enough to tear the paper: Henrietta is not Henrietta anymore. The possessed do not die. The only way to stop them is the total dismemberment of the body. And whoever lifts this book from where it rests must first speak the words, every one of them: Klaatu. Barada. Nikto.[/italic][/color]
+
+    {""}[color=#4a4a4a][italic]The last line, barely legible: It cannot be torn. It cannot be drowned. FIRE. Burn it, keep it burning, and do not let go of it while you do.[/italic][/color]
+
 
 necro-passage-rebuke-verb = Read the Passage of Rebuking
 necro-passage-rebuke-verb-message = Read the passage that casts the spirit out of the one it has taken. Takes several seconds; it costs you.
@@ -408,3 +414,60 @@ necro-passage-aloud-quiet = The words hang in the air. Nothing answers.
 necro-passage-aloud-wake = The lights shudder. Something has woken.
 necro-passage-aloud-demon = {$reader} read aloud from your book. You feel stronger.
 necro-passage-aloud-whispers = Whispers answer you from the pages.
+
+## The professor's log (his own words, played by the recorder)
+
+necro-tape-speaker = Professor Knowby (recording)
+necro-tape-1 = This is Professor Raymond Knowby. I am recording this at the cabin, where I have brought the book.
+necro-tape-2 = I recovered it from the ruins of Castle Kandar. The Necronomicon Ex-Mortis. The Book of the Dead.
+necro-tape-3 = It was written by the Dark Ones, bound in human flesh and inked in blood. Burial rites. Funerary incantations. Passages that call the dead back.
+necro-tape-4 = I have translated the first of those passages. I will read it aloud now, for the record.
+necro-tape-5 = Kanda... Estrata... Amantos... Kanda!
+necro-tape-6 = Something is wrong with Henrietta. She is not herself. She speaks in other voices.
+necro-tape-7 = I have locked her in the cellar. I know now that the possessed cannot be killed by any ordinary means. Only by the total dismemberment of the body.
+necro-tape-8 = I have torn out the pages that might undo this and sent them away with my daughter, Annie. Whoever hears this, find them.
+necro-tape-9 = And do not take up the book without speaking the words first. Every one of them.
+necro-recording-rewind = The tape rewinds with a long whine, and the professor's voice begins again.
+necro-recording-log-ends = The tape runs out and clicks to a stop.
+
+## Klaatu Barada Nikto
+
+necro-words-spoken = The face on the cover closes its eyes. The words have been spoken.
+necro-words-safe = You spoke the words. The book lies still in your hands.
+necro-words-fumbled = {CAPITALIZE(THE($user))} didn't say every word! The book shrieks, and the dead answer!
+necro-words-forgotten = The face on the cover bites {THE($user)}'s hand and SHRIEKS! The dead answer!
+necro-words-demon = {$user} took your book without the words. The dead rise, and you grow stronger.
+
+## The lost pages (Evil Dead II)
+
+necronomicon-pages-text = [head=2]The Lost Pages[/head]
+    {""}[color=#3a2a1a][italic]Annie Knowby's notes, pinned to the torn pages.[/italic][/color]
+
+    {""}[color=#7a0606]Kanda nam-shub ur-kandar, edimmu uzu-ta, edimmu su-ta! Ganzir ishtu kanda, kesh-ra amantos![/color]
+    {""}[color=#3a2a1a][italic]The first passage. It drags the evil into a body of flesh, where it can be touched, and where it can be hurt. Father writes that it will hold it there for a while.[/italic][/color]
+
+    {""}[color=#7a0606]Ka-gal ganzir, ka-gal arallu, ki-a-nag kur-ra bar-ra! Edimmu ishtu ka-gal! Kanda ishtu ka-gal![/color]
+    {""}[color=#3a2a1a][italic]The second passage. It opens a rift, a hole in time and space, and the evil is cast through it, the book with it. It only takes what has been made flesh, so read the first passage before the second.[/italic][/color]
+
+    {""}[color=#3a2a1a][italic]Both must be read with the book itself close by, in the world. The reader has to keep still and keep reading. It will come for whoever is reading.[/italic][/color]
+
+necro-pages-conjure-verb = Recite: conjure the evil into the flesh
+necro-pages-conjure-verb-message = The first passage of the lost pages. The book must be nearby. Forces the demon into a body of flesh and holds it there.
+necro-pages-rift-verb = Recite: open the rift
+necro-pages-rift-verb-message = The second passage. The book must be nearby, and the demon must be in the flesh and close. The rift swallows them both.
+necro-pages-no-book = The passages mean nothing without the book. It must be here, in the world, close to you.
+necro-pages-start = {CAPITALIZE(THE($user))} begins reciting from a sheaf of torn pages!
+necro-pages-start-self = You read the passage aloud. Keep still and keep reading. ({$seconds}s)
+necro-pages-demon-alert = {$reader} is reading the lost pages aloud near your book!
+necro-pages-conjured = The air tears, and the evil is dragged screaming into the flesh!
+necro-pages-conjured-demon = The words drag you into the flesh! You cannot return to the ether for {$minutes} minutes.
+necro-pages-rift-empty = A rift spins open in the air, finds nothing made of flesh to take, and collapses.
+necro-pages-rift-swallows = The rift tears open, and {THE($demon)} is dragged into it, howling!
+
+## The living room
+
+necro-room-laughs = {CAPITALIZE(THE($thing))} starts to laugh!
+
+## Physical form
+
+necro-flesh-bound = The words hold you in the flesh. ({$seconds}s)

@@ -164,6 +164,13 @@ public sealed partial class NecroDemonComponent : Component
     [DataField]
     public EntProtoId DemonspawnPrototype = "MobDemonspawn";
 
+    /// <summary>Held in the flesh by the lost pages' first passage until this time: Return to the Ether won't work.</summary>
+    [ViewVariables]
+    public TimeSpan FleshBoundUntil;
+
+    [DataField]
+    public TimeSpan FleshBindDuration = TimeSpan.FromMinutes(3);
+
     /// <summary>Radius of the poltergeist burst (flickering lights, flying objects) around supernatural events.</summary>
     [DataField]
     public float SupernaturalRange = 5f;
@@ -470,6 +477,55 @@ public sealed partial class NecronomiconComponent : Component
     [DataField]
     public float RebukeSlow = 0.4f;
     #endregion
+
+    #region Klaatu Barada Nikto
+    /// <summary>
+    /// The book has been taken (safely, with the words, or not) since it last came into the world.
+    /// Reset every time it manifests.
+    /// </summary>
+    [ViewVariables]
+    public bool Taken;
+
+    /// <summary>Who spoke the words correctly near the book, and when.</summary>
+    [ViewVariables]
+    public Dictionary<EntityUid, TimeSpan> SpokeWords = new();
+
+    /// <summary>The words protect whoever said them for this long.</summary>
+    [DataField]
+    public TimeSpan WordsWindow = TimeSpan.FromSeconds(30);
+
+    /// <summary>What the book does to a hand that takes it without the words.</summary>
+    [DataField]
+    public DamageSpecifier TakenCurse = new()
+    {
+        DamageDict = new() { { "Piercing", 6 } },
+    };
+
+    [DataField]
+    public FixedPoint2 FumbleReward = 3;
+    #endregion
+}
+
+/// <summary>
+/// The lost pages of the Necronomicon, torn out and carried off by the professor's daughter.
+/// Their two passages first conjure the evil into the flesh, then open a rift that casts it out.
+/// </summary>
+[RegisterComponent]
+public sealed partial class NecroLostPagesComponent : Component
+{
+    /// <summary>The book must be in the world within this distance of the reader.</summary>
+    [DataField]
+    public float BookRange = 4f;
+
+    [DataField]
+    public TimeSpan ConjureTime = TimeSpan.FromSeconds(20);
+
+    [DataField]
+    public TimeSpan RiftTime = TimeSpan.FromSeconds(25);
+
+    /// <summary>How far the rift drags loose things (and people) toward it.</summary>
+    [DataField]
+    public float RiftPullRange = 7f;
 }
 
 /// <summary>A victim prepared for possession by JOIN US or a Deadite bite.</summary>
@@ -656,6 +712,20 @@ public sealed partial class DeaditeComponent : Component
     [DataField]
     public EntProtoId ConcealAction = "ActionDeaditeConceal";
 
+    [DataField]
+    public EntProtoId TauntAction = "ActionDeaditeTaunt";
+
+    [ViewVariables]
+    public EntityUid? TauntActionEntity;
+
+    /// <summary>Locale keys of the taunts, picked at random.</summary>
+    [DataField]
+    public List<string> Taunts = new()
+    {
+        "accent-deadite-1", "accent-deadite-2", "accent-deadite-3", "accent-deadite-4",
+        "accent-deadite-5", "accent-deadite-6", "accent-deadite-7", "accent-deadite-8",
+    };
+
     [ViewVariables]
     public EntityUid? ScreamActionEntity;
 
@@ -836,6 +906,24 @@ public sealed partial class NecroRecordingComponent : Component
 
     [DataField]
     public SoundSpecifier SummonSound = new SoundPathSpecifier("/Audio/Effects/desecration-03.ogg");
+
+    /// <summary>The professor's log, one locale key per line, spoken by the recorder.</summary>
+    [DataField]
+    public List<string> LogLines = new()
+    {
+        "necro-tape-1", "necro-tape-2", "necro-tape-3", "necro-tape-4", "necro-tape-5",
+        "necro-tape-6", "necro-tape-7", "necro-tape-8", "necro-tape-9",
+    };
+
+    [DataField]
+    public TimeSpan LogLineInterval = TimeSpan.FromSeconds(5);
+
+    /// <summary>Index of the next log line, or -1 when the tape isn't playing.</summary>
+    [ViewVariables]
+    public int LogIndex = -1;
+
+    [ViewVariables]
+    public TimeSpan NextLogLine;
 }
 
 public enum NecroOutcome : byte
@@ -860,6 +948,14 @@ public sealed partial class NecronomiconRuleComponent : Component
 
     [DataField]
     public EntProtoId RecordingPrototype = "NecroOldRecording";
+
+    /// <summary>Found with the recording, as in the cellar.</summary>
+    [DataField]
+    public EntProtoId DaggerPrototype = "KandarianDagger";
+
+    /// <summary>The lost pages, hidden somewhere else aboard.</summary>
+    [DataField]
+    public EntProtoId PagesPrototype = "NecroLostPages";
 
     [DataField]
     public TimeSpan CheckInterval = TimeSpan.FromSeconds(10);
@@ -891,6 +987,10 @@ public sealed partial class NecronomiconRuleComponent : Component
 
     [ViewVariables]
     public List<string> FinalExorcisedNames = new();
+
+    /// <summary>The crew won by opening the rift rather than by fire.</summary>
+    [ViewVariables]
+    public bool RiftEnding;
 
     [ViewVariables]
     public int FinalDemonspawn;

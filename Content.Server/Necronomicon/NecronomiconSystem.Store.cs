@@ -214,6 +214,9 @@ public sealed partial class NecronomiconSystem
             _ghost.DoGhostBooEvent(uid, Content.Shared.Ghost.Components.GhostBooIntensity.Normal);
         }
 
+        // The room comes alive and laughs at them.
+        LivingRoomLaughter(coords, ent.Comp.DarkPresenceRange, 3);
+
         AddFearAround(ent, args.Performer, ent.Comp.DarkPresenceRange, NecroFearSource.Supernatural);
     }
 
@@ -244,7 +247,15 @@ public sealed partial class NecronomiconSystem
             return;
 
         args.Handled = true;
+        ManifestPhysicalForm(ent, mindId);
+    }
 
+    /// <summary>
+    /// Puts the demon into its physical body: spawns the form, applies store upgrades and moves the player into it.
+    /// Used by the Physical Form power and by the lost pages' first passage, which forces it into the flesh.
+    /// </summary>
+    public EntityUid ManifestPhysicalForm(Entity<NecroDemonComponent> ent, EntityUid? mindId)
+    {
         var form = SpawnPhysicalForm(ent);
 
         var manifestation = EnsureComp<NecroManifestationComponent>(form);
@@ -268,16 +279,20 @@ public sealed partial class NecronomiconSystem
             Dirty(form, melee);
         }
 
-        _mind.TransferTo(mindId, form);
+        if (mindId is { } mind)
+        {
+            _mind.TransferTo(mind, form);
 
-        // Powers of the ether (Whisper, Dark Presence, Demonic Possession...) live on the mind and would follow it
-        // into the body. In the physical world the body gets its own: Unholy Roar, Poltergeist and Return to Ether.
-        _actions.RemoveProvidedActions(form, mindId);
+            // Powers of the ether (Whisper, Dark Presence, Demonic Possession...) live on the mind and would follow it
+            // into the body. In the physical world the body gets its own: Unholy Roar, Poltergeist and Return to Ether.
+            _actions.RemoveProvidedActions(form, mind);
+        }
 
         _popup.PopupEntity(Loc.GetString("necro-form-manifest", ("demon", form)), form, PopupType.LargeCaution);
         Chant(form, _random.Next(ChantLines.Length));
         SupernaturalBurst(Transform(form).Coordinates, ent.Comp.SupernaturalRange, 6);
         AddFearAround(ent, form, ent.Comp.WitnessRange, NecroFearSource.Reveal);
+        return form;
     }
 
     /// <summary>
@@ -304,6 +319,15 @@ public sealed partial class NecronomiconSystem
     {
         if (args.Handled)
             return;
+
+        // The first passage of the lost pages holds it in the flesh.
+        if (TryGetDemon(ent.Comp.Demon, out var demon) && _timing.CurTime < demon.Value.Comp.FleshBoundUntil)
+        {
+            _popup.PopupCursor(Loc.GetString("necro-flesh-bound",
+                    ("seconds", (int) (demon.Value.Comp.FleshBoundUntil - _timing.CurTime).TotalSeconds)),
+                ent, PopupType.MediumCaution);
+            return;
+        }
 
         args.Handled = true;
         ReturnToEther(ent, false);

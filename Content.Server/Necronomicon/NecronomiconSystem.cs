@@ -79,6 +79,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         InitializeCommands();
         InitializeSupernatural();
         InitializePassages();
+        InitializeCanon();
     }
 
     public override void Update(float frameTime)
@@ -110,6 +111,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         UpdateBurning(frameTime);
         UpdatePrepared(now);
         UpdatePossessing(now);
+        UpdateRecordingLogs(now);
         UpdatePuppets(now);
     }
 
@@ -426,7 +428,13 @@ public sealed partial class NecronomiconSystem : EntitySystem
         _transform.AttachToGridOrMap(book);
 
         if (TryComp<NecronomiconComponent>(book, out var bookComp))
+        {
             _audio.PlayPvs(bookComp.ManifestSound, book);
+
+            // A new resting place: whoever takes it next had better know the words.
+            bookComp.Taken = false;
+            bookComp.SpokeWords.Clear();
+        }
 
         // The demon sees the book appear; no second line of text on top of it.
         _popup.PopupEntity(Loc.GetString("necro-book-appears"), book, PopupType.MediumCaution);
@@ -540,8 +548,11 @@ public sealed partial class NecronomiconSystem : EntitySystem
         }
     }
 
-    /// <summary>The book is gone for good. Raises <see cref="NecronomiconBurnedEvent"/> for the rule to end the round.</summary>
-    public void DestroyBook(Entity<NecronomiconComponent> book)
+    /// <summary>
+    /// The book is gone for good: burned, or (<paramref name="rift"/>) swallowed by the rift together with the demon.
+    /// Raises <see cref="NecronomiconBurnedEvent"/> for the rule to end the round.
+    /// </summary>
+    public void DestroyBook(Entity<NecronomiconComponent> book, bool rift = false)
     {
         if (book.Comp.Destroyed)
             return;
@@ -549,13 +560,14 @@ public sealed partial class NecronomiconSystem : EntitySystem
         book.Comp.Destroyed = true;
         var coords = Transform(book).Coordinates;
         _audio.PlayPvs(book.Comp.DestroyedSound, coords);
-        _popup.PopupCoordinates(Loc.GetString("necro-book-destroyed"), coords, PopupType.LargeCaution);
-        Spawn(book.Comp.DestroyedSpawn, coords);
+        _popup.PopupCoordinates(Loc.GetString(rift ? "necro-book-rift" : "necro-book-destroyed"), coords, PopupType.LargeCaution);
+        if (!rift)
+            Spawn(book.Comp.DestroyedSpawn, coords);
 
         if (TryGetDemon(book.Comp.Demon, out var demon))
             Banish(demon.Value);
 
-        var ev = new NecronomiconBurnedEvent(book.Comp.Demon);
+        var ev = new NecronomiconBurnedEvent(book.Comp.Demon, rift);
         RaiseLocalEvent(ref ev);
 
         QueueDel(book);
@@ -611,7 +623,17 @@ public sealed partial class NecronomiconSystem : EntitySystem
     {
         if (ent.Comp.Played)
         {
-            _popup.PopupEntity(Loc.GetString("necro-recording-spent"), ent, user);
+            // The reading is spent, but the professor's log can be rewound and played again.
+            if (ent.Comp.LogIndex < 0)
+            {
+                _popup.PopupEntity(Loc.GetString("necro-recording-rewind"), ent, PopupType.Medium);
+                StartRecordingLog(ent);
+            }
+            else
+            {
+                _popup.PopupCursor(Loc.GetString("necro-recording-spent"), user);
+            }
+
             return true;
         }
 
@@ -642,6 +664,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         ent.Comp.Played = true;
         _audio.PlayPvs(ent.Comp.SummonSound, ent);
         _popup.PopupEntity(Loc.GetString("necro-recording-finished"), ent, PopupType.LargeCaution);
+        StartRecordingLog(ent);
 
         var ev = new NecroRecordingPlayedEvent(ent, args.User);
         RaiseLocalEvent(ref ev);
@@ -662,6 +685,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
         comp.Played = true;
         _audio.PlayPvs(comp.SummonSound, recording);
+        StartRecordingLog((recording, comp));
     }
 
     /// <summary>Wakes the demon.</summary>
@@ -686,7 +710,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
 
 /// <summary>Raised broadcast when the Necronomicon has fully burned.</summary>
 [ByRefEvent]
-public readonly record struct NecronomiconBurnedEvent(EntityUid? Demon);
+public readonly record struct NecronomiconBurnedEvent(EntityUid? Demon, bool Rift = false);
 
 /// <summary>Raised broadcast when the old recording finishes playing.</summary>
 [ByRefEvent]

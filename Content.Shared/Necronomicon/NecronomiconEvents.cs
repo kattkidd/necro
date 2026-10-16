@@ -64,6 +64,9 @@ public sealed partial class DeaditeScreamActionEvent : InstantActionEvent;
 /// <summary>Infiltrator path: pull the human mask back on after revealing.</summary>
 public sealed partial class DeaditeConcealActionEvent : InstantActionEvent;
 
+/// <summary>A revealed Deadite's taunt ("Join us!", "Dead by dawn!"...).</summary>
+public sealed partial class DeaditeTauntActionEvent : InstantActionEvent;
+
 // ---------------------------------------------------------------------------------------------
 // Do-afters
 // ---------------------------------------------------------------------------------------------
@@ -92,6 +95,14 @@ public sealed partial class NecroBookUnmakeDoAfterEvent : SimpleDoAfterEvent;
 /// <summary>Reading aloud from a random page of the Necronomicon. Anything can happen.</summary>
 [Serializable, NetSerializable]
 public sealed partial class NecroBookReadAloudDoAfterEvent : SimpleDoAfterEvent;
+
+/// <summary>The lost pages, first passage: conjure the evil into the flesh.</summary>
+[Serializable, NetSerializable]
+public sealed partial class NecroPagesConjureDoAfterEvent : SimpleDoAfterEvent;
+
+/// <summary>The lost pages, second passage: open the rift that casts the evil out.</summary>
+[Serializable, NetSerializable]
+public sealed partial class NecroPagesRiftDoAfterEvent : SimpleDoAfterEvent;
 
 // ---------------------------------------------------------------------------------------------
 // Skill Store product events (raised on the buyer, validated server-side)

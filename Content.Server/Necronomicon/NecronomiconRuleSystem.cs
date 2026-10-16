@@ -96,6 +96,17 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         _transform.AttachToGridOrMap(recording);
         ent.Comp.Recording = recording;
 
+        // As in the cellar: the Kandarian dagger lies beside the recorder.
+        var dagger = Spawn(ent.Comp.DaggerPrototype, Transform(demonUid).Coordinates);
+        _transform.AttachToGridOrMap(dagger);
+
+        // The professor's lost pages were carried off elsewhere. Somebody will have to find them.
+        if (_station.TryFindRandomTile(out _, out _, out _, out var pagesCoords))
+        {
+            var pages = Spawn(ent.Comp.PagesPrototype, pagesCoords);
+            _transform.AttachToGridOrMap(pages);
+        }
+
         _necro.PlayRecordingAtRoundStart(recording);
         _necro.Awaken((demonUid, demon));
     }
@@ -234,6 +245,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
             if (rule.Demon != args.Demon)
                 continue;
 
+            rule.RiftEnding = args.Rift;
             SetOutcome((uid, rule), NecroOutcome.CrewVictory);
         }
     }
@@ -251,7 +263,9 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
 
         if (outcome == NecroOutcome.CrewVictory)
         {
-            _chat.DispatchGlobalAnnouncement(Loc.GetString("necro-crew-victory-announcement"),
+            _chat.DispatchGlobalAnnouncement(Loc.GetString(rule.Comp.RiftEnding
+                    ? "necro-crew-victory-rift-announcement"
+                    : "necro-crew-victory-announcement"),
                 Loc.GetString("necro-announcement-sender"), colorOverride: Color.Gold);
 
             // The demon is cast out: its player becomes a ghost.
@@ -317,6 +331,7 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         var c = rule.Comp;
         var outcome = c.Outcome switch
         {
+            NecroOutcome.CrewVictory when c.RiftEnding => "necro-round-end-crew-victory-rift",
             NecroOutcome.CrewVictory => "necro-round-end-crew-victory",
             NecroOutcome.NecronomiconVictory => "necro-round-end-necro-victory",
             _ => "necro-round-end-ongoing",

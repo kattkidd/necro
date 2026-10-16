@@ -91,6 +91,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<DeaditeComponent, DeaditeRevealActionEvent>(OnReveal);
+        SubscribeLocalEvent<DeaditeComponent, DeaditeTauntActionEvent>(OnTaunt);
         SubscribeLocalEvent<DeaditeComponent, DeaditeBiteActionEvent>(OnBite);
         SubscribeLocalEvent<DeaditeComponent, DeaditeReadPassageActionEvent>(OnReadPassage);
         SubscribeLocalEvent<DeaditeComponent, DeaditeReadPassageDoAfterEvent>(OnReadPassageDoAfter);
@@ -318,6 +319,17 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         // Infiltrator II can slip the mask back on.
         GrantTreeActions(ent);
+        _actions.AddAction(ent, ref ent.Comp.TauntActionEntity, ent.Comp.TauntAction);
+    }
+
+    private void OnTaunt(Entity<DeaditeComponent> ent, ref DeaditeTauntActionEvent args)
+    {
+        if (args.Handled || !ent.Comp.Revealed || ent.Comp.Taunts.Count == 0)
+            return;
+
+        args.Handled = true;
+        var line = Loc.GetString(_random.Pick(ent.Comp.Taunts));
+        _chat.TrySendInGameICMessage(ent, line, InGameICChatType.Speak, hideChat: false, ignoreActionBlocker: true);
     }
 
     /// <summary>Corpse-pale skin and milky white eyes on any humanoid body.</summary>
@@ -755,6 +767,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         _actions.RemoveAction(uid, comp.ReadPassageActionEntity);
         _actions.RemoveAction(uid, comp.ScreamActionEntity);
         _actions.RemoveAction(uid, comp.ConcealActionEntity);
+        _actions.RemoveAction(uid, comp.TauntActionEntity);
 
         RemComp<KandarianRegenComponent>(uid);
         RemComp<KandarianEntityComponent>(uid);
