@@ -694,6 +694,12 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         _popup.PopupEntity(Loc.GetString("deadite-severed", ("target", Identity.Entity(ent, EntityManager))),
             ent, PopupType.LargeCaution);
+
+        // Cut apart, but not every piece lies still: the hand crawls off on its own.
+        var hand = Spawn(ent.Comp.CrawlingHand, Transform(ent).Coordinates);
+        _transform.AttachToGridOrMap(hand);
+        EnsureComp<KandarianEntityComponent>(hand).Demon = ent.Comp.Demon;
+        _popup.PopupEntity(Loc.GetString("deadite-hand-crawls"), hand, PopupType.MediumCaution);
     }
 
     private void OnSeveredBlock<T>(Entity<DeaditeComponent> ent, ref T args) where T : CancellableEntityEventArgs

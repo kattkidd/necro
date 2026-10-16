@@ -27,8 +27,10 @@ ghost-role-information-risen-deadite-name = Risen Deadite
 ghost-role-information-risen-deadite-description = A corpse the Book of the Dead would not let lie. Swallow their souls.
 ghost-role-information-wicked-dead-name = Wicked Dead
 ghost-role-information-wicked-dead-description = One of the wicked dead, dragged up out of Hell by the Book of the Dead and given a body of flesh. Serve the book.
-ghost-role-information-army-of-darkness-name = skeleton of the dead army
-ghost-role-information-army-of-darkness-description = A soldier of the army of the dead, raised from the grave by the Necronomicon.
+ghost-role-information-army-of-darkness-name = Army of Darkness skeleton
+ghost-role-information-army-of-darkness-description = A soldier of the Army of Darkness, raised from the grave by the Necronomicon.
+ghost-role-information-crawling-hand-name = Crawling Hand
+ghost-role-information-crawling-hand-description = A Deadite's severed hand, still possessed, still angry. Grab, scratch, trip, strangle.
 ghost-role-information-demonspawn-rules = You are a [color={role-type-team-antagonist-color}][bold]{role-type-team-antagonist-name}[/bold][/color] serving the Necronomicon and its Deadites. Attack the living crew.
 
 chat-radio-sumerian = Ancient Sumerian
@@ -518,13 +520,40 @@ necro-catalog-riseagain-name = From the Grave
 necro-catalog-riseagain-desc = Unlocks From the Grave: raise a corpse as a revealed Deadite. If nobody's in it, a ghost can take it. Costs 8 SP per use.
 necro-catalog-wicked-dead-name = Call Up the Wicked Dead
 necro-catalog-wicked-dead-desc = The book reaches down into Hell and drags one of the wicked dead up into a body of flesh, at the book (or at you). A huge, tough, ghost-controlled Deadite that hits like a truck. Once per round.
-necro-catalog-army-name = Army of the Dead
+necro-catalog-army-name = Army of Darkness
 necro-catalog-army-desc = Three deadite skeletons rise at the book (or at you), controlled by ghosts or by hunger.
 necro-rise-invalid = Only the dead of the living can be raised.
 necro-rise = {CAPITALIZE(THE($target))} jerks, twitches, and rises from death!
 necro-wicked-dead = The floor bulges and splits, and something old and grey drags itself up out of the dark!
-necro-army-rises = Bones crawl up out of the floor! The army of the dead rises!
+necro-army-rises = Bones crawl up out of the floor! The Army of Darkness rises!
 necro-talisman-wards = A brujo's talisman flares and the evil slides off {THE($target)}!
 necro-talisman-blocked = A talisman wards them. Your power slides off.
 necro-talisman-crumbles = The talisman burns black and crumbles to ash.
 necro-round-end-stat-servants = Corpses raised: [color=red]{$risen}[/color]. skeleton of the dead armys: [color=red]{$army}[/color]
+
+## Haunting, temptation, outbreak
+
+necro-haunt-blood = Blood seeps out of the wall and runs down to the floor.
+necro-haunt-whisper-1 = Something whispers your name from inside the wall.
+necro-haunt-whisper-2 = You hear laughter from somewhere you can't see.
+necro-haunt-whisper-3 = A voice right behind you: "Join us..."
+necro-haunt-whisper-4 = For a moment, every light around you looks like it's watching.
+necro-haunt-whisper-5 = Somewhere far off, something is chanting in a language you almost understand.
+necro-tempt-1 = The book is warm in your hands. Warmer than it should be.
+necro-tempt-2 = You catch yourself turning a page you don't remember opening.
+necro-tempt-3 = Words from the book are going round and round in your head.
+necro-tempt-4 = The face on the cover is smiling at you.
+necro-tempt-opened = You've been listening to the book for too long. Something has found a way in.
+necro-tempt-resisted = The book's whispers slide off you. You've held it long enough; maybe let someone else take a turn.
+necro-tempt-demon = {$holder} has held your book long enough to hear you. They are ready.
+necro-outbreak-sender = Central Command
+necro-outbreak-1 = Long-range scanners are detecting anomalous necrotic signatures aboard your station. Crew are advised to watch for erratic behaviour and report it to Security.
+necro-outbreak-2 = Necrotic signatures aboard your station are multiplying. Treat any crew member showing pallid skin or clouded eyes as hostile. Do not attempt to bury the dead.
+necro-outbreak-3 = Central Command has lost confidence in the integrity of your crew. The source of the contamination must be found. Recover any artefacts of unknown origin.
+
+deadite-hand-crawls = The severed hand twitches, flips over, and crawls away!
+deadite-examine-tell-1 = [color=gray]{CAPITALIZE(SUBJECT($target))} {CONJUGATE-BE($target)} cold, very cold, now that you're close.[/color]
+deadite-examine-tell-2 = [color=gray]{CAPITALIZE(POSS-ADJ($target))} eyes look glassy, and for a moment there's something milky in them.[/color]
+deadite-examine-tell-3 = [color=gray]{CAPITALIZE(SUBJECT($target))} {CONJUGATE-BASIC($target, "don't", "doesn't")} seem to be breathing.[/color]
+deadite-examine-tell-4 = [color=gray]There's a faint smell of old earth about {OBJECT($target)}.[/color]
+deadite-examine-tell-5 = [color=gray]{CAPITALIZE(POSS-ADJ($target))} smile stays a moment too long.[/color]

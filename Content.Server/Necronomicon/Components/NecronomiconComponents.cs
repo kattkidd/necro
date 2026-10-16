@@ -236,6 +236,22 @@ public sealed partial class NecroDemonComponent : Component
     public int ArmySize = 3;
     #endregion
 
+    #region Haunting
+    /// <summary>Next time the station itself does something wrong near a living person.</summary>
+    [ViewVariables]
+    public TimeSpan NextHaunt;
+
+    /// <summary>Time between hauntings with no souls consumed. Each soul shortens it.</summary>
+    [DataField]
+    public TimeSpan HauntInterval = TimeSpan.FromMinutes(3);
+
+    [DataField]
+    public TimeSpan HauntIntervalPerSoul = TimeSpan.FromSeconds(20);
+
+    [DataField]
+    public TimeSpan HauntMinimumInterval = TimeSpan.FromSeconds(60);
+    #endregion
+
     /// <summary>Radius of the poltergeist burst (flickering lights, flying objects) around supernatural events.</summary>
     [DataField]
     public float SupernaturalRange = 5f;
@@ -577,6 +593,29 @@ public sealed partial class NecronomiconComponent : Component
     [DataField]
     public FixedPoint2 FumbleReward = 3;
     #endregion
+
+    #region Temptation
+    /// <summary>Who has been holding the book without letting go, and since when.</summary>
+    [ViewVariables]
+    public EntityUid? TemptedHolder;
+
+    [ViewVariables]
+    public TimeSpan TemptedSince;
+
+    [ViewVariables]
+    public TimeSpan NextTemptWhisper;
+
+    /// <summary>Holding it this long without a mindshield leaves the holder open to possession.</summary>
+    [DataField]
+    public TimeSpan TemptTime = TimeSpan.FromSeconds(90);
+
+    [DataField]
+    public TimeSpan TemptWhisperInterval = TimeSpan.FromSeconds(25);
+
+    /// <summary>Holders the book has already opened, so it happens once per person per hold.</summary>
+    [ViewVariables]
+    public bool TemptedThisHold;
+    #endregion
 }
 
 /// <summary>
@@ -787,6 +826,14 @@ public sealed partial class DeaditeComponent : Component
 
     [DataField]
     public EntProtoId TauntAction = "ActionDeaditeTaunt";
+
+    /// <summary>Crawls away from a Deadite that has been cut apart.</summary>
+    [DataField]
+    public EntProtoId CrawlingHand = "MobDeaditeCrawlingHand";
+
+    /// <summary>Chance per close examination that a disguised Deadite gives itself away a little.</summary>
+    [DataField]
+    public float ExamineTellChance = 0.35f;
 
     [DataField]
     public EntProtoId SwallowAction = "ActionDeaditeSwallowSoul";
@@ -1082,6 +1129,14 @@ public sealed partial class NecronomiconRuleComponent : Component
 
     [ViewVariables]
     public List<string> FinalExorcisedNames = new();
+
+    /// <summary>How many outbreak announcements have gone out.</summary>
+    [ViewVariables]
+    public int OutbreakAnnouncements;
+
+    /// <summary>Souls consumed before each announcement goes out.</summary>
+    [DataField]
+    public List<int> OutbreakThresholds = new() { 3, 6, 10 };
 
     /// <summary>The crew won by opening the rift rather than by fire.</summary>
     [ViewVariables]

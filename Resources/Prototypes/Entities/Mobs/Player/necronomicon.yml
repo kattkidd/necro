@@ -783,3 +783,72 @@
   - type: Item
     sprite: Clothing/Neck/Misc/dinkystar.rsi
   - type: NecroTalisman
+
+# A Deadite's hand that crawled away when its body was cut apart.
+- type: entity
+  parent:
+  - BaseSimpleMob
+  - MobCombat
+  id: MobDeaditeCrawlingHand
+  name: crawling hand
+  description: A severed, grey hand, dragging itself along on its fingertips. It is looking for something to hold.
+  suffix: Necronomicon
+  components:
+  - type: Sprite
+    drawdepth: SmallMobs
+    sprite: Mobs/Species/Human/parts.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: r_hand
+      color: "#c8c8bf"
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: r_hand
+      Dead:
+        Base: r_hand
+  - type: KandarianEntity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      25: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 5
+  - type: MeleeWeapon
+    angle: 0
+    animation: WeaponArcClaw
+    soundHit:
+      collection: Punch
+    damage:
+      types:
+        Blunt: 4
+        Piercing: 2
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 30
+        mask:
+        - SmallMobMask
+        layer:
+        - SmallMobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: GhostRole
+    makeSentient: true
+    allowMovement: true
+    name: ghost-role-information-crawling-hand-name
+    description: ghost-role-information-crawling-hand-description
+    rules: ghost-role-information-demonspawn-rules
+    mindRoles:
+    - MindRoleDemonspawn
+    raffle:
+      settings: short
+  - type: GhostTakeoverAvailable

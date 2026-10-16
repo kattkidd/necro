@@ -1,6 +1,7 @@
 using Content.Server.Necronomicon.Components;
 using Content.Shared.Chat;
 using Content.Shared.DoAfter;
+using Content.Shared.Examine;
 using Content.Shared.Humanoid;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Necronomicon;
@@ -20,6 +21,21 @@ public sealed partial class DeaditeSystem
         SubscribeLocalEvent<DeaditeComponent, DeaditeSwallowSoulActionEvent>(OnSwallowSoul);
         SubscribeLocalEvent<DeaditeComponent, DeaditeSwallowSoulDoAfterEvent>(OnSwallowSoulDoAfter);
         SubscribeLocalEvent<NecroKandarianDaggerComponent, MeleeHitEvent>(OnDaggerHit);
+        SubscribeLocalEvent<DeaditeComponent, ExaminedEvent>(OnDeaditeExamined);
+    }
+
+    /// <summary>
+    /// A disguised Deadite is a dead body wearing a face. Look closely and, sometimes, you notice.
+    /// </summary>
+    private void OnDeaditeExamined(EntityUid uid, DeaditeComponent comp, ExaminedEvent args)
+    {
+        if (comp.Revealed || !args.IsInDetailsRange || args.Examiner == uid || _necro.IsKandarian(args.Examiner))
+            return;
+
+        if (!_random.Prob(comp.ExamineTellChance))
+            return;
+
+        args.PushMarkup(Loc.GetString($"deadite-examine-tell-{_random.Next(1, 6)}", ("target", Identity.Entity(uid, EntityManager))));
     }
 
     private bool CanSwallow(Entity<DeaditeComponent> ent, EntityUid target)

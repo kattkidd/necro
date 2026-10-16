@@ -108,11 +108,13 @@ public sealed partial class NecronomiconSystem : EntitySystem
             UpdateManifestationFollow((uid, demon));
             UpdateProximityFear((uid, demon), now);
             UpdateStatus((uid, demon), now);
+            UpdateHaunting((uid, demon), now);
         }
 
         UpdateBurning(frameTime);
         UpdatePrepared(now);
         UpdatePossessing(now);
+        UpdateTemptation(now);
         UpdateRecordingLogs(now);
         UpdatePuppets(now);
     }

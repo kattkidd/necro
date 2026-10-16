@@ -204,8 +204,20 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
         var query = EntityQueryEnumerator<NecronomiconRuleComponent, ActiveGameRuleComponent>();
         while (query.MoveNext(out var uid, out var rule, out _))
         {
-            if (rule.Demon == args.Demon)
-                rule.NextCheck = TimeSpan.Zero;
+            if (rule.Demon != args.Demon)
+                continue;
+
+            rule.NextCheck = TimeSpan.Zero;
+
+            // The station notices: each threshold of souls consumed brings a Central Command announcement.
+            if (!_necro.TryGetDemon(args.Demon, out var demon)
+                || rule.OutbreakAnnouncements >= rule.OutbreakThresholds.Count
+                || demon.Value.Comp.Conversions < rule.OutbreakThresholds[rule.OutbreakAnnouncements])
+                continue;
+
+            rule.OutbreakAnnouncements++;
+            _chat.DispatchGlobalAnnouncement(Loc.GetString($"necro-outbreak-{rule.OutbreakAnnouncements}"),
+                Loc.GetString("necro-outbreak-sender"), colorOverride: Color.Orange);
         }
     }
 
