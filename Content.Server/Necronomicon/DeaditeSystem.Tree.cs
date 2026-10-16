@@ -193,6 +193,8 @@ public sealed partial class DeaditeSystem
         ent.Comp.ConcealActionEntity = null;
         _actions.RemoveAction(ent.Owner, ent.Comp.TauntActionEntity);
         ent.Comp.TauntActionEntity = null;
+        _actions.RemoveAction(ent.Owner, ent.Comp.SwallowActionEntity);
+        ent.Comp.SwallowActionEntity = null;
         _actions.AddAction(ent, ref ent.Comp.RevealActionEntity, ent.Comp.RevealAction);
 
         _jitter.DoJitter(ent, TimeSpan.FromSeconds(2), true, 6f, 4f);

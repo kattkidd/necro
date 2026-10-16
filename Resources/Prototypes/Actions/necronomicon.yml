@@ -97,8 +97,8 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroWhisper
-  name: Whisper
-  description: Whisper terrors into someone's mind. Generates Fear. Costs 2 SP.
+  name: Voices in the Woods
+  description: "The Evil Dead: the voices that called Cheryl out into the trees. Whisper terrors into someone's mind. Generates Fear. Costs 2 SP."
   components:
   - type: Action
     useDelay: 20
@@ -122,8 +122,8 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroDarkPresence
-  name: Dark Presence
-  description: Lights flicker and machines misbehave around you. Generates Fear. Costs 4 SP.
+  name: The Laughing Cabin
+  description: "Evil Dead II: the room comes alive. Lights flicker, machines misbehave and the furniture laughs. Generates Fear. Costs 4 SP."
   components:
   - type: Action
     useDelay: 45
@@ -139,7 +139,7 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroManifestForm
-  name: Take Physical Form
+  name: Take Flesh
   description: Become a corporeal, combat-capable demon in your chosen form. Costs 5 SP. Your body can be destroyed; the book cannot be harmed through it.
   components:
   - type: Action
@@ -175,7 +175,7 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroUnholyRoar
-  name: Unholy Roar
+  name: Kandarian Bellow
   description: Roar with the voice of the book. Lights die, the room shakes, and anyone close without a mindshield is thrown to the floor.
   components:
   - type: Action
@@ -191,7 +191,7 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroPoltergeist
-  name: Poltergeist
+  name: Possessed Objects
   description: Every loose object around you is torn into the air and hurled at the nearest living person.
   components:
   - type: Action
@@ -244,7 +244,7 @@
 - type: entity
   parent: BaseAction
   id: ActionDeaditeReadPassage
-  name: Read the Passage
+  name: Read the Passage of the Dead
   description: While revealed, with the manifested book beside you, read the passage that melts away a victim's mindshield.
   components:
   - type: Action
@@ -319,7 +319,7 @@
 - type: entity
   parent: BaseAction
   id: ActionNecroPuppet
-  name: Demonic Possession
+  name: Possessed Puppet
   description: Seize anyone nearby for 45 seconds. They collapse, helpless, and everything you say comes out of their mouth. Harmless. Costs 3 SP. Use it on your host again to let go.
   components:
   - type: Action
@@ -357,3 +357,140 @@
   - type: InstantAction
     event: !type:NecroPuppetAnnounceActionEvent
 
+
+# --- Film powers (bought in the Skill Store) ---
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroRush
+  name: The Force
+  description: "The Evil Dead: tear across the station in a straight line, up to 14 tiles, faster than anything alive. Doors bang, lights die, and anyone in your path is knocked flat. Costs 4 SP."
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Ghosts/revenant.rsi
+      state: active
+  - type: TargetAction
+    checkCanAccess: false
+    range: 14
+  - type: WorldTargetAction
+    event: !type:NecroRushActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroGraspingRoots
+  name: The Trees
+  description: "The Evil Dead: roots and branches burst up through the floor and hold someone fast for a few seconds. Costs 3 SP."
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Interface/Actions/changeling2.rsi
+      state: fleshtomb
+  - type: TargetAction
+    checkCanAccess: false
+    range: 12
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:NecroGraspingRootsActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroPossessedHand
+  name: The Hand
+  description: "Evil Dead II: their own hand turns on them. It drops everything it holds and beats them. Mindshields stop it. Costs 3 SP."
+  components:
+  - type: Action
+    useDelay: 35
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Interface/Actions/changeling.rsi
+      state: armblade
+  - type: TargetAction
+    checkCanAccess: false
+    range: 12
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:NecroPossessedHandActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroDeceit
+  name: Baal's Deceit
+  description: "Ash vs Evil Dead: show someone a vision of a nearby friend's eyes flashing milky white. True or false, they won't know. Mindshields stop it. Costs 2 SP."
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Interface/Actions/changeling2.rsi
+      state: mimicry
+  - type: TargetAction
+    checkCanAccess: false
+    range: 12
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:NecroDeceitActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionNecroDeadByDawn
+  name: Dead by Dawn
+  description: "Evil Dead II: the whole station hears it. Every one of your Deadites stands back up, healed and faster for a minute. Once every ten minutes."
+  components:
+  - type: Action
+    useDelay: 600
+    itemIconStyle: BigAction
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/scream.png
+  - type: InstantAction
+    event: !type:NecroDeadByDawnActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: ActionDeaditeSwallowSoul
+  name: Swallow Their Soul
+  description: "\"I'll swallow your soul!\" Feed on someone who is down and dying. Heals you and feeds the book."
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: BigAction
+  - type: Sprite
+    layers:
+    - sprite: Interface/Actions/changeling.rsi
+      state: devour
+  - type: TargetAction
+    range: 1.5
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidProfile
+    event: !type:DeaditeSwallowSoulActionEvent

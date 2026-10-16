@@ -519,3 +519,70 @@
   productEvent: !type:NecroUpgradeEvent
     upgrade: ScreamerII
   raiseProductEventOnUser: true
+
+# --- Film powers ---
+
+- type: listing
+  id: NecroRush
+  name: necro-catalog-rush-name
+  description: necro-catalog-rush-desc
+  productAction: ActionNecroRush
+  cost:
+    SoulPower: 6
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroRoots
+  name: necro-catalog-roots-name
+  description: necro-catalog-roots-desc
+  productAction: ActionNecroGraspingRoots
+  cost:
+    SoulPower: 5
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroHand
+  name: necro-catalog-hand-name
+  description: necro-catalog-hand-desc
+  productAction: ActionNecroPossessedHand
+  cost:
+    SoulPower: 5
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroDeceit
+  name: necro-catalog-deceit-name
+  description: necro-catalog-deceit-desc
+  productAction: ActionNecroDeceit
+  cost:
+    SoulPower: 4
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NecroDeadByDawn
+  name: necro-catalog-deadbydawn-name
+  description: necro-catalog-deadbydawn-desc
+  productAction: ActionNecroDeadByDawn
+  cost:
+    SoulPower: 15
+  categories:
+  - NecroPowers
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1

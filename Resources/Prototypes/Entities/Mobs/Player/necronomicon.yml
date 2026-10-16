@@ -638,8 +638,9 @@
   parent: RitualDagger
   id: KandarianDagger
   name: Kandarian dagger
-  description: An ancient Sumerian ceremonial dagger, its hilt carved with leering faces. It was found in the cellar with the book.
+  description: An ancient Sumerian ceremonial dagger, its hilt carved with leering faces. It was found in the cellar with the book. A downed Deadite struck with it is cut apart for good, and it bites deep into demon flesh.
   components:
+  - type: NecroKandarianDagger
   - type: Sprite
     sprite: Objects/Weapons/Melee/cult_dagger.rsi
     state: icon

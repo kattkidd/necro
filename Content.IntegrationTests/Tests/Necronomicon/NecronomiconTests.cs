@@ -122,7 +122,7 @@ public sealed class NecronomiconTests : InteractionTest
     }
 
     [Test]
-    public async Task BurningBookBanishesDemonAndReleasesDeadites()
+    public async Task RiftBanishesDemonAndFreesDeadites()
     {
         await Server.WaitAssertion(() =>
         {
@@ -134,12 +134,12 @@ public sealed class NecronomiconTests : InteractionTest
             necro.ConvertToDeadite(demon, SPlayer);
             Assert.That(necro.IsBookManifested(demon, out var book), Is.True);
 
-            necro.DestroyBook((book!.Value, SEntMan.GetComponent<NecronomiconComponent>(book.Value)));
+            necro.DestroyBook((book!.Value, SEntMan.GetComponent<NecronomiconComponent>(book.Value)), rift: true);
 
             Assert.That(demon.Comp.Banished, Is.True);
             Assert.That(demon.Comp.PossessionCharges, Is.EqualTo(0));
             Assert.That(SEntMan.HasComponent<DeaditeComponent>(SPlayer), Is.False, "Deadites are released");
-            Assert.That(mobState.IsDead(SPlayer), Is.True, "Released Deadites collapse");
+            Assert.That(mobState.IsAlive(SPlayer), Is.True, "Deadites are freed alive when the demon is cast out");
         });
     }
 

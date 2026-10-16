@@ -80,6 +80,7 @@ public sealed partial class NecronomiconSystem : EntitySystem
         InitializeSupernatural();
         InitializePassages();
         InitializeCanon();
+        InitializePowers();
     }
 
     public override void Update(float frameTime)
@@ -350,6 +351,14 @@ public sealed partial class NecronomiconSystem : EntitySystem
                 return false;
             }
 
+            if (_timing.CurTime < demon.Comp.NextBookManifest)
+            {
+                _popup.PopupCursor(Loc.GetString("necro-book-scorched-wait",
+                        ("seconds", (int) (demon.Comp.NextBookManifest - _timing.CurTime).TotalSeconds)),
+                    user, PopupType.SmallCaution);
+                return false;
+            }
+
             cost = demon.Comp.ManifestBookCost;
         }
         else
@@ -544,8 +553,52 @@ public sealed partial class NecronomiconSystem : EntitySystem
             }
 
             if (book.BurnProgress >= book.BurnTime)
-                DestroyBook((uid, book));
+                ScorchBook((uid, book));
         }
+    }
+
+    /// <summary>
+    /// Fire can't destroy the Necronomicon (it knits itself back together), but a full burning hurts its demon:
+    /// the book is torn back into the ether and can't be called out again for a while, the demon loses half its
+    /// Soul Power, and every Deadite is thrown to the floor.
+    /// </summary>
+    public void ScorchBook(Entity<NecronomiconComponent> book)
+    {
+        book.Comp.BurnProgress = 0;
+        book.Comp.BurnStage = 0;
+        _flammable.Extinguish(book);
+
+        var coords = Transform(book).Coordinates;
+        _audio.PlayPvs(book.Comp.DestroyedSound, coords);
+        _popup.PopupCoordinates(Loc.GetString("necro-book-scorched"), coords, PopupType.LargeCaution);
+        Spawn(book.Comp.DestroyedSpawn, coords);
+
+        if (!TryGetDemon(book.Comp.Demon, out var demon) || demon.Value.Comp.Banished)
+            return;
+
+        // Torn out of the hands holding it and back into the ether, pin or no pin.
+        var container = _container.EnsureContainer<ContainerSlot>(demon.Value, NecroDemonComponent.BookContainerId);
+        if (_container.TryGetContainingContainer(book.Owner, out var holder))
+            _container.Remove(book.Owner, holder, force: true);
+        _container.Insert(book.Owner, container, force: true);
+
+        demon.Value.Comp.NextBookManifest = _timing.CurTime + demon.Value.Comp.ScorchedCooldown;
+
+        var lost = GetSoulPower(demon.Value) / 2;
+        if (lost > 0)
+            AddSoulPower(demon.Value, -lost, earned: false);
+
+        var query = EntityQueryEnumerator<DeaditeComponent>();
+        while (query.MoveNext(out var uid, out var deadite))
+        {
+            if (deadite.Demon == demon.Value.Owner)
+                _stun.TryKnockdown(uid, TimeSpan.FromSeconds(5));
+        }
+
+        var viewer = demon.Value.Comp.Manifestation ?? demon.Value.Owner;
+        _popup.PopupCursor(Loc.GetString("necro-book-scorched-demon",
+                ("minutes", (int) demon.Value.Comp.ScorchedCooldown.TotalMinutes)),
+            viewer, PopupType.LargeCaution);
     }
 
     /// <summary>

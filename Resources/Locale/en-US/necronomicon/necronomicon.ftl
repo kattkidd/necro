@@ -1,11 +1,11 @@
 ## Necronomicon antagonist (Evil Dead). Placeholder text; keep it short.
 
 necronomicon-title = Necronomicon
-necronomicon-description = An old recording began playing somewhere aboard as the shift started. Something heard it. Find the book and burn it.
+necronomicon-description = An old recording began playing somewhere aboard as the shift started. Something heard it. Find the lost pages and open the rift.
 
 # Roles
 roles-antag-necronomicon-name = Kandarian Demon
-roles-antag-necronomicon-objective = Possess the crew through the Necronomicon until every soul aboard is consumed. Keep the book from burning.
+roles-antag-necronomicon-objective = Possess the crew through the Necronomicon until every soul aboard is consumed. Keep anyone from reading the lost pages.
 roles-antag-deadite-name = Deadite
 roles-antag-deadite-objective = Serve the Necronomicon. Swallow their souls.
 roles-antag-demonspawn-name = Demonspawn
@@ -15,7 +15,7 @@ role-subtype-deadite = Deadite
 role-subtype-demonspawn = Demonspawn
 
 necro-briefing = You are a Kandarian Demon bound to the Necronomicon. An old recording of the reading played as the shift began, and you are awake. The book waits in the ether: manifest it where you choose, whisper JOIN US, possess the crew and consume every soul. A living person holding the book stops it leaving the world, and if they burn it, you are banished.
-necro-briefing-character = You serve the Necronomicon. Spend Soul Power (earned from Fear) in your Skill Store. The book cannot leave the physical world while a living, unpossessed person carries it, and fire destroys it.
+necro-briefing-character = You serve the Necronomicon. Spend Soul Power (earned from Fear) in your Skill Store. The book cannot leave the physical world while a living, unpossessed person carries it, and fire only wounds it. Only the lost pages and the rift can cast you out.
 deadite-briefing = You are a Deadite, possessed by a Kandarian Demon. Stay disguised as long as you like, then reveal your true form. Bite the living to prepare them for possession. Speak Ancient Sumerian with :k. Once revealed, your laughs, screams and snarls come out in the voice of the dead. Beware the chaplain: if you are restrained, a holy rite can cast the demon out of you.
 demonspawn-briefing = You are Demonspawn, summoned by the Necronomicon. Claw, bite and terrify. Speak Ancient Sumerian with :k. In time you will grow into something bigger. Holy water and Bibles will melt you to dust on contact.
 
@@ -55,18 +55,18 @@ necro-catalog-fear-amplify-name = Amplify Fear
 necro-catalog-fear-amplify-desc = All Fear yields 50% more Soul Power. Stacks twice.
 necro-catalog-dread-aura-name = Dread Aura
 necro-catalog-dread-aura-desc = Revealed Deadites, Demonspawn and your physical form generate double Fear just by being near the living.
-necro-catalog-whisper-name = Whisper
+necro-catalog-whisper-name = Voices in the Woods
 necro-catalog-whisper-desc = Unlocks Whisper: a private terror for one crew member within 12 tiles. 2 SP per use. Mindshields dull it.
-necro-catalog-dark-presence-name = Dark Presence
+necro-catalog-dark-presence-name = The Laughing Cabin
 necro-catalog-dark-presence-desc = Unlocks Dark Presence: lights flicker and machines misbehave around you. 4 SP per use.
-necro-catalog-physical-form-name = Physical Form
+necro-catalog-physical-form-name = Take Flesh
 necro-catalog-physical-form-desc = Unlocks taking a corporeal, combat-capable body in your chosen form (150 health, 14 slash). 5 SP per use. If the body dies you return to the ether and must wait 2 minutes.
 necro-catalog-hardened-flesh-name = Hardened Flesh
 necro-catalog-hardened-flesh-desc = Your physical form gains 75 health. Stacks twice. Requires Physical Form.
 necro-catalog-rending-claws-name = Rending Claws
 necro-catalog-rending-claws-desc = Your physical form deals 6 more slash damage. Stacks twice. Requires Physical Form.
 necro-catalog-demonspawn-name = Summon Demonspawn
-necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at you). Taken over by a ghost. After ten minutes it grows into a tall, black-eyed adult. Holy water or a Bible destroys it.
+necro-catalog-demonspawn-desc = A vicious grey imp crawls out at the book (or at you), like the spawn Ruby bore in Ash vs Evil Dead. Taken over by a ghost. After ten minutes it grows into a tall, black-eyed adult. Holy water or a Bible destroys it.
 necro-catalog-swift-possession-name = Swift Possession
 necro-catalog-swift-possession-desc = Possession takes 3 seconds instead of 6.
 necro-catalog-far-whisper-name = Far Whisper
@@ -99,11 +99,11 @@ necro-book-too-far = The book is too far from them.
 necro-book-examine-burning = [color=orange]It is charred ({$percent}% burnt).[/color]
 necro-book-burn-stage-1 = The pages blacken and a voice screams from inside the book!
 necro-book-burn-stage-2 = The face on the cover twists in agony!
-necro-book-burn-stage-3 = The book is almost gone!
+necro-book-burn-stage-3 = The book is almost gone... but something inside it is laughing.
 necro-book-burning-demon = THE BOOK IS BURNING!
 necro-book-rift = The book is torn out of the world, howling, into a spinning hole in the air!
 necro-book-destroyed = The Necronomicon crumbles to ash with a terrible howl.
-necro-banished = The book is ash. You are torn from this world.
+necro-banished = The rift has taken you. You are torn from this world.
 
 necro-recording-start = A crackling voice begins reading in an ancient tongue...
 necro-recording-finished = The recording ends. Something outside the walls answers.
@@ -162,14 +162,14 @@ demonspawn-banished = The demonspawn shrieks and dissolves.
 
 # Round
 necro-announcement-sender = Central Command
-necro-crew-victory-rift-announcement = A spatial anomaly has opened and collapsed aboard the station, taking the Necronomicon with it. Deadite activity has ceased. Recover the bodies and report for evacuation.
-necro-crew-victory-announcement = The Necronomicon has been destroyed. Deadite activity has ceased. Recover the bodies and report for evacuation.
+necro-crew-victory-rift-announcement = A spatial anomaly opened and collapsed aboard the station, taking the Necronomicon with it. Deadite activity has ceased. Those who were possessed have been released.
+necro-crew-victory-announcement = The Necronomicon has been cast out. Deadite activity has ceased.
 necro-victory-announcement = ...no living soul answers. Join us.
 necro-round-end-demon = The Kandarian Demon was [color=red]{$name}[/color] ([color=gray]{$username}[/color]).
-necro-round-end-crew-victory = [color=green]The crew burned the Necronomicon![/color]
+necro-round-end-crew-victory = [color=green]The Necronomicon was cast out of the world.[/color]
 necro-round-end-crew-victory-rift = [color=green]The crew read the lost pages: the rift swallowed the Kandarian Demon and the Necronomicon, and cast them back to the Middle Ages![/color]
 necro-round-end-necro-victory = [color=red]Every soul aboard was swallowed by the Necronomicon.[/color]
-necro-round-end-ongoing = The Necronomicon was never destroyed.
+necro-round-end-ongoing = The Necronomicon was never cast out.
 
 # Deadite taunts (the Taunt action)
 accent-deadite-1 = Join us!
@@ -214,7 +214,7 @@ names-kandarian-first-dataset-29 = Lurm
 names-kandarian-first-dataset-30 = Zoth
 
 # Demonic possession (harmless puppeting)
-necro-catalog-puppet-name = Demonic Possession
+necro-catalog-puppet-name = Possessed Puppet
 necro-catalog-puppet-desc = Unlocks seizing anyone within 12 tiles for 45 seconds, mindshielded or not. They collapse and can't act or speak for themselves; everything you say comes out of their mouth. Harmless and temporary. 3 SP per use; target your host again to let go early. (Ancient Sumerian is unavailable while you hold a host.)
 necro-catalog-puppet-announce-name = Speak to the Station
 necro-catalog-puppet-announce-desc = While possessing someone, make your next sentence a station announcement signed with their name. 3 SP per announcement, 2 minute cooldown. Requires Demonic Possession.
@@ -243,7 +243,7 @@ necro-status-book-burning = YOUR BOOK IS ON FIRE!
 necro-status-book-extinguished = The flames on your book die out.
 
 # Examine
-necro-book-examine-hint = [color=orange]Something about this book wants to be put down. Hold onto it: it can't vanish from your hands. Fire might end it for good. With it in hand, you could read its passages at someone (the margins are full of a dead professor's notes).[/color]
+necro-book-examine-hint = [color=orange]Something about this book wants to be put down. Hold onto it: it can't vanish from your hands. Fire only wounds it; it knits itself back together. Only the rift from the lost pages can rid the world of it. With it in hand, you could read its passages at someone.[/color]
 
 # Round end
 necro-round-end-header = [color=darkred][bold]The Necronomicon[/bold][/color]
@@ -264,7 +264,7 @@ loadout-group-necro-aura = Aura
 
 # Round-end statistics
 necro-round-end-time-survived = The demon walked the station for [color=red]{$minutes}m {$seconds}s[/color] and was never banished.
-necro-round-end-time-banished = The demon lasted [color=red]{$minutes}m {$seconds}s[/color] before the book burned.
+necro-round-end-time-banished = The demon lasted [color=red]{$minutes}m {$seconds}s[/color] before the rift took it.
 necro-round-end-stat-souls = Souls consumed: [color=red]{$count}[/color]
 necro-round-end-stat-deadites = Deadites created: [color=red]{$count}[/color] ({$exorcised} exorcised)
 necro-round-end-stat-possessions = Successful possessions: [color=red]{$count}[/color] ({$deadite} into Deadites, {$puppet} demonic possessions)
@@ -391,7 +391,7 @@ necronomicon-book-text = [head=1]NECRONOMICON EX-MORTIS[/head]
 
     {""}[color=#4a4a4a][italic]Below, pressed hard enough to tear the paper: Henrietta is not Henrietta anymore. The possessed do not die. The only way to stop them is the total dismemberment of the body. And whoever lifts this book from where it rests must first speak the words, every one of them: Klaatu. Barada. Nikto.[/italic][/color]
 
-    {""}[color=#4a4a4a][italic]The last line, barely legible: It cannot be torn. It cannot be drowned. FIRE. Burn it, keep it burning, and do not let go of it while you do.[/italic][/color]
+    {""}[color=#4a4a4a][italic]The last line, barely legible: It cannot be torn. It cannot be drowned. I put it in the fire, and it burned, and in the morning it was whole again. Fire only hurts it. Only the passages on the lost pages can cast it out.[/italic][/color]
 
 
 necro-passage-rebuke-verb = Read the Passage of Rebuking
@@ -471,3 +471,37 @@ necro-room-laughs = {CAPITALIZE(THE($thing))} starts to laugh!
 ## Physical form
 
 necro-flesh-bound = The words hold you in the flesh. ({$seconds}s)
+
+## Fire
+
+necro-book-scorched = The book burns black, screaming, and vanishes. A moment later the smell of it is gone too.
+necro-book-scorched-demon = The flames tear the book back into the ether! It knits itself together, but you can't call it out for {$minutes} minutes, and half your Soul Power is gone.
+necro-book-scorched-wait = The book is still knitting itself back together. ({$seconds}s)
+
+## Film powers
+
+necro-catalog-rush-name = The Force
+necro-catalog-rush-desc = Unlocks The Force (The Evil Dead): charge in a straight line up to 14 tiles, through doors, flattening anyone in the way. Costs 4 SP per use.
+necro-catalog-roots-name = The Trees
+necro-catalog-roots-desc = Unlocks The Trees (The Evil Dead): roots and branches burst up through the floor and hold someone in place for a few seconds. Costs 3 SP per use.
+necro-catalog-hand-name = The Hand
+necro-catalog-hand-desc = Unlocks The Hand (Evil Dead II): a victim's own hand turns on them, dropping what it holds and beating them. Mindshields stop it. Costs 3 SP per use.
+necro-catalog-deceit-name = Baal's Deceit
+necro-catalog-deceit-desc = Unlocks Baal's Deceit (Ash vs Evil Dead): show someone a vision of a nearby friend's eyes flashing white. Turn them on each other. Mindshields stop it. Costs 2 SP per use.
+necro-catalog-deadbydawn-name = Dead by Dawn
+necro-catalog-deadbydawn-desc = Unlocks Dead by Dawn (Evil Dead II): the whole station hears your voice, and every one of your Deadites stands back up, healed and faster for a minute. Once every ten minutes.
+
+necro-rush-victim = Something unseen slams into you at terrible speed!
+necro-roots = Roots and branches burst up through the floor and wrap around {THE($target)}!
+necro-roots-victim = Roots wrap around your legs! You can barely move!
+necro-hand = {CAPITALIZE(THE($target))}'s hand drops everything and starts beating them!
+necro-hand-victim = Your hand isn't yours anymore! It's hitting you!
+necro-deceit-vision = {CAPITALIZE(THE($target))}'s eyes flash milky white for a moment!
+necro-deceit-sent = {CAPITALIZE(THE($target))} saw {THE($framed)}'s eyes flash white.
+necro-deceit-nobody = Nobody is near them to frame.
+necro-dead-by-dawn-announcement = DEAD BY DAWN! DEAD BY DAWN! DEAD BY DAWN!
+necro-dead-by-dawn-deadite = DEAD BY DAWN! You rise again, stronger and faster!
+
+deadite-swallow-invalid = You can only feed on the living who are down and dying.
+deadite-swallow-start = {CAPITALIZE(THE($user))} crouches over {THE($target)}, mouth gaping!
+deadite-swallow-done = {CAPITALIZE(THE($user))} swallows {THE($target)}'s soul!

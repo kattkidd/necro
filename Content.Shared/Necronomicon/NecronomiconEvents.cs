@@ -33,6 +33,21 @@ public sealed partial class NecroManifestFormActionEvent : InstantActionEvent;
 /// <summary>Leave the physical form and return to the incorporeal demon.</summary>
 public sealed partial class NecroReturnToEtherActionEvent : InstantActionEvent;
 
+/// <summary>The Force (The Evil Dead): the demon tears across the station in a straight line, bursting through doors and bowling over anyone in the way.</summary>
+public sealed partial class NecroRushActionEvent : WorldTargetActionEvent;
+
+/// <summary>The trees (The Evil Dead): roots and branches burst up through the floor and hold a victim fast.</summary>
+public sealed partial class NecroGraspingRootsActionEvent : EntityTargetActionEvent;
+
+/// <summary>The possessed hand (Evil Dead II): a victim's hand turns on them.</summary>
+public sealed partial class NecroPossessedHandActionEvent : EntityTargetActionEvent;
+
+/// <summary>Baal's deceit (Ash vs Evil Dead): a victim sees a friend's eyes flash white.</summary>
+public sealed partial class NecroDeceitActionEvent : EntityTargetActionEvent;
+
+/// <summary>"Dead by dawn": the whole station hears it, and every Deadite surges.</summary>
+public sealed partial class NecroDeadByDawnActionEvent : InstantActionEvent;
+
 /// <summary>Physical form: a roar that throws nearby crew to the floor and sets the room shaking.</summary>
 public sealed partial class NecroUnholyRoarActionEvent : InstantActionEvent;
 
@@ -63,6 +78,9 @@ public sealed partial class DeaditeScreamActionEvent : InstantActionEvent;
 
 /// <summary>Infiltrator path: pull the human mask back on after revealing.</summary>
 public sealed partial class DeaditeConcealActionEvent : InstantActionEvent;
+
+/// <summary>A revealed Deadite feeds on a downed victim: "I'll swallow your soul!"</summary>
+public sealed partial class DeaditeSwallowSoulActionEvent : EntityTargetActionEvent;
 
 /// <summary>A revealed Deadite's taunt ("Join us!", "Dead by dawn!"...).</summary>
 public sealed partial class DeaditeTauntActionEvent : InstantActionEvent;
@@ -95,6 +113,9 @@ public sealed partial class NecroBookUnmakeDoAfterEvent : SimpleDoAfterEvent;
 /// <summary>Reading aloud from a random page of the Necronomicon. Anything can happen.</summary>
 [Serializable, NetSerializable]
 public sealed partial class NecroBookReadAloudDoAfterEvent : SimpleDoAfterEvent;
+
+[Serializable, NetSerializable]
+public sealed partial class DeaditeSwallowSoulDoAfterEvent : SimpleDoAfterEvent;
 
 /// <summary>The lost pages, first passage: conjure the evil into the flesh.</summary>
 [Serializable, NetSerializable]

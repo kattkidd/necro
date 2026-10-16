@@ -242,7 +242,7 @@ public sealed partial class DeaditeSystem
     /// Casts the demon out of a Deadite: every Kandarian trait is stripped, their own face comes back, their wounds
     /// close, and they are blessed against being claimed again for <paramref name="blessing"/>.
     /// </summary>
-    public void Exorcise(Entity<DeaditeComponent> ent, EntityUid? exorcist, TimeSpan blessing)
+    public void Exorcise(Entity<DeaditeComponent> ent, EntityUid? exorcist, TimeSpan blessing, bool countStat = true)
     {
         var target = ent.Owner;
         var name = Name(target);
@@ -276,7 +276,7 @@ public sealed partial class DeaditeSystem
                 user, PopupType.Large);
         }
 
-        if (_necro.TryGetDemon(demonUid, out var demon))
+        if (countStat && _necro.TryGetDemon(demonUid, out var demon))
         {
             demon.Value.Comp.Exorcisms++;
             demon.Value.Comp.ExorcisedNames.Add(name);

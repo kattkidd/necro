@@ -268,12 +268,9 @@ public sealed partial class NecronomiconRuleSystem : GameRuleSystem<Necronomicon
                     : "necro-crew-victory-announcement"),
                 Loc.GetString("necro-announcement-sender"), colorOverride: Color.Gold);
 
-            // The demon is cast out: its player becomes a ghost.
+            // The demon is cast out: its player becomes a ghost. The Necronomicon has lost, but the shift goes on.
             if (demon != null)
                 CastOut(demon.Value);
-
-            if (!_roundEnd.IsRoundEndRequested())
-                _roundEnd.DoRoundEndBehavior(rule.Comp.CrewVictoryBehavior, rule.Comp.EvacShuttleTime);
         }
         else
         {

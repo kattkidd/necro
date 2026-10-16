@@ -125,6 +125,7 @@ public sealed partial class DeaditeSystem : EntitySystem
 
         InitializeExorcism();
         InitializeTree();
+        InitializeDeaditePowers();
     }
 
     private void OnDemonBriefing(Entity<NecroDemonRoleComponent> ent, ref GetBriefingEvent args)
@@ -320,6 +321,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         // Infiltrator II can slip the mask back on.
         GrantTreeActions(ent);
         _actions.AddAction(ent, ref ent.Comp.TauntActionEntity, ent.Comp.TauntAction);
+        _actions.AddAction(ent, ref ent.Comp.SwallowActionEntity, ent.Comp.SwallowAction);
     }
 
     private void OnTaunt(Entity<DeaditeComponent> ent, ref DeaditeTauntActionEvent args)
@@ -719,8 +721,12 @@ public sealed partial class DeaditeSystem : EntitySystem
                 toRelease.Add(uid);
         }
 
+        // Cast out through the rift: the possessed are themselves again, alive.
         foreach (var uid in toRelease)
-            Release(uid);
+        {
+            if (TryComp<DeaditeComponent>(uid, out var deadite))
+                Exorcise((uid, deadite), null, TimeSpan.FromMinutes(1), countStat: false);
+        }
 
         var spawn = EntityQueryEnumerator<DemonspawnComponent, KandarianEntityComponent>();
         var toDelete = new List<EntityUid>();
@@ -768,6 +774,7 @@ public sealed partial class DeaditeSystem : EntitySystem
         _actions.RemoveAction(uid, comp.ScreamActionEntity);
         _actions.RemoveAction(uid, comp.ConcealActionEntity);
         _actions.RemoveAction(uid, comp.TauntActionEntity);
+        _actions.RemoveAction(uid, comp.SwallowActionEntity);
 
         RemComp<KandarianRegenComponent>(uid);
         RemComp<KandarianEntityComponent>(uid);

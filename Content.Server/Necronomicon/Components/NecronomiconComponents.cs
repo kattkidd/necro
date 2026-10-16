@@ -105,6 +105,13 @@ public sealed partial class NecroDemonComponent : Component
     [ViewVariables]
     public TimeSpan TransitionEnd;
 
+    /// <summary>After a full burning, the book can't be called out of the ether until this time.</summary>
+    [ViewVariables]
+    public TimeSpan NextBookManifest;
+
+    [DataField]
+    public TimeSpan ScorchedCooldown = TimeSpan.FromMinutes(3);
+
     [ViewVariables]
     public EntityCoordinates TransitionCoords;
     #endregion
@@ -170,6 +177,45 @@ public sealed partial class NecroDemonComponent : Component
 
     [DataField]
     public TimeSpan FleshBindDuration = TimeSpan.FromMinutes(3);
+
+    #region Film powers
+    [DataField]
+    public FixedPoint2 RushCost = 4;
+
+    /// <summary>Anyone this close to the Force's path is knocked flat.</summary>
+    [DataField]
+    public float RushWidth = 1f;
+
+    [DataField]
+    public float RushMaxDistance = 14f;
+
+    [DataField]
+    public FixedPoint2 RootsCost = 3;
+
+    [DataField]
+    public TimeSpan RootsDuration = TimeSpan.FromSeconds(5);
+
+    [DataField]
+    public FixedPoint2 HandCost = 3;
+
+    [DataField]
+    public DamageSpecifier HandDamage = new()
+    {
+        DamageDict = new() { { "Blunt", 8 } },
+    };
+
+    [DataField]
+    public FixedPoint2 DeceitCost = 2;
+
+    [DataField]
+    public float DeceitRange = 8f;
+
+    [DataField]
+    public TimeSpan DeadByDawnDuration = TimeSpan.FromSeconds(60);
+
+    [DataField]
+    public float DeadByDawnSpeed = 1.3f;
+    #endregion
 
     /// <summary>Radius of the poltergeist burst (flickering lights, flying objects) around supernatural events.</summary>
     [DataField]
@@ -715,6 +761,24 @@ public sealed partial class DeaditeComponent : Component
     [DataField]
     public EntProtoId TauntAction = "ActionDeaditeTaunt";
 
+    [DataField]
+    public EntProtoId SwallowAction = "ActionDeaditeSwallowSoul";
+
+    [ViewVariables]
+    public EntityUid? SwallowActionEntity;
+
+    [DataField]
+    public TimeSpan SwallowTime = TimeSpan.FromSeconds(6);
+
+    [DataField]
+    public DamageSpecifier SwallowDamage = new()
+    {
+        DamageDict = new() { { "Cellular", 40 } },
+    };
+
+    [DataField]
+    public FixedPoint2 SwallowReward = 4;
+
     [ViewVariables]
     public EntityUid? TauntActionEntity;
 
@@ -1025,4 +1089,18 @@ public sealed partial class NecronomiconRuleComponent : Component
 
     [ViewVariables]
     public bool FinalBanished;
+}
+
+/// <summary>
+/// The Kandarian dagger. Ordinary blades only slow a Deadite down; this one finishes the job: a downed Deadite
+/// struck with it is cut apart for good, and it bites deep into the demon's own flesh.
+/// </summary>
+[RegisterComponent]
+public sealed partial class NecroKandarianDaggerComponent : Component
+{
+    [DataField]
+    public DamageSpecifier DemonBonus = new()
+    {
+        DamageDict = new() { { "Slash", 15 } },
+    };
 }
